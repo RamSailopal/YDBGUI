@@ -1,0 +1,336 @@
+<div class="modal  fade" id="modalRegionView" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-width-900" role="document">
+        <div class="modal-content">
+            <div class="modal-header center msgbox-header">
+                <h6 class="modal-title">Region view: <span id="lblRegionViewTitle"></span></h6>
+            </div>
+            <div class="modal-body" style="height:535px;">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-link active ydb-purple-fore" id="navRegionViewRegion" data-toggle="tab"
+                           href="#tabRegionViewRegionRegion"
+                           role="tab" aria-selected="true">Region</a>
+                        <a class="nav-link ydb-purple-fore" id="navRegionViewJournal" data-toggle="tab"
+                           href="#tabRegionViewRegionJournal"
+                           role="tab" aria-selected="false">Journal</a>
+                        <a class="nav-link ydb-purple-fore" id="navRegionViewNames" data-toggle="tab"
+                           href="#tabRegionViewRegionNames"
+                           role="tab" aria-selected="false">Names</a>
+                        <a class="nav-link ydb-purple-fore" id="navRegionViewStats" data-toggle="tab"
+                           href="#tabRegionViewRegionStats"
+                           role="tab" aria-selected="false">Stats</a>
+                        <a class="nav-link ydb-purple-fore" id="navRegionViewLocks" data-toggle="tab"
+                           href="#tabRegionViewRegionLocks"
+                           role="tab" aria-selected="false">Locks</a>
+                        <div style="width: 458px; text-align: right;">
+                            <button type="button" class="btn btn-outline-info btn-sm sides-padding-10" id="btnRegionViewRefresh">
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <!-- REGION -->
+                    <div class="tab-pane fade show active" id="tabRegionViewRegionRegion" role="tabpanel"
+                         aria-labelledby="nav-home-tab">
+                        <div class="row-12">
+                            <!-- GLOBAL STATUS -->
+                            <div class="card text-center">
+                                <div class="card-body stats-card-body">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="rounded-lg p-3 shadow text-center ydb-back6">
+                                                <span class="ydb-fore3 bold dash-stats-header">Status:</span>
+                                                <span class="badge badge-pill   badge-stats"
+                                                      id="pillRegionViewRegionStatus"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="rounded-lg p-3 shadow text-center ydb-back6"
+                                                 style="display: flex;">
+                                                <span class="ydb-fore3 bold dash-stats-header">Free space:</span>
+                                                <div class="progress"
+                                                     style="width: 116px; background: white; margin-top: 5px;">
+                                                    <div class="progress-bar ydb-status-green" role="progressbar"
+                                                         style="width: 0%;" id="rngRegionViewRegionUsedSpace"
+                                                         aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="rounded-lg p-3 shadow text-center ydb-back6">
+                                                <span class="ydb-fore3 bold dash-stats-header">User sessions:</span>
+                                                <span class="badge badge-pill ydb-status-green  badge-stats"
+                                                      id="pillRegionViewRegionSessions"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-12" style="display: block;" id="divRegionViewRegionAlert">
+                                    <div class="col-12">
+                                        <div style="height: 17px;"></div>
+                                        <div class="alert region-view-alerts ydb-status-red" role="alert" id="lblRegionViewRegionAlert">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div id="divRegionViewRegionTables">
+                            <div class="row-12" style="display: flex">
+                                <div class="col-7">
+                                    <h5 class="ydb-orange-fore">Database file</h5>
+                                    <div style="overflow-x: hidden; height: 260px;">
+                                        <table class="table table-sm table-hover ydb-fore2"
+                                               id="tblRegionViewRegionRegion"
+                                               style="width: 447px;">
+                                            <thead>
+                                            <tr style="font-size: 12px; font-weight: 600;">
+                                                <th scope="col" style="width: 130px;">Param</th>
+                                                <th scope="col" style="width: 200px;">Value</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div style="height:10px;"></div>
+                                    <div style="display: flex;">
+                                        <button type="button" class="btn btn-outline-info  btn-block btn-sm"
+                                                disabled id="btnRegionViewRegionCreateDbFile">Create Database file...
+                                        </button>
+                                        <span style="width:20px;"></span>
+                                        <button type="button" class="btn btn-outline-info btn-block  btn-sm"
+                                                id="btnRegionViewRegionExtendDbFile">Extend
+                                            database...
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <h5 class="ydb-orange-fore">Database access</h5>
+                                    <div style="overflow-x: hidden; height: 294px;">
+                                        <table class="table table-sm table-hover ydb-fore2"
+                                               id="tblRegionViewRegionSegment"
+                                               style="width: 260px;">
+                                            <thead>
+                                            <tr style="font-size: 12px; font-weight: 600;">
+                                                <th scope="col" style="width: 100px;">Param</th>
+                                                <th scope="col" style="width: 78px;">Value</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JOURNAL -->
+                    <div class="tab-pane fade" id="tabRegionViewRegionJournal" role="tabpanel">
+                        <div class="row-12">
+                            <!-- GLOBAL STATUS -->
+                            <div class="card text-center">
+                                <div class="card-body stats-card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="rounded-lg p-3 shadow text-center ydb-back6">
+                                                <span class="ydb-fore3 bold dash-stats-header">Status:</span>
+                                                <span class="badge badge-pill ydb-status-red  badge-stats dash-stats-header"
+                                                      id="lblRegionViewJournalStatus"></span>
+                                                <button type="button" class="btn btn-outline-info  btn-sm"
+                                                        id="btnRegionViewJournalTurnOn">Turn on
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="rounded-lg p-3 shadow text-center ydb-back6">
+                                                <span class="ydb-fore3 bold dash-stats-header">Type:</span>
+                                                <span class="badge badge-pill ydb-status-green  badge-stats"
+                                                      id="lblRegionViewJournalType"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-12" style="display: block;" id="divRegionViewJournalAlert">
+                                    <div class="col-12">
+                                        <div style="height: 12px;"></div>
+                                        <div class="alert region-view-alerts" role="alert" id="lblRegionViewJournalAlert">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="divRegionViewJournalTable">
+                                <div class="col-12" style="text-align: center;">
+                                    <br>
+                                    <h5 class="ydb-orange-fore">Parameters</h5>
+                                    <div style="overflow-x: hidden; height: 260px; text-align: -webkit-center">
+                                        <table class="table table-sm table-hover ydb-fore2"
+                                               id="tblRegionViewJournalParams"
+                                               style="width: 576px;">
+                                            <thead>
+                                            <tr style="font-size: 12px; font-weight: 600;">
+                                                <th scope="col" style="width: 100px;">Param</th>
+                                                <th scope="col" style="width: 78px;">Value</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NAMES -->
+                    <div class="tab-pane fade" id="tabRegionViewRegionNames" role="tabpanel">
+                        <br>
+                        <div class="row">
+                            <div class="col-9">
+                                <h5 class="ydb-orange-fore">Names</h5>
+                                <div style="overflow-x: hidden; height: 400px;">
+                                    <table class="table table-sm table-hover ydb-fore2" id="tblRegionViewNames"
+                                           style="width: 611px;">
+                                        <thead>
+                                        <tr style="font-size: 12px; font-weight: 600;">
+                                            <th scope="col" style="width: 250px;">Name</th>
+                                            <th scope="col" style="width: 250px;">From</th>
+                                            <th scope="col" style="width: 250px;">To</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <br>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input"
+                                           id="chkRegionViewNamesSystemNames" checked
+                                           onclick="app.ui.regionView.populateNamesTable()">
+                                    <label class="custom-control-label" for="chkRegionViewNamesSystemNames">Display
+                                        system names</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STATS -->
+                    <div class="tab-pane fade" id="tabRegionViewRegionStats" role="tabpanel">
+                        <div class="row">
+                            <div class="col-12" style="text-align: center;">
+                                <br>
+                                <h5 class="ydb-orange-fore">Device info</h5>
+                                <div style="overflow-x: hidden; height: 400px; text-align: center;">
+                                    <table class="table table-sm table-hover ydb-fore2 stats-table" id="tblRegionViewStats">
+                                        <thead>
+                                        <tr style="font-size: 12px; font-weight: 600;">
+                                            <th scope="col" style="width: 70%;">Param</th>
+                                            <th scope="col" style="width: 30%;">Value</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- LOCKS -->
+                    <div class="tab-pane fade" id="tabRegionViewRegionLocks" role="tabpanel">
+                        <br>
+                        <div class="row">
+                            <div class="col-7">
+                                <h5 class="ydb-orange-fore">Locks</h5>
+                                <div style="overflow-x: hidden; height: 364px; text-align: -webkit-center">
+                                    <table class="table table-sm table-hover ydb-fore2" id="tblRegionViewLocks">
+                                        <thead>
+                                        <tr style="font-size: 12px; font-weight: 600;">
+                                            <th scope="col" style="width: 302px;">Node</th>
+                                            <th scope="col" style="width: 78px;">Owner</th>
+                                            <th scope="col" style="width: 78px;">Waiting</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-5">
+                                <h5 class="ydb-orange-fore">Lock space info</h5>
+                                <div class="card">
+                                    <div class="card-body stats-card-body shadow ydb-back6">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <span class="locks-info">
+                                                    Processes on queue
+                                                </span>
+                                            </div>
+                                            <div class="col-6" style="text-align: right;">
+                                                <span id="lblRegionViewLocksProcessesOnQueue">
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <span class="locks-info">
+                                                    Lock slots in use
+                                                </span>
+                                            </div>
+                                            <div class="col-6" style="text-align: right;">
+                                                <span id="lblRegionViewLocksSlotsInUse">
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <span class="locks-info">
+                                                    Slot bytes in use
+                                                </span>
+                                            </div>
+                                            <div class="col-6" style="text-align: right;">
+                                                <span id="lblRegionViewLocksBytesInUse">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <h5 class="ydb-orange-fore">Estimated lock space</h5>
+                                <div class="card">
+                                    <div class="card-body stats-card-body shadow ydb-back6">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <span class="locks-info">
+                                                    Free lock space
+                                                </span>
+                                            </div>
+                                            <div class="col-7" style="text-align: right;">
+                                                <span id="lblRegionViewLocksFreeLockSpace">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer center">
+                <button type="button" class="btn btn-outline-info" tabindex="1" id="btnMsgboxOk" data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

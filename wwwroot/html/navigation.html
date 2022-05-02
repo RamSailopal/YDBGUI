@@ -1,0 +1,159 @@
+<nav class="navbar navbar-expand-lg navbar-light navigation-header ydb-back6" style="padding: 0 22px;">
+    <a target="_blank" href="https://yottadb.com">
+        <img alt="" src="../img/YottaDB_logo-light.svg" class="hand" width="160"/>
+        <span id="lblYottadbVersion" class="ydb-image"></span><br>
+    </a>
+
+    <!--***************************************-->
+    <!--      logo   -->
+    <!--***************************************-->
+    <div class="ml-auto" style="display: flex;">
+        <a class="navbar-brand text-primary" href="#"></a>
+
+        <!--***************************************-->
+        <!--      Dasahboard menu   -->
+        <!--***************************************-->
+        <div class="dropdown">
+            <div class="nav-link   menu-header-2 hand" id="menuDashboard" data-toggle="dropdown" aria-haspopup="true"
+                 aria-expanded="false">Dashboard
+            </div>
+        </div>
+
+        <!--***************************************-->
+        <!--      System info menu   -->
+        <!--***************************************-->
+        <div class="dropdown">
+            <div class="nav-link   menu-header-2 hand" id="menuSystemInfo" data-toggle="dropdown" aria-haspopup="true"
+                 aria-expanded="false">System info...
+            </div>
+        </div>
+
+        <!--***************************************-->
+        <!--      System Administration menu   -->
+        <!--***************************************-->
+        <div class="dropdown">
+            <div class="nav-link   menu-header-2 hand" id="menuSystemAdministration" data-toggle="dropdown"
+                 aria-haspopup="true"
+                 aria-expanded="false">System Administration
+            </div>
+
+            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                <li class="dropdown-submenu" id="menuSystemAdministrationStorageLi">
+                    <a id="menuSystemAdministrationStorage" class="dropdown-item" tabindex="-1" href="#">Storage</a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item" id="menuSystemAdministrationStorageViewRegionLi">
+                            <a id="menuSystemAdministrationStorageViewRegion" tabindex="-1" href="#">View region...</a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-submenu">
+                            <a id="menuSystemAdministrationStorageAdd" class="dropdown-item" tabindex="-1" href="#">Add</a>
+                            <ul class="dropdown-menu" style="left: -27px">
+
+                                <li class="dropdown-item" id="menuSystemAdministrationStorageAddRegionLi"><a
+                                        id="menuSystemAdministrationStorageAddRegion" tabindex="-1"
+                                        href="#">Region...</a>
+                                </li>
+                                <li class="dropdown-item" id="menuSystemAdministrationStorageAddDatabaseLi"><a
+                                        id="menuSystemAdministrationStorageAddDatabase" tabindex="-1" href="#">Database
+                                    file...</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-item" id="menuSystemAdministrationStorageEditRegionLi">
+                            <a id="menuSystemAdministrationStorageEditRegion" tabindex="-1" href="#">Edit region...</a>
+                        </li>
+                        <li class="dropdown-item" id="menuSystemAdministrationStorageDeleteRegionLi">
+                            <a id="menuSystemAdministrationStorageDeleteRegion" tabindex="-1" href="#">Delete region...</a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-item" id="menuSystemAdministrationStorageJournalStartStopLi">
+                            <a id="menuSystemAdministrationStorageJournalStartStop" tabindex="-1" href="#">Journaling Start /
+                                Stop...</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li class="dropdown-item" id="menuSystemAdministrationBackupLi">
+                    <a id="menuSystemAdministrationBackup" tabindex="-1" href="#">Backup...</a>
+                </li>
+                <li class="dropdown-item disabled" id="menuSystemAdministrationRestoreLi">
+                    <a id="menuSystemAdministrationRestore" class="disabled" tabindex="-1" href="#">Restore...</a>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li class="dropdown-item" id="menuSystemAdministrationIntegrityLi">
+                    <a id="menuSystemAdministrationIntegrity" tabindex="-1" href="#">Integrity check...</a>
+                </li>
+                <li class="dropdown-item" id="menuSystemAdministrationDefragLi">
+                    <a id="menuSystemAdministrationDefrag" tabindex="-1" href="#" onclick="app.ui.compact.show()">Defrag /
+                        Compact...</a>
+                </li>
+                <li class="dropdown-divider"></li>
+                <li class="dropdown-submenu" id="menuAuth">
+                    <a id="menuReplication" class="dropdown-item" tabindex="-1" href="#">Replication</a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-submenu">
+                            <a id="menuReplicationService" class="dropdown-item" tabindex="-1" href="#">Service</a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-item" id="menuReplicationServiceStartLi"><a
+                                        id="menuReplicationServiceStart" tabindex="-1"
+                                        href="#">Start</a>
+                                </li>
+
+                                <li class="dropdown-item disabled" id="menuReplicationServiceStopLi"><a
+                                        id="menuReplicationServiceStop" class="disabled" tabindex="-1"
+                                        href="#">Stop</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-item disabled" id="menuReplicationServiceConfigLi">
+                            <a id="menuReplicationServiceConfig" class="disabled" tabindex="-1" href="#">Configuration...</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!--***************************************-->
+        <!--      Development menu   -->
+        <!--***************************************-->
+        <div class="dropdown">
+            <div class="nav-link  menu-header-2 hand" id="menuDevelopment" data-toggle="dropdown"
+                 aria-haspopup="true"
+                 aria-expanded="false">Development
+            </div>
+            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                <li class="dropdown-item hand" id="menuDatabasesCreateLi"><a id="menuDatabasesCreate" tabindex="-1"
+                                                                             href="#">Globals...</a>
+                </li>
+                <li class="dropdown-item" id="menuDatabasesDropLi"><a id="menuDatabasesDrop" tabindex="-1"
+                                                                       href="#">Routines...</a></li>
+                <li class="dropdown-divider"></li>
+                <li class="dropdown-item disabled" id="menuDatabasesPropertiesLi"><a id="menuDatabasesProperties"
+                                                                                     class="disabled" tabindex="-1"
+                                                                                     href="#">Triggers...</a></li>
+            </ul>
+        </div>
+
+        <!--***************************************-->
+        <!--      Documentation menu   -->
+        <!--***************************************-->
+        <div class="dropdown">
+            <div class="nav-link  hand menu-header-2" id="mnuHelp" data-toggle="dropdown" aria-haspopup="true"
+                 aria-expanded="false">Documentation
+            </div>
+            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu" style="left: -174px;">
+                <li class="dropdown-item" id="menuDocumentationAdministration"><a tabindex="-1" href="#">Administration and operation</a></li>
+                <li class="dropdown-item" id="menuDocumentationMessages"><a tabindex="-1" href="#">Messages and Recovery procedures</a></li>
+                <li class="dropdown-divider"></li>
+                <li class="dropdown-item" id="menuDocumentationMprogrammer"><a tabindex="-1" href="#">M Programmer guide</a></li>
+                <li class="dropdown-item" id="menuDocumentationMultiLanguage"><a tabindex="-1" href="#">Multi-Language Programmer guide</a></li>
+                <li class="dropdown-item" id="menuDocumentationOcto"><a tabindex="-1" href="#">Octo documentation</a></li>
+                <li class="dropdown-item" id="menuDocumentationPlugins"><a tabindex="-1" href="#">Plugins</a></li>
+                <li class="dropdown-divider"></li>
+                <li class="dropdown-item" id="menuDocumentationAcculturation"><a tabindex="-1" href="#">Acculturation guide</a></li>
+                <li class="dropdown-divider"></li>
+                <li class="dropdown-item" id="menuDebugInformation"><a tabindex="-1" href="#">Troubleshooting...</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>

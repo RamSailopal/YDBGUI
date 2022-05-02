@@ -1,0 +1,125 @@
+<!-- System info dialog -->
+<div class="modal fade" id="modalSystemInfo" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-width-700" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="modal-title" id="modalLabel">System information</label>
+                <button type="button" class="close" data-dismiss="modal" tabindex="-1" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="ydb-back6">
+                    <br>
+                    <div class="row-12">
+                        <div class="align-left">
+                            <div class="row">
+                                <div class="col-4">
+                                    <span class="ydb-fore3 bold dash-stats-header" style="margin-left: 7px;">Routine search path:</span>
+                                </div>
+                                <div class="col-8">
+                                    <span class="modal-font" id="lblSystemInfoRoutines"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-12 top-padding-5">
+                        <div class="align-left">
+                            <div class="row">
+                                <div class="col-4">
+                                    <span class="ydb-fore3 bold dash-stats-header" style="margin-left: 7px;">Global directory:</span>
+                                </div>
+                                <div class="col-8">
+                                    <span class="modal-font" id="lblSystemInfoGlobalDirectory"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divSystemInfoReplicationInstance" style="display: none;">
+                        <div style="height: 5px;"></div>
+                        <div class="row-12">
+                            <div class="align-left">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <span class="ydb-fore3 bold dash-stats-header" style="margin-left: 7px;">Replication instance:</span>
+                                    </div>
+                                    <div class="col-8">
+                                        <span class="modal-font" id="lblSystemInfoReplicationInstance"></span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-12 top-padding-5">
+                        <div class="align-left">
+                            <div class="row">
+                                <div class="col-4">
+                                    <span class="ydb-fore3 bold dash-stats-header" style="margin-left: 7px;">Mode:</span>
+                                </div>
+                                <div class="col-8">
+                                    <span class="modal-font" id="lblSystemInfoMode"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <br>
+                <div class="ydb-back6">
+                    <br>
+                    <div class="row-12">
+                        <div class="align-left">
+                            <div class="row">
+                                <div class="col-2" style="margin-bottom: 12px;">
+                                    <span class="ydb-fore3 bold dash-stats-header" style="margin-left: 7px;">Plugins:</span>
+                                </div>
+                                <div class="col-10">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div style="height: 147px; overflow-y: auto">
+                                        <table class="table table-sm table-hover" id="tblSystemInfoPlugins">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Description</th>
+                                                <th scope="col">Version</th>
+                                                <th scope="col">Vendor</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row-12">
+                    <div class="align-left">
+                        <div class="row">
+                            <div class="col-12">
+                                <button class="btn btn-outline-info btn-sm btn-block" type="button"
+                                        id="btnSystemInfoEnvironmentVariables">
+                                    Environment variables...
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer center">
+                <button type="button" class="btn btn-outline-info" data-dismiss="modal" tabindex="-1">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

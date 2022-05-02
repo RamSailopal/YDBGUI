@@ -1,0 +1,106 @@
+<div style="overflow-y: scroll; min-height: calc( 100vh - 107px );    height: calc( 100vh - 107px );">
+    <div class="row-12">
+        <!-- GLOBAL STATUS -->
+        <div class="card text-center">
+            <div class="card-body stats-card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="rounded-lg p-3 shadow text-center ydb-back6">
+                            <span class="ydb-fore3 bold dash-stats-header">Database:</span>
+                            <a tabindex="-1" role="" data-toggle="popover" data-trigger="hover"
+                               title="" id="lblDashStatusDatabasesPopup">
+                            <span class="badge badge-pill ydb-status-gray  badge-stats hand"
+                                  id="lblDashStatusDatabases">Unknown</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="rounded-lg p-3 shadow text-center ydb-back6">
+                            <span class="ydb-fore3 bold dash-stats-header">Journaling:</span>
+                            <a tabindex="-1" role="" data-toggle="popover" data-trigger="hover"
+                               title="" id="lblDashStatusJournalsPopup">
+                                <span class="badge badge-pill ydb-status-gray badge-stats hand"
+                                  id="lblDashStatusJournals">Unknown</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="rounded-lg p-3 shadow text-center ydb-back6">
+                            <span class="ydb-fore3 bold dash-stats-header">Replication:</span>
+                            <span class="badge badge-pill ydb-status-gray  badge-stats"
+                                  id="lblDashStatusReplication">Unknown</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- STORAGE -->
+        <div class="row-12">
+            <div class="card text-left" style="border: 0;">
+                <div class="card-body stats-card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div style="display: block" id="divDashStorageDevice0">
+                            </div>
+                        </div>
+                        <div style="display: block" id="divDashStorageUnknown">
+                            <div class="bg-white rounded-lg p-3 shadow ydb-back6">
+                                <div class="row">
+                                    <div class="col-2 ydb-fore3">
+                                        <b>Storage usage:</b>
+                                    </div>
+                                    <div class="col">
+                                        <h4> Unknown</h4>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGIONS -->
+    <div class="row-12">
+        <div class="card text-left">
+            <div class="card-body stats-card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="bg-white rounded-lg p-3 shadow ydb-back6">
+                            <div class="row">
+                                <div class="col-2 ydb-fore3" style="margin-bottom: 12px;">
+                                    <b>Regions:</b>
+                                </div>
+                                <div class="col-10">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table table-sm table-hover ydb-fore2" id="tblDashRegions">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" style="width: 100px;"></th>
+                                            <th scope="col" style="width: 100px;">Name</th>
+                                            <th scope="col" style="width: 30%;">Database path</th>
+                                            <!--<th scope="col">Blocks used</th>-->
+                                            <th scope="col" style="width: 180px; text-align: center;">Database</th>
+                                            <th scope="col" style="width: 180px; text-align: center;">Journaling
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
