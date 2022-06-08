@@ -1,5 +1,4 @@
-	;
-	%ydbguiRegions ; YottaDB Regions; 05-07-2021
+%ydbguiRegions ; YottaDB Regions; 05-07-2021
 	;#################################################################
 	;#                                                               #
 	;# Copyright (c) 2022 YottaDB LLC and/or its subsidiaries.       #
@@ -144,7 +143,7 @@ getRegionStruct(regionName,regionData,warnings)
 	set regionData("dbFile","data",$increment(dataCnt),"AUTO_DB")=$select(gdeData("region","AUTODB")=0:"false",1:"true")
 	set regionData("dbFile","data",$increment(dataCnt),"ACCESS_METHOD")=$select(record("sgmnt_data.acc_meth")=1:"BG",1:"MM") ;1:BG 2:MM
 	set:record("sgmnt_data.acc_meth")=1 regionData("dbFile","data",$increment(dataCnt),"GLOBAL_BUFFER_COUNT")=record("sgmnt_data.n_bts")
-	set regionData("dbFile","data",$increment(dataCnt),"LOCK_SPACE")=record("sgmnt_data.lock_space_size")
+	set regionData("dbFile","data",$increment(dataCnt),"LOCK_SPACE")=record("sgmnt_data.lock_space_size")/512
 	set:record("sgmnt_data.acc_meth")=1 regionData("dbFile","data",$increment(dataCnt),"ASYNCIO")=$select(record("sgmnt_data.asyncio")=0:"false",1:"true")
 	set regionData("dbFile","data",$increment(dataCnt),"DEFER_ALLOCATE")=$select(record("sgmnt_data.defer_allocate")=0:"false",1:"true")
 	set regionData("dbFile","data",$increment(dataCnt),"EXTENSION_COUNT")=record("sgmnt_data.extension_size")
@@ -161,7 +160,7 @@ getRegionStruct(regionName,regionData,warnings)
 	set regionData("dbAccess","data",$increment(dataCnt),"KEY_SIZE")=record("sgmnt_data.max_key_size")
 	set regionData("dbAccess","data",$increment(dataCnt),"COLLATION_DEFAULT")=record("sgmnt_data.def_coll")
 	;set regionData("dbAccess","data",$increment(dataCnt),"INST_FREEZE_ON_ERROR")=record("jnlpool_ctl_struct.instfreeze_environ_init")
-	set regionData("dbAccess","data",$increment(dataCnt),"LOCK_CRIT_SEPARATE")=$select(record("sgmnt_data.lock_crit_with_db"):"true",1:"false")
+	set regionData("dbAccess","data",$increment(dataCnt),"LOCK_CRIT_SEPARATE")=$select(record("sgmnt_data.lock_crit_with_db"):"false",1:"true")
 	set regionData("dbAccess","data",$increment(dataCnt),"NULL_SUBSCRIPTS")=$select(record("sgmnt_data.null_subs")=0:"Not allowed",record("sgmnt_data.null_subs")=1:"Allowed",1:"Allow existing")
 	;set regionData("dbAccess","data",$increment(dataCnt),"QDBRUNDOWN")=record("sgmnt_data.?")
 	;set regionData("dbAccess","data",$increment(dataCnt),"STATS")=record("sgmnt_data.?")
@@ -252,17 +251,229 @@ getRegionStructQuit
 	quit
 	;
 	;
+; ****************************************************************
+; create:(req)
+;
+; PARAMS:
+; body					array byRef
+; RETURN
+; res					array byRef (response JDOM)
+; ****************************************************************
+create(body)
+	new res,NL,ix,postProcessing,verifyStatus,postCmd,warningFlag
+	new segmentCmd,regionCmd,segmentTcmd,regionTcmd,cmdHeader,cmdExit,cmdQuit,cmd
+	new gldPath,gldFilename,cpCmd,autoDbFlag
+	;
+	; init main vars
+	set NL=$char(10)
+	set (segmentCmd,regionCmd,segmentTcmd,regionTcmd,cmd)=""
+	set (autoDbFlag,warningFlag)=0
+	;
+	; create backup of the .gld file
+	set gldPath=$zparse($zgbldir,"DIRECTORY")
+	set gldFilename=$zparse($zgbldir,"NAME")_".bak"
+	set cpCmd="cp "_$zgbldir_" "_gldPath_"/"_gldFilename
+	set ret=$$runShell^%ydbguiUtils(cpCmd,.shellResult)
+	do:ret<0 
+	. set res("result")="WARNING"
+	. set warningFlag=warningFlag+1
+	. set res("error",warningFlag,"description")="Couldn't create the backup file. Error: "_ret
+	. merge res("error",warningFlag,"dump")=shellResult
+	;
+	; create command header and terminators
+	set cmdHeader="$ydb_dist/yottadb -r GDE"
+	set cmdExit=" exit"_NL
+	set cmdQuit=" quit"_NL
+	;	
+	; create templates commands if needed
+	if body("templates","updateTemplateDb")="true",$data(body("segmentData")) set segmentTcmd=$$buildSegmentCommand(.body)
+	if (body("templates","updateTemplateDb")="true")&($data(body("dbAccess","region")))!(body("templates","updateTemplateJournal")="true"&($data(body("dbAccess","journal")))) set regionTcmd=$$buildRegionCommand(.body,.autoDbFlag)
+	; 
+	; create now the commands for the region
+	if (body("templates","updateTemplateDb")="false"&($data(body("segmentData"))))!(body("segmentTypeBg")="false") set segmentCmd=$$buildSegmentCommand(.body)
+	if (body("templates","updateTemplateDb")="false"&($data(body("dbAccess","region"))))!(body("templates","updateTemplateJournal")="false"&($data(body("dbAccess","journal")))) set regionCmd=$$buildRegionCommand(.body,.autoDbFlag)
+	;	
+	; if any template update... update them first ;
+	if segmentTcmd'=""!(regionTcmd'="") do  goto:$data(verifyStatus)>9 createQuit
+	. set:segmentTcmd'="" segmentTcmd="TEMPLATE -SEGMENT "_segmentTcmd,cmd=cmd_segmentTcmd_NL
+	. set:regionTcmd'="" regionTcmd="TEMPLATE -REGION "_regionTcmd,cmd=cmd_regionTcmd_NL
+	. ;
+	. ; temp debug line
+	. s res("templateCmd")=cmd
+	. ;finalize command
+	. if $get(body("debugMode")) set cmd=cmd_"VERIFY"_NL_cmdQuit_NL ;this will verify and exit without saving: 
+	. else  set cmd=cmd_NL_cmdExit_NL
+	. ;
+	. ; execute the shell
+	. set (cnt,verifyStatus)=0
+	. kill shellResult
+	. set ret=$$runIntShell^%ydbguiUtils(cmdHeader,cmd,.shellResult)
+	. ; and parse the result
+	. set ix="" for  set ix=$order(shellResult(ix)) quit:ix=""!(verifyStatus=1)  do
+	. . quit:ix<4
+	. . if shellResult(ix)="%GDE-I-VERIFY, Verification OK" set verifyStatus=1 quit
+	. . if shellResult(ix)'="",shellResult(ix)'="GDE> " set cnt=cnt+1,verifyStatus(cnt)=shellResult(ix)
+	. ;
+	. if $data(verifyStatus)>9 do
+	. . set res("result")="ERROR"
+	. . set res("error","description")="Error updating templates"
+	. . zkill verifyStatus
+	. . merge res("error","dump")=verifyStatus
+	;
+	set cmd=""
+	; segment creation params
+	set cmd=cmd_"ADD -SEGMENT "_body("regionName")_" -file_name="""_body("segmentFilename")_""" "_segmentCmd_NL
+	;
+	; process journal params
+	do:body("journalEnabled")="true"
+	. ; if the string already had a -j=() section, append it, otherwise create a new one
+	. if $extract(regionCmd,$length(regionCmd))=")" set regionCmd=$extract(regionCmd,1,$length(regionCmd)-1)_",FILE_NAME="""_body("journalFilename")_""")"
+	. else  set regionCmd=regionCmd_" -JOURNAL=(FILE_NAME="""_body("journalFilename")_""")"
+	;	
+	; region creation params
+	set cmd=cmd_"ADD -REGION "_body("regionName")_" -DYNAMIC="_body("regionName")_" "_regionCmd_NL
+	;	
+	;names
+	set ix="" for  set ix=$order(body("names",ix)) quit:ix=""  do
+	. set cmd=cmd_"ADD -NAME "_body("names",ix,"value")_" -REGION="_body("regionName")_NL
+	;
+	;finalize command
+	if $get(body("debugMode")) set cmd=cmd_"VERIFY"_NL_cmdQuit_NL ;this will verify and exit without saving: 
+	else  set cmd=cmd_NL_cmdExit_NL
+	;
+	; temp debug line
+	s res("cmd")=cmd
+	;
+	; execute it
+	set (cnt,verifyStatus)=0
+	kill shellResult
+	set ret=$$runIntShell^%ydbguiUtils(cmdHeader,cmd,.shellResult)
+	; and parse the result
+	set ix="" for  set ix=$order(shellResult(ix)) quit:ix=""!(verifyStatus=1)  do
+	. quit:ix<4
+	. if shellResult(ix)="%GDE-I-VERIFY, Verification OK" set verifyStatus=1 quit
+	. if shellResult(ix)'="",shellResult(ix)'="GDE> " set cnt=cnt+1,verifyStatus(cnt)=shellResult(ix)
+	;
+	; Check for errors
+	if $data(verifyStatus)<9 do
+	. ; perform post-creation operations
+	. do:body("postProcessing","createDbFile")="true"&(autoDbFlag=0)
+	. . set postCmd="$ydb_dist/mupip CREATE -REGION="_body("regionName")
+	. . kill shellResult
+	. . set ret=$$runShell^%ydbguiUtils(postCmd,.shellResult)
+	. . do:ret<0 
+	. . . set res("result")="WARNING"
+	. . . set warningFlag=warningFlag+1
+	. . . set res("error",warningFlag,"description")="Couldn't create database file. Error: "_ret
+	. . . merge res("error",warningFlag,"dump")=shellResult
+	. ;
+	. do:body("journalEnabled")="true"
+	. . set postCmd="$ydb_dist/mupip SET -JOURNAL=""ENABLE"
+	. . set postCmd=postCmd_","_$select(body("postProcessing","switchJournalOn")="true":"ON",1:"OFF")
+	. . set postCmd=postCmd_""" -REGION "_body("regionName")
+	. . kill shellResult
+	. . set ret=$$runShell^%ydbguiUtils(postCmd,.shellResult)
+	. . do:ret<0 
+	. . . set res("result")="WARNING"
+	. . . set warningFlag=warningFlag+1
+	. . . set res("error",warningFlag,"description")="Couldn't turn journal on. Error: "_ret
+	. . . merge res("error",warningFlag,"dump")=shellResult
+	. ;
+	. ; Retun OK
+	. set:warningFlag=0 res("result")="OK"
+	. ;
+	else  do
+	. ; return error !!!
+	. set res("result")="ERROR"
+	. set res("error","description")="Error creating region"
+	. zkill verifyStatus
+	. merge res("error","dump")=verifyStatus
+	;
+createQuit	
+	quit *res
+	;
+	;
 ; ------------------------------------------------------------------------------
 ; LOCAL ROUTINES
 ; ------------------------------------------------------------------------------
 ;
+buildSegmentCommand:(body) ; Builds a command to update the segment
+	new ix,field,cmd
+	;
+	set cmd=""
+	;
+	; Segment type
+	set cmd=cmd_"-ACCESS_METHOD="_$select(body("segmentTypeBg")="true":"BG",1:"MM")
+	;
+	; Params from array
+	set ix="" for  set ix=$order(body("segmentData",ix)) quit:ix=""  do
+	. set field=body("segmentData",ix,"id")
+	. set:field="initialAllocation" cmd=cmd_" -ALLOCATION="_body("segmentData",ix,"value")
+	. set:field="asyncIo" cmd=cmd_" -"_$select(body("segmentData",ix,"value")=0:"NO",1:"")_"ASYNCIO"
+	. set:field="blockSize" cmd=cmd_" -BLOCK_SIZE="_body("segmentData",ix,"value")
+	. set:field="deferAllocate" cmd=cmd_" -"_$select(body("segmentData",ix,"value")=0:"NO",1:"")_"DEFER_ALLOCATE"
+	. set:field="extensionCount" cmd=cmd_" -EXTENSION_COUNT="_body("segmentData",ix,"value")
+	. set:field="globalBufferCount" cmd=cmd_" -GLOBAL_BUFFER_COUNT="_body("segmentData",ix,"value")
+	. set:field="lockSpace" cmd=cmd_" -LOCK_SPACE="_body("segmentData",ix,"value")
+	. set:field="mutexSlots" cmd=cmd_" -MUTEX_SLOTS="_body("segmentData",ix,"value")
+	. set:field="reservedBytes" cmd=cmd_" -RESERVED_BYTES="_body("segmentData",ix,"value")
+	. set:field="encryptionFlag" cmd=cmd_" -"_$select(body("segmentData",ix,"value")=0:"NO",1:"")_"ENCRYPTION"
+	;
+	quit cmd
+	;
+	;
+buildRegionCommand:(body,autoDbFlag) ; Builds a command to update the region
+	new ix,field,cmd,appendString
+		;
+	set cmd=""
+	;
+	do:$data(body("dbAccess","region"))
+	. set ix="" for  set ix=$order(body("dbAccess","region",ix)) quit:ix=""  do
+	. . set field=body("dbAccess","region",ix,"id")
+	. . set:field="autoDb" cmd=cmd_" -"_$select(body("dbAccess","region",ix,"value")=0:"NO",1:"")_"AUTODB",autoDbFlag=body("dbAccess","region",ix,"value")
+	. . set:field="recordSize" cmd=cmd_" -RECORD_SIZE="_body("dbAccess","region",ix,"value")
+	. . set:field="keySize" cmd=cmd_" -KEY_SIZE="_body("dbAccess","region",ix,"value")
+	. . set:field="nullSubscripts" cmd=cmd_" -NULL_SUBSCRIPTS="_$select(body("dbAccess","region",ix,"value")=0:"ALWAYS",body("dbAccess","region",ix,"value")=1:"NEVER",1:"EXISTING")
+	. . set:field="collation" cmd=cmd_" -COLLATION_DEFAULT="_body("dbAccess","region",ix,"value")
+	. . set:field="lockCriticalSeparate" cmd=cmd_" -"_$select(body("dbAccess","region",ix,"value")=0:"NO",1:"")_"LOCK_CRIT_SEPARATE"
+	. . set:field="qbRundown" cmd=cmd_" -"_$select(body("dbAccess","region",ix,"value")=0:"NO",1:"")_"QDBRUNDOWN"
+	. . set:field="stats" cmd=cmd_" -"_$select(body("dbAccess","region",ix,"value")=0:"NO",1:"")_"STATS"
+	;
+	;	
+	do:$data(body("dbAccess","journal"))&(body("journalEnabled")="true")
+	. set cmd=cmd_" -JOURNAL=("
+	. set prefixString=""
+	. set ix="" for  set ix=$order(body("dbAccess","journal",ix)) quit:ix=""  do
+	. . set field=body("dbAccess","journal",ix,"id")
+	. . set:field="beforeImage" cmd=cmd_$select(body("dbAccess","journal",ix,"value")=0:"NO",1:"")_"BEFORE_IMAGE,"
+	. . set:field="allocation" cmd=cmd_"ALLOCATION="_body("dbAccess","journal",ix,"value")_","
+	. . set:field="autoSwitchLimit" cmd=cmd_"AUTOSWITCHLIMIT="_body("dbAccess","journal",ix,"value")_","
+	. . set:field="bufferSize" cmd=cmd_"BUFFER_SIZE="_body("dbAccess","journal",ix,"value")_","
+	. . ;set:field="epochInterval" cmd=cmd_"EPOCH_INTERVAL="_body("dbAccess","journal",ix,"value")_","
+	. . set:field="extension" cmd=cmd_"EXTENSION="_body("dbAccess","journal",ix,"value")_","
+	. . ;set:field="syncIo" cmd=cmd_$select(body("dbAccess","journal",ix,"value")=0:"NO",1:"")_"SYNC_IO,"
+	. . ;set:field="yieldLimit" cmd=cmd_"YIELD_LIMIT="_body("dbAccess","journal",ix,"value")_","
+	. . set:field="epochTaper" prefixString=" -"_$select(body("dbAccess","journal",ix,"value")=0:"NO",1:"")_"EPOCHTAPER "
+	. ;
+	. if $extract(cmd,$length(cmd))="(" set cmd=""
+	. else  set cmd=prefixString_$extract(cmd,1,$length(cmd)-1)_$select($find(cmd,"IMAGE"):")",1:",BEFORE_IMAGE)")
+	;
+	set:body("journalEnabled")="false" cmd=cmd_" -NOJOURNAL"
+	;
+	quit cmd
+	;
+	;
+; ****************************************************************
+; dbnopen:(dbfile)	; Report number of processes accessing a YottaDB database file
+; Return value:
+; Return value:
+; - >=0: file is a database file, number of processes that have it open
+; - <0: errors
+; - -999999: file is a database file that is not open by any processes, but has a shared memory segment
+; - -130 file does not exist or is not a database file
+; - other: other error return codes from processes in PIPE devices
+; ****************************************************************
 dbnopen:(dbfile)	; Report number of processes accessing a YottaDB database file
-	; Return value:
-	; - >=0: file is a database file, number of processes that have it open
-	; - <0: errors
-	;   - -999999: file is a database file that is not open by any processes, but has a shared memory segment
-	;   - -130 file does not exist or is not a database file
-	;   - other: other error return codes from processes in PIPE devices
 	new i,io,line,nproc,shmid
 	;
 	set io=$io
@@ -325,14 +536,15 @@ getLocksDataQuit
 	;
 	;
 parseLockSpaceInfo:(string)
-	set lockData("processesOnQueue")=$extract($piece($piece(string,":",4),";"),2,100)
-	set lockData("slotsInUse")=$extract($piece($piece(string,":",5),";"),2,100)
-	set lockData("slotsBytesInUse")=$extract($piece($piece(string,":",6),";"),2,100)
+	set lockData("processesOnQueue")=$extract($piece($piece(string,":",4),";"),2,999)
+	set lockData("slotsInUse")=$extract($piece($piece(string,":",5),";"),2,999)
+	set lockData("slotsBytesInUse")=$extract($piece($piece(string,":",6),";"),2,999)
 	;
 	quit
 	;
 	;
 parseLockSpaceUse:(string)
-	set lockData("estimatedFreeLockSpace")=$extract($piece(string,":",2),2,100)
+	set lockData("estimatedFreeLockSpace")=$extract($piece(string,":",2),2,999)
 	;
 	quit
+	;

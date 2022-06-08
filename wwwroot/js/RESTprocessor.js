@@ -12,11 +12,66 @@
 
 
 // ********************************
+// Add region
+// ********************************
+app.REST._addRegion = (payload) => {
+    return new Promise(function (resolve, reject) {
+        app.REST.execute('post', 'regions/add', payload, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
+// Validate path
+// ********************************
+app.REST._validatePath = (path) => {
+    return new Promise(function (resolve, reject) {
+        app.REST.execute('post', 'regions/validatePath', {path: path}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
+// Parse namespace
+// ********************************
+app.REST._parseNamespace = (namespace) => {
+    return new Promise(function (resolve, reject) {
+        app.REST.execute('post', 'regions/parseNamespace', {namespace: namespace}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
+// Get templates
+// ********************************
+app.REST._getTemplates = () => {
+    return new Promise(function (resolve, reject) {
+        app.REST.execute('get', 'dashboard/getTemplates', {}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
 // Get dashboard info
 // ********************************
 app.REST._dashboardGetAll = () => {
     return new Promise(function (resolve, reject) {
-
         app.REST.execute('get', 'dashboard/getAll', {}, data => {
             resolve(data)
 
@@ -122,7 +177,7 @@ app.REST.execute = (type, command, DATA = {}, okCallback, errCallback) => {
         url: window.location.origin + '/api/' + command,
         contentType: 'application/json',
         dataType: 'json',
-        data: DATA,
+        data: JSON.stringify(DATA),
         type: type,
         crossDomain: true,
         success: (data) => {

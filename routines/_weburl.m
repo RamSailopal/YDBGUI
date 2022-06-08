@@ -24,4 +24,8 @@ URLMAP ;
 	;;POST api/regions/{region}/createDb createDb^%ydbguiRest
 	;;POST api/regions/{region}/extend extendRegion^%ydbguiRest
 	;;POST api/regions/{region}/journalSwitch journalSwitch^%ydbguiRest
+	;;GET api/dashboard/getTemplates getTemplates^%ydbguiRest
+	;;POST api/regions/parseNamespace parseNamespace^%ydbguiRest
+	;;POST api/regions/validatePath validatePath^%ydbguiRest
+	;;POST api/regions/add addRegion^%ydbguiRest
 	;;zzzzz

@@ -14,6 +14,34 @@
 	quit
 	;
 ; **************************
+; getTemplates
+;
+; RETURNS:
+; *array
+;
+; **************************
+getTemplates()
+	new ERR,gdequiet,gdeweberror,gdewebquit
+	new useio,io,templates
+	;
+	; push GDE variables in the stack
+	set varsRetLabel="getTemplates2"
+	goto pushVars
+	;
+getTemplates2
+	set gdequiet=1
+	set io=$io
+	set useio="io"
+	do setup
+	;
+	merge templates("segment")=tmpseg
+	zkill templates("segment","BG")
+	zkill templates("segment","MM")
+	merge templates("region")=tmpreg
+	;
+	quit *templates
+	;
+; **************************
 ; deleteRegionAll(regionName)
 ;
 ; PARAMS:
@@ -524,10 +552,10 @@ setup
 	; since GDE creates null subscripts, we don't want user level setting of gtm_lvnullsubs to affect us in any way
 	set gdeEntryState("nullsubs")=$view("LVNULLSUBS")
 	view "LVNULLSUBS"
-	set gdeEntryState("zlevel")=$zlengthevel-1
+	set gdeEntryState("zlevel")=$zlevel-1
 	set gdeEntryState("io")=$io
 	set $etrap=$select(debug:"b:$zs'[""%GDE""!allerrs  ",1:"")_"g:(""%GDE%NONAME""[$p($p($zs,"","",3),""-"")) SHOERR^GDE d ABORT^GDE"
-	set io=$io,useio="io",comlevel=0,combase=$zlength,resume(comlevel)=$zlength_":INTERACT"
+	set io=$io,useio="io",comlevel=0,combase=$zlevel,resume(comlevel)=$zlevel_":INTERACT"
 	if $$set^%PATCODE("M")
 	set gdequiet=1
 	; GDEINIT sets up required variables
@@ -796,3 +824,4 @@ pushVars
 	new v533,v534,v542,v550,v5ft1,v600,v621,v631,v63a,ver,x,y,map,map2,mapdisp,s1,s2,l1,j
 	;
 	goto @varsRetLabel
+	;

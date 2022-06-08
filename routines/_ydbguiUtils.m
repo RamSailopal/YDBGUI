@@ -18,14 +18,16 @@
 ; OS
 ; --------------------------------------------
 ; --------------------------------------------
-runShell(command,return)
+runShell(command,return,shell)
+	; The shell parameter is used to use an alternative shell (like bash)
 	new device,counter,string,currentdevice
 	;
+	set shell=$get(shell,"/bin/sh")
 	set counter=0
 	set currentdevice=$io
 	set device="runshellcommmandpipe"_$job
 	;
-	open device:(shell="/bin/sh":command=command:readonly)::"pipe"
+	open device:(shell=shell:command=command:readonly)::"pipe"
 	use device for  quit:$zeof=1  read string:2 set return($increment(counter))=string quit:'$test
 	close device if $get(return(counter))="" kill return(counter)
 	use currentdevice
@@ -42,6 +44,7 @@ runIntShell(command,sendCmd,return)
 	open device:(shell="/bin/sh":command=command)::"pipe"
 	use device for  quit:$zeof=1  read string:.015 set return($increment(counter))=string quit:'$test
 	write sendCmd,!
+	for  quit:$zeof=1  read string:.015 set return($increment(counter))=string quit:'$test
 	close device if $get(return(counter))="" kill return(counter)
 	use currentdevice
 	quit $zclose

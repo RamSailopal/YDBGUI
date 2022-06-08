@@ -39,7 +39,7 @@ window.onload = async () => {
 
     // get YDBGUI version number
     try {
-        $.getJSON('./ydbguiVersion.json', json => {
+        $.getJSON('ydbguiVersion.json', json => {
             app.version = json.version;
 
             // Start
@@ -107,11 +107,20 @@ let app = {
         dashboard: {},
 
         regionView: {},
+        regionAdd: {
+            name: {}
+        },
+        regionNames: {
+            add: {},
+            delete: {}
+        },
+        regionShared: {},
         regionCreateDbFile: {},
         regionSelect: {},
         regionDelete: {},
         regionExtend: {},
         regionJournalSwitch: {},
+        regionFilename: {},
 
         help: {},
         tabs: {},
@@ -122,6 +131,7 @@ let app = {
         storageRegion: {},
         storageWizard: {},
         backupWizard: {},
+
 
         systemInfo: {
             envVars: {}

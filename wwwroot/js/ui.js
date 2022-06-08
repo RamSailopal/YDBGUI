@@ -37,6 +37,15 @@ app.ui.addHandlers = () => {
     // region view
     app.ui.regionView.init();
 
+    //region add
+    app.ui.regionAdd.init();
+    app.ui.regionAdd.name.init();
+    app.ui.regionFilename.init();
+
+
+    // region names
+    app.ui.regionNames.add.init();
+    app.ui.regionNames.delete.init();
     // region select
     app.ui.regionSelect.init();
 
@@ -86,7 +95,7 @@ app.ui.msgbox.show = (msg, title = '', withPromise = false) => {
     }
 
     $('#modalMsgbox').modal({show: true, backdrop: 'static', keyboard: true});
-    if ( withPromise ) {
+    if (withPromise) {
         return new Promise(function (resolve) {
             $('#modalMsgbox').on('hide.bs.modal', () => {
                 resolve()
@@ -113,9 +122,9 @@ app.ui.inputbox.init = () => {
 };
 
 app.ui.inputbox.show = (msg, title, callback, options) => {
-    options = options|| {};
+    options = options || {};
 
-    if ( options.buttons === undefined ){
+    if (options.buttons === undefined) {
         options.buttons = {
             left: 'Yes',
             right: 'No'
@@ -202,14 +211,173 @@ app.ui.formatThousands = x => {
     return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 };
 
-app.ui.getKeyValue = (array, key) =>{
-    if ( Array.isArray(array) ) {
+app.ui.getKeyValue = (array, key) => {
+    if (Array.isArray(array)) {
         const flag = array.find(el => {
             return !(el[key] === undefined)
         });
 
-        if ( flag !== undefined ) {
+        if (flag !== undefined) {
             return flag[key]
         } else return ''
     } else return ''
+};
+
+app.ui.countChar = (string, char) => {
+    const regex = new RegExp('[^' + char + ']', 'g');
+
+    return string.replace(regex, '').length;
+};
+
+app.ui.nthIndex = (string, pattern, n) => {
+    let L = string.length, i = -1;
+
+    while (n-- && i++ < L) {
+        i = string.indexOf(pattern, i);
+        if (i < 0) break;
+    }
+    return i;
+};
+
+// This code is currently not used, but it will be needed for the Global Viewer
+app.ui.validateNamespace = () => {
+
+    // **************************
+    // Local routines
+    // **************************
+    // This returns the token type: 0 error 1: numeric 2: string
+    const parseToken = tokens => {
+
+
+    };
+
+    const parseSubscript = subscript => {
+        // is it a range ?
+        const colonCount = app.ui.countChar(subscript, ':');
+        if (colonCount === 1) {
+            // get the tokens
+            const tokens = subscript.split(':');
+            // and parse them
+            tokens.forEach(token => {
+                const tokenType = parseToken(token);
+                console.log('token type: ' + tokenType)
+
+            });
+
+
+        } else if (colonCount === 0) {
+            // No range, parse as single token
+            const result = parseToken(subscript);
+            console.log('token parse: ' + result)
+
+        }
+
+    };
+
+    const computeErrorPosition = (ix, result) => {
+        return -2
+    };
+
+    // **************************
+    // Parser
+    // **************************
+    let name = $('#txtNameAddName').val();
+    let withPercent = false;
+
+    // First determine if the name has a % and if more than 1
+    const percentCount = app.ui.countChar(name, '%');
+    if (percentCount === 1) {
+        // is the first character ?
+        if (name.indexOf('%') !== 0) {
+            // Wrong position, abort
+            return name.indexOf('%')
+
+        } else {
+            withPercent = true
+        }
+    } else if (percentCount > 1) {
+        // Error, return the position of second %
+        return app.ui.nthIndex(name, '%', 2)
+    }
+
+    // Now we check the validity of the global name
+    let global = name.split('(')[0];
+
+    // remove % if present
+    if (withPercent) global = global.substring(1);
+
+    // ensure first char is alpha
+    if (global.substring(0, 1).replace(/[a-z]/gi, '').length > 0) {
+        // error, return first char pos
+        return withPercent ? 1 : 0
+    }
+
+    // ensure the rest of string is alphanumeric or has *
+    if (global.replace(/[a-z0-9*]/gi, '').length > 0) {
+        // error, return 1
+        return 1
+    }
+
+    // and that there is only ONE *
+    const starCount = app.ui.countChar(name, '*');
+    if (starCount > 1) {
+        return app.ui.nthIndex(name, '*', 2)
+
+    } else if (starCount === 1) {
+        // and it is the last char of the global name
+        if (global.indexOf('*') !== (global.length - 1)) {
+            return global.indexOf('*')
+        }
+    }
+
+    // and length <= 31 chars
+    if (global.length > (withPercent ? 30 : 31)) {
+        return 31
+    }
+
+    // name is good, now the subscripts, if present
+    const openParenCount = app.ui.countChar(name, '(');
+
+    if (openParenCount > 1) {
+        //more than one open paren, error
+        return app.ui.nthIndex(name, '(', 2);
+
+    } else if (openParenCount === 1) {
+        // make sure the global name doesn't have a star
+        if (starCount > 0) {
+            return global.indexOf('*')
+        }
+
+        // now look for closing paren
+        const closeParenCount = app.ui.countChar(name, ')');
+
+        if (closeParenCount === 0) {
+            return name.indexOf('(')
+        }
+
+        if (closeParenCount > 1) {
+            //more than one open paren, error
+            return app.ui.nthIndex(name, ')', 2);
+
+        } else if (closeParenCount === 1) {
+            // Make sure it is the last char
+            if (name.indexOf(')') !== (name.length - 1)) {
+                return name.indexOf(')')
+            }
+
+            // time to extract the subscripts
+            const subscripts = name.substring(name.indexOf('(') + 1, name.indexOf(')')).split(',');
+
+            // and validate them
+            subscripts.forEach((subscript, ix) => {
+                const result = parseSubscript(subscript);
+                if (result !== 0) {
+                    return computeErrorPosition(ix, result)
+                }
+            })
+        }
+    }
+
+    return -1
+
 };

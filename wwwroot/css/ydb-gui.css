@@ -534,9 +534,10 @@ input[type=range]::-ms-thumb {
 }
 
 .region-view-detail-table-row {
-    font-size: 13px;
+    font-size: 11px;
     color: var(--ydb-purple)!important;
     height: 20px;
+    text-align: left;
 }
 
 .modal-font {
@@ -606,4 +607,27 @@ input[type=range]::-ms-thumb {
 
 .gauge-color {
     color: #5b3a88 !important
+}
+
+.edit-control {
+    height: 100%;
+    width: 100%;
+}
+
+.table-controls {
+    height: 70%;
+}
+
+.popover-header {
+    font-size: 14px !important;
+    padding: 5px;
+}
+
+.region-filename-button {
+    height: 20px;
+    padding: 1px;
+}
+
+.table-center {
+    margin: 0 auto;
 }

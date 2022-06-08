@@ -1,0 +1,36 @@
+<!-- region add name -->
+<div aria-hidden="true" aria-labelledby="modalLabel" class="modal  fade" id="modalRegionAddName" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header center">
+                <h6 class="modal-title">Add region</h6>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-5">
+                        <label for="txtRegionAddName"> Region name:</label>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control form-control-sm is-invalid" id="txtRegionAddName"
+                               maxlength="16" placeholder=""
+                               style="display: inherit; width: inherit; font-weight: bold; text-transform: uppercase"
+                               type="text">
+                        <small class="form-text " id="hlpRegionAddName" style="font-size: 53%;">
+                            The region name must be between 1 and 31 characters long, having the first char a letter and
+                            the other chars alphanumeric
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer center">
+                <button class="btn btn-outline-info" id="btnRegionAddNameNext" tabindex="10" type="button">Proceed
+                </button>
+                <button class="btn btn-outline-secondary" data-dismiss="modal" tabindex="-1" type="button">Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

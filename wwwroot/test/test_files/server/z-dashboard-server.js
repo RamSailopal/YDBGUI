@@ -12,16 +12,14 @@
 #################################################################
 */
 
-const libs = require('../libs');
+const libs = require('../../libs');
 const {expect} = require("chai");
 const {execSync, exec} = require('child_process');
-const http = require('http');
-const fetch = require("node-fetch");
 
 describe("SERVER: Endpoints verification", async () => {
     it("Test # 1000: dashboard/getAll", async () => {
         // execute the call
-        const res = await _REST('dashboard/getAll').catch(() => {});
+        const res = await libs._REST('dashboard/getAll').catch(() => {});
 
         // Check if it is an object
         const isObject = typeof res === 'object';
@@ -246,7 +244,7 @@ describe("SERVER: Endpoints verification", async () => {
     it("Test # 1001: dashboard/regions/DEFAULT/get", async () => {
 
         // execute the call
-        const res = await _REST('regions/DEFAULT/').catch(() => {});
+        const res = await libs._REST('regions/DEFAULT/').catch(() => {});
 
         // Check if it is an object
         const isObject = typeof res === 'object';
@@ -275,7 +273,7 @@ describe("SERVER: GLD ERRORS", async () => {
         let shellRes = execSync('. /opt/yottadb/current/ydb_env_set && mv $ydb_gbldir /tmp/oldGld.gld').toString();
 
         // execute the call
-        const res = await _REST('dashboard/getAll').catch(() => {});
+        const res = await libs._REST('dashboard/getAll').catch(() => {});
         const isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
@@ -288,7 +286,7 @@ describe("SERVER: REGION", async () => {
     it("Test # 1120: Rename the default.dat file to make it appear missing", async () => {
 
         // execute the call to get the filename
-        let res = await _REST('dashboard/getAll').catch(() => {});
+        let res = await libs._REST('dashboard/getAll').catch(() => {});
         let isObject = typeof res === 'object';
         expect(isObject).to.be.true;
         const filename = res.data.regions.DEFAULT.dbFile.flags.file;
@@ -298,7 +296,7 @@ describe("SERVER: REGION", async () => {
         let shellRes = execSync('. /opt/yottadb/current/ydb_env_set && mv ' + filename + ' /tmp/default.old ').toString();
 
         // execute the call
-        res = await _REST('dashboard/getAll').catch(() => {});
+        res = await libs._REST('dashboard/getAll').catch(() => {});
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
@@ -308,7 +306,7 @@ describe("SERVER: REGION", async () => {
 
     it("Test # 1121: Check # of sessions by increasing it with a timed session accessing a global", async () => {
         // execute the call to get the filename
-        let res = await _REST('dashboard/getAll').catch(() => {});
+        let res = await libs._REST('dashboard/getAll').catch(() => {});
         let isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
@@ -320,7 +318,7 @@ describe("SERVER: REGION", async () => {
         await libs.delay(100);
 
         // execute the call
-        res = await _REST('dashboard/getAll').catch(() => {});
+        res = await libs._REST('dashboard/getAll').catch(() => {});
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
@@ -337,7 +335,7 @@ describe("SERVER: JOURNAL", async () => {
         execSync('. /opt/yottadb/current/ydb_env_set && mupip set -journal=off -region "DEFAULT"', {stdio: 'ignore'});
 
         // execute the call
-        res = await _REST('dashboard/getAll').catch(() => {});
+        res = await libs._REST('dashboard/getAll').catch(() => {});
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
@@ -358,7 +356,7 @@ describe("SERVER: JOURNAL", async () => {
         execSync('. /opt/yottadb/current/ydb_env_set && mupip set -journal=on,enable -region "YDBAIM"', {stdio: 'ignore'});
 
         // execute the call
-        res = await _REST('dashboard/getAll').catch(() => {});
+        res = await libs._REST('dashboard/getAll').catch(() => {});
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
@@ -374,7 +372,7 @@ describe("SERVER: JOURNAL", async () => {
         execSync('. /opt/yottadb/current/ydb_env_set && mupip set -journal=disable -region "DEFAULT"', {stdio: 'ignore'});
 
         // execute the call
-        res = await _REST('dashboard/getAll').catch(() => {});
+        res = await libs._REST('dashboard/getAll').catch(() => {});
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
@@ -392,7 +390,7 @@ describe("SERVER: REPLICATION", async () => {
         execSync('. /opt/yottadb/current/ydb_env_set && mupip set -replication=on -region "DEFAULT"', {stdio: 'ignore'});
 
         // execute the call
-        res = await _REST('dashboard/getAll').catch(() => {});
+        res = await libs._REST('dashboard/getAll').catch(() => {});
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
@@ -411,7 +409,7 @@ describe("SERVER: MAPS", async () => {
         execSync('. /opt/yottadb/current/ydb_env_set && yottadb -r GDE  <<< \'add -name TEST -r=YDBAIM\'', {shell: '/bin/bash', stdio: 'ignore'});
 
         // execute the call
-        res = await _REST('dashboard/getAll').catch(() => {});
+        res = await libs._REST('dashboard/getAll').catch(() => {});
 
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
@@ -432,7 +430,7 @@ describe("SERVER: LOCKS", async () => {
         await libs.delay(100);
 
         // execute the call
-        res = await _REST('dashboard/getAll').catch(() => {});
+        res = await libs._REST('dashboard/getAll').catch(() => {});
 
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
@@ -447,7 +445,7 @@ describe("SERVER: LOCKS", async () => {
         await libs.delay(100);
 
         // execute the call
-        res = await _REST('dashboard/getAll').catch(() => {});
+        res = await libs._REST('dashboard/getAll').catch(() => {});
 
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
@@ -462,7 +460,7 @@ describe("SERVER: LOCKS", async () => {
         await libs.delay(100);
 
         // execute the call
-        res = await _REST('dashboard/getAll').catch(() => {});
+        res = await libs._REST('dashboard/getAll').catch(() => {});
 
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
@@ -471,109 +469,3 @@ describe("SERVER: LOCKS", async () => {
     });
 });
 
-describe("SERVER: GDE functions", async () => {
-    it("Test # 1240: Extend db", async () => {
-
-        // execute the call and read the size
-        let res = await _REST('dashboard/getAll').catch(() => {});
-        const oldValue = res.data.regions.DEFAULT.dbFile.usage.totalBlocks
-
-        // extend the region
-        await _RESTpost('regions/DEFAULT/extend?blocks=100').catch((err) => {console.log(err)});
-
-        // execute the call again and read the size again
-        res = await _REST('dashboard/getAll').catch(() => {});
-        const newValue = res.data.regions.DEFAULT.dbFile.usage.totalBlocks
-
-        // and compare them
-        expect(newValue > oldValue).to.be.true;
-    });
-
-    it("Test # 1241: Turn journal OFF", async () => {
-
-        // extend the region
-        let res = await _RESTpost('regions/DEFAULT/journalSwitch?turn=off').catch(() => {});
-
-        // execute the call again and read the size again
-        res = await _REST('dashboard/getAll').catch(() => {});
-
-        // and compare them
-        expect(res.data.regions.DEFAULT.journal.flags.state === 1).to.be.true;
-    });
-
-    it("Test # 1242: Turn journal ON", async () => {
-
-        // extend the region
-        let res = await _RESTpost('regions/DEFAULT/journalSwitch?turn=on').catch(() => {});
-
-        // execute the call again and read the size again
-        res = await _REST('dashboard/getAll').catch(() => {});
-
-        // and compare them
-        expect(res.data.regions.DEFAULT.journal.flags.state === 2).to.be.true;
-    });
-
-    it("Test # 1244: Create DB: existing", async () => {
-
-        // delete the file
-        execSync('. /opt/yottadb/current/ydb_env_set && rm $ydb_dir/$ydb_rel/g/yottadb.dat').toString();
-
-        // execute the call
-        const res = await _RESTpost('regions/DEFAULT/createDb').catch(() => {});
-
-        // and verify the result
-        expect(res.result === 'OK').to.be.true;
-    });
-
-    it("Test # 1245: Create DB: freshly created region", async () => {
-
-        // create a new region with the GDE
-        execSync('. /opt/yottadb/current/ydb_env_set && yottadb -r GDE  <<< \'add -r TEST5 -dyn=TEST5\nadd -s TEST5 -f=/data/test5.dat\nadd -n test5 -r=TEST5\nexit\n\'', {shell: '/bin/bash', stdio: 'ignore'});
-
-        // execute the call again and read the size again
-        let res = await _RESTpost('regions/TEST5/createDb').catch(() => {});
-
-        // and check the result to be OK
-        expect(res.result === 'OK').to.be.true;
-
-        // and verify that the file really exists
-        res = execSync('ls /data/test5.dat').toString().replace('\n', '');
-        expect(res === '/data/test5.dat').to.be.true;
-
-    });
-
-});
-
-const _REST = path => {
-    return new Promise(async function (resolve, reject) {
-        http.get('http://localhost:8089/api/' + path, res => {
-            let data = '';
-
-            res.on('data', chunk => {
-                data += chunk;
-            });
-
-            res.on('end', () => {
-                try {
-                    resolve(JSON.parse(data))
-                } catch (err) {
-                    reject(err)
-                }
-            });
-
-            res.on('error', err => {
-                reject(err)
-            })
-        })
-    });
-};
-
-const _RESTpost = path => {
-    return new Promise(async function (resolve, reject) {
-        fetch('http://localhost:8089/api/' + path,
-            {
-                method: "POST",
-                body: {},
-            }).then(async response => resolve(JSON.parse(await response.text()))).catch(err => reject(err))
-    })
-};

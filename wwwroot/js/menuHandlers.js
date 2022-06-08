@@ -18,6 +18,11 @@ app.ui.menu.init = () => {
     // system info
     $('#menuSystemInfo').on('click', () => app.ui.systemInfo.show());
 
+    // Database administration
+    $('#menuSystemAdministrationRegionAddLi').on('click', () => app.ui.regionAdd.name.show());
+    $('#menuSystemAdministrationRegionAdd').on('click', () => app.ui.regionAdd.name.show());
+
+
     // documentation
     $('#menuDocumentationAdministration').on('click', () => window.open('https://docs.yottadb.com/AdminOpsGuide/index.html', '_blank'));
     $('#menuDocumentationMessages').on('click', () => window.open('https://docs.yottadb.com/MessageRecovery/index.html', '_blank'));

@@ -518,8 +518,6 @@ const testLoadData = () => {
                     }
                 ];
                 break
-
-
             }
             case 390: {
                 mockData.data.regions.DEFAULT.replication.flags.status = 2;
@@ -547,11 +545,64 @@ const testLoadData = () => {
                 setTimeout(() => app.ui.regionJournalSwitch.show('DEFAULT'), 50);
                 break
             }
+            case 490:
+            case 491:
+            case 492:
+            case 493:
+            case 494:
+            case 520:
+            case 522:
+            case 523:
+            case 524: {
+                app.ui.regionAdd.name.region = 'test';
+                setTimeout(() => app.ui.regionAdd.show(), 150);
+                break
+            }
+            case 540:
+            case 541: {
+                app.ui.regionAdd.name.region = 'test';
+                setTimeout(() => {
+                    app.ui.regionAdd.show();
+
+                    setTimeout(() => {
+                        app.ui.regionNames.add.show()
+
+                    }, 150)
+
+                }, 150);
+                break;
+            }
+            case 542: {
+                app.ui.regionAdd.name.region = 'test';
+                setTimeout(() => {
+                    app.ui.regionAdd.show();
+
+                    setTimeout(() => {
+                        $('#navRegionEditorNames').tab('show');
+                        app.ui.regionNames.add.show()
+
+                    }, 150)
+
+                }, 150);
+                break;
+            }
+            case 543: {
+                app.ui.regionAdd.name.region = 'test';
+                setTimeout(() => {
+                    app.ui.regionAdd.show();
+                    setTimeout(() => {
+                        app.ui.regionShared.manifest.names.push({value: 'zzz'});
+                        app.ui.regionShared.manifest.names.push({value: 'aaa'});
+                        $('#navRegionEditorNames').tab('show');
+                        app.ui.regionNames.add.show()
+                    }, 250)
+
+                }, 250);
+            }
         }
 
         return mockData
-    }
-;
+};
 
 let testMock = {
     data: {

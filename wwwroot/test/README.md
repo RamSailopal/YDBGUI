@@ -256,7 +256,38 @@ The Server testing is not using the interface at all and is fully focused on the
 | 451 | Submit the form and answer NO. Expect the dialog to close
 | 452 | Submit the form and answer YES. Expect the dialog to close and an error dialog open with error: file already exists
 
+## ADD REGION dialog
 
+#### Region tab
+
+| Number | Description |
+| :---:| ---      |
+| 490 | Default display should be BG table
+| 491 | Clicking MM it should display the MM table
+| 492 | Click on BG filename and verify dialog is displayed
+| 493 | Click on MM filename and verify dialog is displayed
+| 494 | Click on advanced mode and verify that BG table has more rows
+| 495 | Click on advanced mode and verify that MM table has more rows
+| 496 | Click on advanced mode and verify that right table has more rows
+
+#### Journal tab
+
+| Number | Description |
+| :---:| ---      |
+| 520 | Default should display no journal
+| 521 | Change default journal enabled state and verify that table is displayed on show
+| 522 | Turn the journal on and verify that table is displayed
+| 523 | Click on Journal filename and verify dialog is displayed
+| 524 | Click on advanced mode and verify that journal table has more rows
+
+#### Names tab
+
+| Number | Description |
+| :---:| ---      |
+| 540 | Click on add name button and verify that dialog is displayed
+| 541 | Click on add name button and verify that dialog is displayed and that the name gets added to the table
+| 542 | Add a name, select it, click delete name and verify that it gets deleted
+| 543 | Add multiple names and ensure they got sorted
 
 
 # **SERVER**
@@ -320,3 +351,61 @@ The Server testing is not using the interface at all and is fully focused on the
 | 1244 | Create DB: existing |
 | 1245 | Create DB: freshly created region |
 
+#### Get Templates 
+
+| Number | Description |
+| :---:| ---      |
+| 1260 | Verify that BG segment data is complete, including limits
+| 1261 | Verify that MM segment data is complete, including limits
+| 1262 | Verify that Region data is complete, including limits
+
+#### Verify Namespace 
+
+| Number | Description |
+| :---:| ---      |
+| 1270 | Submit just name
+| 1271 | Submit just name with asterisk
+| 1272 | Submit name and subscript
+| 1273 | Submit name and multiple subscripts
+| 1274 | Submit name and multiple subscripts with ranges
+| 1275 | Submit bad name
+| 1276 | Submit name and only open paren
+| 1277 | Submit name and only close paren
+| 1278 | Submit name and bad subscript (alphanumeric, no quotes)
+| 1279 | Submit name and bad subscript (string, only left quote)
+| 1280 | Submit name and bad subscript (string, only right quote)
+| 1281 | Submit name and left range missing
+| 1282 | Submit name and right range missing
+| 1283 | Submit existing name
+
+#### Verify Filename
+
+| Number | Description |
+| :---:| ---      |
+| 1290 | Submit name with double /
+| 1291 | Submit name with bad env var
+| 1292 | Submit valid name with existing file
+| 1293 | Submit valid name with absolute path
+| 1294 | Submit valid name with relative path
+| 1295 | Submit valid name with env vars and check for proper extension
+
+#### Create Region
+
+| Number | Description |
+| :---:| ---      |
+| 1310 | Create random region with default params and verify creation + file existence
+| 1311 | Create random region with different filename and verify creation + file existence
+| 1312 | Create random region with default params, but no db file creation and verify + no file
+| 1313 | Create random region with default params and journal, turned on
+| 1314 | Create random region with default params and journal, turned off
+| 1315 | Create random region with default params and journal, turned off, with different journal path
+| 1316 | Create random region with Auto Db = on
+| 1317 | Create random region with Access Method = MM
+| 1318 | Create random region with all dbAccess fields different and verify them all
+| 1319 | Create random region with all segment fields (but asyncio) different and verify them all
+| 1320 | Create random region with asyncio =true and blocksize= 8192 and verify them all
+| 1321 | Create random region with journal/ON and default fields
+| 1322 | Create random region with journal/OFF and default fields
+| 1323 | Create random region with all journal fields different and verify them all
+| 1324 | Create random region with all segment field different, store them on template, create a new region and verify
+| 1325 | Create random region with all journal field different, store them on template, create a new region and verify

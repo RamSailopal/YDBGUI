@@ -72,7 +72,7 @@ app.ui.regionDelete.confirmAgain = () => {
                 $('#modalExtend').modal('hide');
 
                 if (res.result === 'OK') {
-                    // app.ui.msgbox.show('The database has been deleted', 'SUCCESS');
+                    app.ui.msgbox.show('The database has been deleted', 'SUCCESS');
 
                     app.ui.RegionUtilsRefresh()
 
@@ -242,8 +242,6 @@ app.ui.regionExtend.okPressed = () => {
                     $('#modalExtend').modal('hide');
 
                     if (res.result === 'OK') {
-                        // app.ui.msgbox.show('The database has been extended', 'SUCCESS');
-
                         app.ui.RegionUtilsRefresh()
 
                     } else {
@@ -309,8 +307,6 @@ app.ui.regionCreateDbFile.okPressed = () => {
                     $('#modalRegionCreateDbFile').modal('hide');
 
                     if (res.result === 'OK') {
-                        // app.ui.msgbox.show('The database has been created', 'SUCCESS');
-
                         app.ui.RegionUtilsRefresh()
 
                     } else {
@@ -342,8 +338,6 @@ app.ui.regionJournalSwitch.show = (regionName) => {
                     $('#modalExtend').modal('hide');
 
                     if (res.result === 'OK') {
-                        // app.ui.msgbox.show('The journal has been turned ' + mode, 'SUCCESS');
-
                         app.ui.RegionUtilsRefresh()
 
                     } else {

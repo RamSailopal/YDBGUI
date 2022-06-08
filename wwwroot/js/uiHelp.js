@@ -132,7 +132,7 @@ app.ui.help.init = () => {
         KEY_SIZE: { // "sgmnt_data.max_key_size"
             caption: 'Key size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#k-ey-size-size-in-bytes',
-            format: 'bytes',
+            format: 'thousands',
             unit: 'bytes'
         },
         COLLATION_DEFAULT: { // "sgmnt_data.def_coll" - defer to Advanced
@@ -336,7 +336,7 @@ app.ui.help.init = () => {
             class: 'align-right'
         },
 
-        // Critical Section Aquisition
+        // Critical Section Acquisition
         'sgmnt_data.gvstats_rec.n_crit_success': {
             caption: 'Total Acquisitions successes',
             format: 'thousands',

@@ -1,0 +1,46 @@
+<!-- region filename -->
+<div aria-hidden="true" aria-labelledby="modalLabel" class="modal  fade" id="modalRegionFilename" role="dialog"
+     style="z-index: 2000" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header center">
+                <h6 class="modal-title" id="lblRegionFilenameTitle"></h6>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-3">
+                        <label for="txtRegionFilenameFile">Filename:</label>
+                    </div>
+                    <div class="col-9">
+                        <div class="input-group">
+                            <input class="form-control form-control-sm" id="txtRegionFilenameFile" maxlength="255"
+                                   type="text">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary btn-sm" id="btnRegionFilenameValidate"
+                                        type="button">Validate...
+                                </button>
+                            </div>
+                            <small class="form-text " id="hlpRegionAddName" style="font-size: 53%;">
+                                The path can contain env vars. The validation will expand them for you automatically to
+                                test them
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="display: -webkit-inline-box;">
+                <span style="padding-right: 15px;"><input id="chkRegionAddAFilenameOverride" type="checkbox">
+                    <label for="chkRegionAddAFilenameOverride" style="padding-left: 5px;"> Override validation</label>
+                </span>
+                <span class="center">
+                    <button class="btn btn-outline-info disabled" disabled id="btnRegionFilenameOk" tabindex="10" type="button">Ok
+                    </button>
+                    <button class="btn btn-outline-secondary" data-dismiss="modal" tabindex="-1" type="button">Cancel
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,7 +12,7 @@
 #################################################################
 */
 
-const libs = require('../libs');
+const libs = require('../../libs');
 const {expect} = require("chai");
 
 describe("CLIENT: Dashboard: gld file", async () => {
@@ -31,7 +31,6 @@ describe("CLIENT: Dashboard: gld file", async () => {
         // and text is correct
         const modal = await page.$('#txtMsgboxText');
         const text = await page.evaluate(el => el.textContent, modal);
-        console.log(text)
         expect(text).to.have.string('The .gld file doesn\'t exists')
     });
 });

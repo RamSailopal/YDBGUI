@@ -32,7 +32,7 @@ getDashboard(resJson,params)
 	;
 	; get system info
 	set res("data","systemInfo","zroutines")=$zroutines
-	set res("data","systemInfo","gld")=$zgld
+	set res("data","systemInfo","gld")=$zgbldir
 	set res("data","systemInfo","chset")=$zchset
 	;
 	; get env vars
@@ -57,7 +57,7 @@ getDashboard(resJson,params)
 	;
 	; check gld file existance
 	set res=$zsearch(-1)
-	set res("data","gld","exist")=$select($zsearch($zgld)="":"false",1:"true")
+	set res("data","gld","exist")=$select($zsearch($zgbldir)="":"false",1:"true")
 	if res("data","gld","exist")="false" goto getDashboardQuit
 	;
 	; enumerate regions
@@ -157,9 +157,9 @@ getRegion(resJson,arguments)
 ; resJson			array byRef
 ; ****************************************************************
 deleteRegion(resJson,arguments)
-	;	
+	;
 	s resJson="{""result"":""OK""}"
-	;	
+	;
 	quit ""
 	;
 	;
@@ -197,7 +197,7 @@ extendRegion(arguments,body,resJson)
 	. set res("result")="ERR"
 	. set res("error","description")=$select($get(shellData(1))="":"unknown",1:shellData(1))
 	;
-extendRegionQuit	
+extendRegionQuit
 	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
 	if $data(jsonErr) do  quit
 	. ; FATAL, can not convert json
@@ -234,13 +234,13 @@ journalSwitch(arguments,body,resJson)
 	. set res("result")="ERR"
 	. set res("error","description")="The shell returned the following error: "_ret
 	;
-	if $find($get(shellData(1)),"%YDB-I-JNLSTATE")!($find($get(shellData(4)),"%YDB-I-JNLSTATE")) do
+	if $find($get(shellData(1)),"%YDB-I-JNLSTATE")!($find($get(shellData(4)),"%YDB-I-JNLSTATE"))!($find($get(shellData(1)),"%YDB-I-JNLCREATE")) do
 	. set res("result")="OK"
 	else  do
 	. set res("result")="ERR"
 	. set res("error","description")=$select($get(shellData(1))="":"unknown",1:shellData(1))
 	;
-journalSwitchQuit	
+journalSwitchQuit
 	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
 	if $data(jsonErr) do  quit
 	. ; FATAL, can not convert json
@@ -282,10 +282,211 @@ createDb(arguments,body,resJson)
 	. set res("result")="ERR"
 	. set res("error","description")=$select($get(shellData(1))="":"unknown",1:shellData(1))
 	;
-createDbQuit	
+createDbQuit
 	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
 	if $data(jsonErr) do  quit
 	. ; FATAL, can not convert json
 	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
 	;
 	quit ""
+	;
+	;
+; ****************************************************************
+; getTemplates(resJson,arguments)
+;
+; PARAMS:
+; resJson			array byRef
+; arguments			array byRef
+; ****************************************************************
+getTemplates(resJson,arguments)
+	new res,jsonErr,templates,key,value,type
+	;
+	; get templates
+	set *templates=$$getTemplates^%ydbguiGde()
+	;
+	; get limits
+	do ^GDEINIT
+	;
+	; map everything
+	set key="" for  set key=$order(templates("region",key)) quit:key=""  do
+	. quit:key="FILE_NAME"
+	. set value=templates("region",key)
+	. kill templates("region",key)
+	. set templates("region",key,"value")=value
+	. set templates("region",key,"min")=minreg(key)
+	. set templates("region",key,"max")=maxreg(key)
+	;	
+	for type="BG","MM" do
+	. set key="" for  set key=$order(templates("segment",type,key)) quit:key=""  do
+	. . set value=templates("segment",type,key)
+	. . kill templates("segment",type,key)
+	. . set templates("segment",type,key,"value")=value
+	. . set templates("segment",type,key,"min")=$g(minseg(type,key))
+	. . set templates("segment",type,key,"max")=$g(maxseg(type,key))
+	;	
+	merge res("data")=templates
+	set res("result")="OK"
+	;
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit
+	;
+	;
+; ****************************************************************
+; parseNamespace(arguments,body,resJson)
+;
+; PARAMS:
+; arguments			array byRef
+; body				array byRef
+; resJson			array byRef
+; ****************************************************************
+parseNamespace(arguments,bodyJson,resJson)
+	new jsonErr,body,gdeCommand,shellResult,map,regions,region,res,cnt
+	;
+	; get region list to ensure we have a valid name
+	do enumRegions^%ydbguiGde(.regions)
+	;
+	; and extract the first name
+	set region=$order(regions(""))
+	;
+	; get the namespace
+	do decode^%webjson($name(bodyJson),$name(body),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the body to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	; check params
+	if $get(body("namespace"))="" do  goto parseNamespaceQuit
+	. set res("result")="ERROR"
+	. set result("error","description")="The body parameter: 'namespace' is missing or empty"
+	;
+	; escape the quotes for the shell
+	set map("""")="\"""
+	set body("namespace")=$$^%MPIECE(body("namespace"),"""","\""")
+	; and execute the GDE
+	set gdeCommand="$ydb_dist/yottadb -r GDE  <<< "
+	set gdeCommand=gdeCommand_"""add -name "_body("namespace")_" -r="_region_$char(10)_"quit"_$char(10)_""""
+	set ret=$$runShell^%ydbguiUtils(gdeCommand,.shellResult,"/bin/bash")
+	if ret<0 do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Error: "_ret_" while parsing the namespace."_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	set res("result")="OK"
+	set res("data","parseResult")=$get(shellResult(7))
+	set:res("data","parseResult")="GDE> " res("data","parseResult")="OK"
+	;
+parseNamespaceQuit	
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""
+	;
+; ****************************************************************
+; validatePath(arguments,body,resJson)
+;
+; PARAMS:
+; arguments			array byRef
+; body				array byRef
+; resJson			array byRef
+; ****************************************************************
+validatePath(arguments,bodyJson,resJson)
+	new jsonErr,body,res,dir,ret,shellResult,command
+	new dirRights
+	;
+	; get the full path
+	do decode^%webjson($name(bodyJson),$name(body),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the body to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	; check params
+	if $get(body("path"))="" do  goto validatePathQuit
+	. set res("result")="ERROR"
+	. set result("error","description")="The body parameter: 'path' is missing or empty"
+	;
+	; check if file exists first
+	set ret=$zsearch(body("path"))
+	if ret'="" do  goto validatePathQuit
+	. ; error
+	. set res("result")="ERROR"
+	. set res("error","description")="File aready exists..."
+	;
+	set dir=$zparse(body("path"),"directory")
+	; check permissions 
+	set ret=$$tryCreateFile(dir)
+	if ret=0 do  goto validatePathQuit
+	. ; error
+	. set res("result")="ERROR"
+	. set res("error","description")="Couldn't access the path..."
+	;
+	set res("data","validation")=$zsearch(dir)
+	set res("data","fileExist")=$zsearch(body("path"))
+	;
+	set res("result")="OK"
+	;
+validatePathQuit
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""
+	;
+	;
+; ****************************************************************
+; addRegion(arguments,body,resJson)
+;
+; PARAMS:
+; arguments			array byRef
+; body				array byRef
+; resJson			array byRef
+; ****************************************************************
+addRegion(arguments,bodyJson,resJson)
+	new res,body,jsonErr
+	; decode the body
+	do decode^%webjson($name(bodyJson),$name(body),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the body to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	; Perform the creation
+	set *res=$$create^%ydbguiRegions(.body)
+	;	
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;	
+	quit ""
+	;
+	;
+; ****************************************************************
+; tryCreateFile(filename)
+; ;
+; PARAMS:
+; filename		string
+; RETURNS:
+; >0				OK
+; 0					Could NOT create the file
+; ****************************************************************
+tryCreateFile:(dir)
+	new ret,io,file
+	new $ztrap,$etrap
+	;
+	set ret=0
+	set $ztrap="goto tryCreateFileQuit"	
+	;
+	; Create the file
+	set file=dir_"/~tmp"
+	open file:NEWVERSION
+	close file:DELETE
+	;
+	set ret=1
+	;
+tryCreateFileQuit
+	quit ret

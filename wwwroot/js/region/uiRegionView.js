@@ -143,7 +143,6 @@ app.ui.regionView.refresh = () => {
 
         $('#puRegionViewDbUsage')
             .attr('data-content', devicePopup)
-        //.attr('title','Device usage');
     } else {
         rngRegionViewRegionUsedSpace
             .css('width', '100%')
@@ -463,8 +462,6 @@ app.ui.regionView.refreshBtn = async () => {
     try {
         const regionData = await app.REST._regionGet(app.ui.regionView.currentRegion);
         app.ui.wait.hide();
-        //debug info
-        console.log(regionData.result);
 
         if (regionData.result === 'WARNING') {
             let errors = '';

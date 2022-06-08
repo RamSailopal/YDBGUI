@@ -12,7 +12,7 @@
 #################################################################
 */
 
-const libs = require('../libs');
+const libs = require('../../../libs');
 const {expect} = require("chai");
 
 describe("CLIENT: Region Delete", async () => {

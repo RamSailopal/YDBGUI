@@ -1,0 +1,219 @@
+<div aria-hidden="true" aria-labelledby="modalLabel" class="modal  fade" id="modalRegionAdd" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog modal-width-900" role="document">
+        <div class="modal-content">
+            <div class="modal-header center">
+                <h6 class="modal-title">Add region: <span id="lblRegionAddTitle"></span></h6>
+            </div>
+
+            <div class="modal-body" style="height:435px;">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a aria-selected="true" class="nav-link active ydb-purple-fore" data-toggle="tab"
+                           href="#tabRegionEditorRegionRegion"
+                           id="navRegionEditorRegion" role="tab">Region</a>
+                        <a aria-selected="false" class="nav-link ydb-purple-fore" data-toggle="tab"
+                           href="#tabRegionEditorRegionJournal"
+                           id="navRegionEditorJournal" role="tab">Journal</a>
+                        <a aria-selected="false" class="nav-link ydb-purple-fore" data-toggle="tab"
+                           href="#tabRegionEditorRegionNames"
+                           id="navRegionEditorNames" role="tab">Names</a>
+                        <div id="divRegionAddAdvancedParameters" style="width: 597px; text-align: right;">
+                            <span style="padding-right: 15px;"><input id="chkRegionAddAdvancedMode" type="checkbox">
+                                <label for="chkRegionAddAdvancedMode" style="padding-left: 5px;"> Show Advanced Parameters</label>
+                            </span>
+                        </div>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <!-- REGION -->
+                    <div aria-labelledby="nav-home-tab" class="tab-pane fade show active"
+                         id="tabRegionEditorRegionRegion"
+                         role="tabpanel">
+                        <br>
+
+                        <div id="divRegionEditorRegionTables">
+                            <div class="row-12" style="display: flex">
+                                <div class="col-7">
+                                    <h5 class="ydb-orange-fore" style="padding-bottom: 5px">Database file</h5>
+
+                                    <div style="font-size: 12px; padding-bottom: 8px">
+                                        <span style="padding-right: 90px;">Segment type: </span>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input checked class="custom-control-input" id="regionAddSegmentNameBg"
+                                                   name="regionAddSegmentName" type="radio">
+                                            <label class="custom-control-label" for="regionAddSegmentNameBg">BG</label>
+                                        </div>
+                                        <span style="padding-right: 40px;"></span>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input class="custom-control-input" id="regionAddSegmentNameMm"
+                                                   name="regionAddSegmentName"
+                                                   type="radio">
+                                            <label class="custom-control-label" for="regionAddSegmentNameMm">MM</label>
+                                        </div>
+                                    </div>
+                                    <div id="divRegionAddBg" style="overflow-x: hidden; height: 223px;">
+                                        <table class="table table-sm table-hover ydb-fore2" id="tblRegionAddBg">
+                                            <thead>
+                                            <tr style="font-size: 12px; font-weight: 600;">
+                                                <th scope="col" style="width: 96px;">Param</th>
+                                                <th scope="col" style="width: 235px;">Value</th>
+                                                <th scope="col" style="width: 80px;">Unit</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="divRegionAddMm" style="overflow-x: hidden; height: 223px; display: none;">
+                                        <table class="table table-sm table-hover ydb-fore2" id="tblRegionAddMm">
+                                            <thead>
+                                            <tr style="font-size: 12px; font-weight: 600;">
+                                                <th scope="col" style="width: 96px;">Param</th>
+                                                <th scope="col" style="width: 235px;">Value</th>
+                                                <th scope="col" style="width: 80px;">Unit</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <h5 class="ydb-orange-fore">Database access</h5>
+                                    <div style="overflow-x: hidden; height: 261px;">
+                                        <div style="height: 35px;"></div>
+                                        <table class="table table-sm table-hover ydb-fore2"
+                                               id="tblRegionAddAc">
+                                            <thead>
+                                            <tr style="font-size: 12px; font-weight: 600;">
+                                                <th scope="col" style="width: 245px;">Param</th>
+                                                <th scope="col" style="width: 284px;">Value</th>
+                                                <th scope="col" style="width: 80px;">Unit</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12" style="text-align: center; display: inline;">
+                                    <br>
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" disabled
+                                               id="swcRegionAddUpdateTemplatesRegion"
+                                               type="checkbox">
+                                        <label class="custom-control-label" for="swcRegionAddUpdateTemplatesRegion">Update
+                                            the
+                                            template(s)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JOURNAL -->
+                    <div class="tab-pane fade" id="tabRegionEditorRegionJournal" role="tabpanel">
+                        <div class="row-12">
+                            <div class="row" id="divRegionViewJournalTable">
+                                <div class="col-12" style="text-align: center;">
+                                    <br>
+                                    <div style="font-size: 12px; padding-bottom: 10px">
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input checked class="custom-control-input" id="optRegionAddJournalTypeNo"
+                                                   name="optRegionAddJournalType" type="radio">
+                                            <label class="custom-control-label"
+                                                   for="optRegionAddJournalTypeNo">Disabled</label>
+                                        </div>
+                                        <span style="padding-right: 40px;"></span>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            <input class="custom-control-input" id="optRegionAddJournalTypeYes"
+                                                   name="optRegionAddJournalType"
+                                                   type="radio">
+                                            <label class="custom-control-label"
+                                                   for="optRegionAddJournalTypeYes">Enabled</label>
+                                        </div>
+                                    </div>
+                                    <div id="divRegionAddJournalParams">
+                                        <h5 class="ydb-orange-fore">Parameters</h5>
+                                        <div style="overflow-x: hidden; height: 225px; text-align: -webkit-center">
+                                            <table class="table table-sm table-hover ydb-fore2 table-center"
+                                                   id="tblRegionAddJo"
+                                                   style="width: 576px;">
+                                                <thead>
+                                                <tr style="font-size: 12px; font-weight: 600;">
+                                                    <th scope="col" style="width: 100px; text-align: left;">Param</th>
+                                                    <th scope="col" style="width: 106px; text-align: left;">Value</th>
+                                                    <th scope="col" style="width: 78px; text-align: left;">Unit</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="divRegionAddJournalSpacer" style="display: none; height: 257px;"></div>
+
+                            <div class="row">
+                                <div class="col-12" style="text-align: center">
+                                    <br>
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" disabled
+                                               id="swcRegionAddUpdateTemplatesJournal" type="checkbox">
+                                        <label class="custom-control-label"
+                                               for="swcRegionAddUpdateTemplatesJournal">Update
+                                            the
+                                            template(s)</label>
+                                    </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+
+                    <!-- NAMES -->
+                    <div class="tab-pane fade" id="tabRegionEditorRegionNames" role="tabpanel">
+                        <br>
+                        <div class="row">
+                            <div class="col-9">
+                                <h5 class="ydb-orange-fore">Names</h5>
+                                <div style="overflow-x: hidden; height: 308px;">
+                                    <table class="table table-sm table-hover ydb-fore2" id="tblRegionAddNames"
+                                           style="width: 611px;">
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <br>
+                                <div>
+                                    <button class="btn btn-outline-info  btn-block btn-sm"
+                                            id="btnRegionAddNamesAdd"
+                                            type="button">Add name...
+                                    </button>
+                                    <button class="btn btn-outline-info  btn-block btn-sm disabled"
+                                            disabled
+                                            id="btnRegionAddNamesDelete" type="button">Delete name
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer center">
+                <button class="btn btn-outline-info" id="btnRegionAddOk" tabindex="10" type="button">
+                    Add region
+                </button>
+                <button class="btn btn-outline-secondary" data-dismiss="modal" tabindex="-1" type="button">Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
