@@ -53,37 +53,69 @@ app.ui.dashboard.refresh = async () => {
     const lblDashStatusJournals = $('#lblDashStatusJournals');
     const lblDashStatusReplication = $('#lblDashStatusReplication');
 
-    // **********************
-    //execute REST call
-    // **********************
-    await app.ui.wait.show('Fetching database information...');
-
-    try {
-        const response = await app.REST._dashboardGetAll();
-        if ( response.result === 'WARNING' ) {
-            let errors = '';
-            if ( Array.isArray(response.data.warnings) ) {
-                response.data.warnings.forEach( warning => {
-                    errors += warning + '<br>'
-                });
+    if ( testMode === true )  {
+        // **********************
+        // TEST MODE
+        // **********************
+        try {
+            app.system = await getSystemData();
+            if (app.system.result === 'WARNING') {
+                let errors = '';
+                if (Array.isArray(app.system.data.warnings)) {
+                    app.system.data.warnings.forEach(warning => {
+                        errors += warning + '<br>'
+                    });
+                }
+                app.ui.msgbox.show('The following warnings occurred while fetching the data:<br>' + errors, 'WARNING')
             }
-            app.ui.msgbox.show('The following warnings occurred while fetching the data:<br>' + errors, 'WARNING')
+
+            app.system = app.system.data
+
+        } catch (err) {
+            app.ui.wait.hide();
+            console.log(err);
+            app.ui.dashboard.init();
+
+            $('#menuSystemInfo').addClass('disabled').addClass('default').removeClass('hand');
+            $('#menuSystemAdministration').addClass('disabled').addClass('default').removeClass('hand');
+            $('#menuDevelopment').addClass('disabled').addClass('default').removeClass('hand');
+
+            await app.ui.msgbox.show('An error occurred while fetching the data', 'ERROR', true);
+            return
         }
 
-        app.system = response.data
+    } else {
+        // **********************
+        //execute REST call
+        // **********************
+        await app.ui.wait.show('Fetching database information...');
 
-    } catch (err) {
-        app.ui.wait.hide();
-        //debug info
-        console.log(err);
-        app.ui.dashboard.init();
+        try {
+            const response = await app.REST._dashboardGetAll();
+            if (app.system.result === 'WARNING') {
+                let errors = '';
+                if (Array.isArray(app.system.data.warnings)) {
+                    app.system.data.warnings.forEach(warning => {
+                        errors += warning + '<br>'
+                    });
+                }
+                app.ui.msgbox.show('The following warnings occurred while fetching the data:<br>' + errors, 'WARNING')
+            }
 
-        $('#menuSystemInfo').addClass('disabled').addClass('default').removeClass('hand');
-        $('#menuSystemAdministration').addClass('disabled').addClass('default').removeClass('hand');
-        $('#menuDevelopment').addClass('disabled').addClass('default').removeClass('hand');
+            app.system = response.data
 
-        await app.ui.msgbox.show('An error occurred while fetching the data', 'ERROR', true);
-        return
+        } catch (err) {
+            app.ui.wait.hide();
+            console.log(err);
+            app.ui.dashboard.init();
+
+            $('#menuSystemInfo').addClass('disabled').addClass('default').removeClass('hand');
+            $('#menuSystemAdministration').addClass('disabled').addClass('default').removeClass('hand');
+            $('#menuDevelopment').addClass('disabled').addClass('default').removeClass('hand');
+
+            await app.ui.msgbox.show('An error occurred while fetching the data', 'ERROR', true);
+            return
+        }
     }
 
     //debug info
@@ -140,12 +172,12 @@ app.ui.dashboard.refresh = async () => {
         let row = '' +
             '<tr>' +
             '<td style="text-align: center;">' +
-            '<button class="btn btn-outline-info btn-sm dash-plus-button" onclick="app.ui.regionView.show(\'' + region + '\')" type="button">' +
+            '<button id="btnDashRegionView' + ix + '"" class="btn btn-outline-info btn-sm dash-plus-button" onclick="app.ui.regionView.show(\'' + region + '\')" type="button">' +
             '<i class="bi-zoom-in" ></i>' +
             '</button>' +
             '</td>' +
             '<td>' + region + '</td>' +
-            '<td>' + filename + '</td>';
+            '<td id="txtDashboardRegionTableFilename' + ix + '">' + filename + '</td>';
 
         // Database status
         if (reg.dbFile.flags.fileExist) {
@@ -190,7 +222,7 @@ app.ui.dashboard.refresh = async () => {
         }
         row += '<td class="table-row-pill">' +
             (result.database.popup.visible ? '<a tabindex="-1" role="button" data-toggle="popover" data-trigger="hover" title="ISSUES" data-content="' + result.database.popup.caption + '">' : '') +
-            '<div class="table-pill  ' + result.database.class + (result.database.popup.visible ? ' hand ' : '') + '">' +
+            '<div id="pillDashboardRegionTableDb' + ix + '" class="table-pill  ' + result.database.class + (result.database.popup.visible ? ' hand ' : '') + '">' +
             result.database.caption +
             '</div>' +
             (result.database.popup.visible ? '</a>' : '') +
@@ -337,9 +369,6 @@ app.ui.dashboard.refresh = async () => {
 
         const reg = app.system.regions[region];
 
-        if ( reg.dbFile.flags.fileExist === false ) {
-
-        } else {
             // Database
             if ((reg.dbFile.flags.fileExist === false) || reg.dbFile.flags.fileBad) {
                 status.database.each.push(STATUS_CRITICAL)
@@ -360,7 +389,6 @@ app.ui.dashboard.refresh = async () => {
             if (reg.popup.journaling.popup.visible) {
                 status.popup.journaling += '<strong>' + region + ':&nbsp;</strong>' + reg.popup.journaling.popup.caption + '<br>'
             }
-        }
     });
 
     if ( status.database.each.length === 0 ) status.database.overall = STATUS_HEALTHY;
@@ -400,7 +428,7 @@ app.ui.dashboard.refresh = async () => {
     // **********************
 
     // Clear all panels
-    $('#divDashStorageUnknown').css('display', 'none');
+    $('#divDashStorageDevice0').empty();
 
     // Loop through the devices
     app.system.devices.forEach((device, ix) => {
@@ -419,9 +447,9 @@ app.ui.dashboard.refresh = async () => {
             '<a tabindex="-1" role="button" data-toggle="popover" data-trigger="hover" title="Device info" id="hlpDashStorageUsage' + ix + '">' +
             '<div class="progress">' +
             '<div class="progress-bar ydb-status-green" role="progressbar" id="pgsDashStorageUsage' + ix + '" style="width: 23%; color: white; font-size: 15px;"></div>' +
-            '</div></a></div></div></div>'
+            '</div></a></div></div></div>';
 
-        $('#divDashStorageDevice0').append(chunk)
+        $('#divDashStorageDevice0').append(chunk);
 
         $('#btnDashStorageView' + ix).on('click', () => app.ui.deviceInfo.show(ix));
         // usedBy list

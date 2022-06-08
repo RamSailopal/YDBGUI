@@ -13,8 +13,10 @@
 
 FROM yottadb/yottadb-base:latest-master
 
-#RUN apt-get upgrade
-RUN apt-get update && apt-get install -y unzip wget
+# Extra's to run non-interactive Chrome
+RUN apt-get update && \
+    apt-get install -y nodejs unzip wget npm pkg-config wget binutils libicu-dev libasound2 libnss3-dev libgdk-pixbuf2.0-dev \
+                       libgtk-3-dev libxss-dev libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0
 
 # Get the M Web Server code and copy routines from it.
 RUN mkdir /tmp/mws && \
@@ -25,7 +27,12 @@ RUN mkdir /tmp/mws && \
 	rm -r /tmp/mws
 
 # initialize files
-COPY docker-configuration/docker-startup.sh /YDBGUI/docker-startup.sh
+WORKDIR /YDBGUI
+COPY package.json /YDBGUI/package.json
+# Run npm install to install the test libraries
+RUN npm install
+
+COPY docker-configuration/docker-test.sh /YDBGUI/docker-test.sh
 COPY docker-configuration/dev /YDBGUI/dev
 COPY routines /YDBGUI/routines
 COPY wwwroot  /YDBGUI/wwwroot
@@ -36,14 +43,17 @@ RUN mkdir /YDBGUI/objects
 RUN cd /YDBGUI/objects && \
 	find ../routines/ -name '_*.m' -exec /opt/yottadb/current/yottadb -nowarning {} \;
 
+
+
 EXPOSE 8089
-ENTRYPOINT ["/YDBGUI/docker-startup.sh"]
+
+ENTRYPOINT ["/YDBGUI/docker-test.sh"]
 
 # to build the image
-# docker image build --progress=plain -t ydbgui .
+# docker image build -f Dockerfile_test --progress=plain -t ydbguitest .
 
 # to run the machine
-# docker run -d --name=ydbgui -p 8089:8089 ydbgui
+# docker run -d --name=ydbguitest -p 8089:8089  ydbguitest
 
 # to enter development mode
 # in Linux: docker run -d --name=ydbguitest -p 8089:8089 -v $PWD/wwwroot:/YDBGUI/wwwroot:rw -v $PWD/routines:/YDBGUI/routines:rw ydbguitest

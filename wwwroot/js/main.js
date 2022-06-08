@@ -29,6 +29,14 @@ window.onload = async () => {
     // Init handlers
     app.ui.addHandlers();
 
+    // detect testMode
+    testMode = window.location.search.indexOf('?test=') > -1;
+
+    // Load test file if needed
+    if ( testMode ) {
+        await loadTestScript()
+    }
+
     // Start
     app.ui.dashboard.refresh()
 };
@@ -49,6 +57,16 @@ const loadFiles = async (tag) => {
     });
 
     return $.when.apply(undefined, promises).promise();
+};
+
+const loadTestScript = () => {
+    return new Promise(function (resolve) {
+        $.ajax({
+            url: 'test/mockData.js',
+            dataType: "script",
+            success: resolve,
+        });
+    });
 };
 
 // *******************

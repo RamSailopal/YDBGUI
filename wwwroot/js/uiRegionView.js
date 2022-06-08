@@ -83,7 +83,7 @@ app.ui.regionView.refresh = () => {
             }
         }
     } else {
-        result.database.caption = 'No database file';
+        result.database.caption = app.ui.getKeyValue(region.dbAccess.data, 'AUTO_DB') ? 'No database file' : 'Critical';
         result.database.class = app.ui.getKeyValue(region.dbAccess.data, 'AUTO_DB') ? 'ydb-status-amber' : 'ydb-status-red';
         result.database.alert = 'The database file is missing.';
     }

@@ -301,7 +301,7 @@ app.ui.help.init = () => {
             class: 'align-right'
         },
 
-        // Critical Section Aquisition
+        // Critical Section Acquisition
         'sgmnt_data.gvstats_rec.n_crit_success': {
             caption: 'Total Acquisitions successes',
             format: 'thousands',
@@ -317,7 +317,6 @@ app.ui.help.init = () => {
             format: 'thousands',
             class: 'align-right'
         },
-
     };
 
     app.ui.help.getRegionByKey = key => {
@@ -325,4 +324,3 @@ app.ui.help.init = () => {
     }
 
 };
-
