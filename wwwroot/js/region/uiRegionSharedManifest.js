@@ -93,7 +93,7 @@ app.ui.regionShared.manifest = {
         },
         {
             id: 'stats',
-            caption: 'Stats',
+            caption: 'Statistics',
             type: 'boolean',
             display: 'comboYesNo',
             unit: '',

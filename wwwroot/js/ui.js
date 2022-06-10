@@ -203,7 +203,7 @@ app.ui.wait.hide = () => {
 app.ui.formatBytes = (a, b = 2) => {
     if (0 === a) return "0 Bytes";
     const c = 0 > b ? 0 : b, d = Math.floor(Math.log(a) / Math.log(1024));
-    return parseFloat((a / Math.pow(1024, d)).toFixed(c)) + " " + ["bytes", "Kib", "Mib", "Gib", "Tib", "Pib", "Eib", "Zib", "Yib"][d]
+    return parseFloat((a / Math.pow(1024, d)).toFixed(c)) + " " + ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"][d]
 };
 
 app.ui.formatThousands = x => {

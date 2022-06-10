@@ -31,13 +31,14 @@ describe("CLIENT: Dashboard: gld file", async () => {
         // and text is correct
         const modal = await page.$('#txtMsgboxText');
         const text = await page.evaluate(el => el.textContent, modal);
+        console.log(text)
         expect(text).to.have.string('The .gld file doesn\'t exists')
     });
 });
 
 describe("CLIENT: Dashboard: Regions list: Database", async () => {
-    it("Test # 40: when region[0] file is replicated (asterisk)", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=40`, {
+    it("Test # 35: when region[0] file is replicated (asterisk)", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=35`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -51,8 +52,8 @@ describe("CLIENT: Dashboard: Regions list: Database", async () => {
         expect(hasAsterisk).to.be.true;
     });
 
-    it("Test # 41: when region[0] has a valid file", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=41`, {
+    it("Test # 36: when region[0] has a valid file", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=36`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -70,8 +71,8 @@ describe("CLIENT: Dashboard: Regions list: Database", async () => {
         expect(pillColor).to.have.string('rgb(100, 165, 85)')
     });
 
-    it("Test # 42: when region[0] has a file missing + no auto db", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=42`, {
+    it("Test # 37: when region[0] has a file missing + no auto db", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=37`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -88,8 +89,8 @@ describe("CLIENT: Dashboard: Regions list: Database", async () => {
         expect(pillColor).to.have.string('rgb(206, 58, 58)')
     });
 
-    it("Test # 43: when region[0] has a file missing + auto db", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=43`, {
+    it("Test # 38: when region[0] has a file missing + auto db", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=38`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -106,7 +107,97 @@ describe("CLIENT: Dashboard: Regions list: Database", async () => {
         expect(pillColor).to.have.string('rgb(234, 184, 59)')
     });
 
-    it("Test # 44: when region[0] has a file ok but shmem is bad", async () => {
+    it("Test # 39: when region[0] has a file ok but shmem is bad", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=39`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(300);
+
+        // check if text is correct
+        const cell = await page.$('#pillDashboardRegionTableDb0');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Critical');
+
+        // and pill has the RED color
+        const pillColor = await libs.getCssBackground('#pillDashboardRegionTableDb0');
+        expect(pillColor).to.have.string('rgb(206, 58, 58)')
+    });
+
+    it("Test # 40: Extension count > 0: 1 extensions left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=40`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(300);
+
+        // check if text is correct
+        const cell = await page.$('#pillDashboardRegionTableDb0');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Critical');
+
+        // and pill has the RED color
+        const pillColor = await libs.getCssBackground('#pillDashboardRegionTableDb0');
+        expect(pillColor).to.have.string('rgb(206, 58, 58)')
+    });
+
+    it("Test # 41: Extension count > 0: 4 extensions left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=41`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(300);
+
+        // check if text is correct
+        const cell = await page.$('#pillDashboardRegionTableDb0');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Critical');
+
+        // and pill has the RED color
+        const pillColor = await libs.getCssBackground('#pillDashboardRegionTableDb0');
+        expect(pillColor).to.have.string('rgb(206, 58, 58)')
+    });
+
+    it("Test # 42: Extension count > 0: 9 extensions left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=42`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(300);
+
+        // check if text is correct
+        const cell = await page.$('#pillDashboardRegionTableDb0');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Issues');
+
+        // and pill has the YELLOW color
+        const pillColor = await libs.getCssBackground('#pillDashboardRegionTableDb0');
+        expect(pillColor).to.have.string('rgb(234, 184, 59)')
+    });
+
+    it("Test # 43: Extension count = 0: 10% of db size left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=43`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(300);
+
+        // check if text is correct
+        const cell = await page.$('#pillDashboardRegionTableDb0');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Critical');
+
+        // and pill has the RED color
+        const pillColor = await libs.getCssBackground('#pillDashboardRegionTableDb0');
+        expect(pillColor).to.have.string('rgb(206, 58, 58)')
+    });
+
+    it("Test # 44: Extension count = 0: 15% of db size left", async () => {
         await page.goto(`http://localhost:${MDevPort}//index.html?test=44`, {
             waitUntil: "domcontentloaded"
         });
@@ -123,6 +214,61 @@ describe("CLIENT: Dashboard: Regions list: Database", async () => {
         const pillColor = await libs.getCssBackground('#pillDashboardRegionTableDb0');
         expect(pillColor).to.have.string('rgb(206, 58, 58)')
     });
+
+    it("Test # 45: Extension count = 0: 25% of db size left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=45`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(300);
+
+        // check if text is correct
+        const cell = await page.$('#pillDashboardRegionTableDb0');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Issues');
+
+        // and pill has the YELLOW color
+        const pillColor = await libs.getCssBackground('#pillDashboardRegionTableDb0');
+        expect(pillColor).to.have.string('rgb(234, 184, 59)')
+    });
+
+    it("Test # 45: Extension count = 0: 25% of db size left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=45`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(300);
+
+        // check if text is correct
+        const cell = await page.$('#pillDashboardRegionTableDb0');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Issues');
+
+        // and pill has the YELLOW color
+        const pillColor = await libs.getCssBackground('#pillDashboardRegionTableDb0');
+        expect(pillColor).to.have.string('rgb(234, 184, 59)')
+    });
+
+    it("Test # 46: Freeze mode is on", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=46`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(300);
+
+        // check if text is correct
+        const cell = await page.$('#pillDashboardRegionTableDb0');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Issues');
+
+        // and pill has the YELLOW color
+        const pillColor = await libs.getCssBackground('#pillDashboardRegionTableDb0');
+        expect(pillColor).to.have.string('rgb(234, 184, 59)')
+    });
+
 });
 
 describe("CLIENT: Dashboard: Regions list: Journal", async () => {
@@ -360,6 +506,24 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         expect(pillColor).to.have.string('rgb(100, 165, 85)')
     });
 
+    it("Test # 63: Journal file is missing and state = enabled/on", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=63`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(300);
+
+        // and text is correct
+        const cell = await page.$('#bdgSplashRegionsJournal0');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('NO FILE');
+
+        // and pill has the RED color
+        const pillColor = await libs.getCssBackground('#bdgSplashRegionsJournal0');
+        expect(pillColor).to.have.string('rgb(206, 58, 58)')
+    });
+
 });
 
 describe("CLIENT: Dashboard: Regions list: Devices", async () => {
@@ -471,19 +635,6 @@ describe("CLIENT: Dashboard: Global status", async () => {
         const cell = await page.$('#lblDashStatusDatabases');
         const text = await page.evaluate(el => el.textContent, cell);
         expect(text).to.have.string('Critical');
-
-        /*
-        // pill has the RED color
-        await libs.delay(300);
-        let pillColor = await libs.getCssBackground('#lblDashStatusDatabases');
-        expect(pillColor).to.have.string('rgb(206, 58, 58)');
-
-        // and flashing
-        await libs.delay(500);
-        pillColor = await libs.getCssBackground('#lblDashStatusDatabases');
-        expect(pillColor).to.have.string('rgb(243, 243, 243)')
-
-         */
     });
 
     it("Test # 103: When all journals are ok", async () => {
@@ -552,19 +703,6 @@ describe("CLIENT: Dashboard: Global status", async () => {
         const cell = await page.$('#lblDashStatusJournals');
         const text = await page.evaluate(el => el.textContent, cell);
         expect(text).to.have.string('Critical');
-
-        /*
-        // pill has the RED color
-        await libs.delay(300);
-        let pillColor = await libs.getCssBackground('#lblDashStatusJournals');
-        expect(pillColor).to.have.string('rgb(206, 58, 58)');
-
-        // and flashing
-        await libs.delay(500);
-        pillColor = await libs.getCssBackground('#lblDashStatusJournals');
-        expect(pillColor).to.have.string('rgb(243, 243, 243)')
-
-         */
     });
 
     it("Test # 107: When no region has replication turned on", async () => {
@@ -615,19 +753,42 @@ describe("CLIENT: Dashboard: Global status", async () => {
         const cell = await page.$('#lblDashStatusReplication');
         const text = await page.evaluate(el => el.textContent, cell);
         expect(text).to.have.string('Critical');
+    });
 
-        /*
-        // pill has the RED color
-        await libs.delay(300);
-        let pillColor = await libs.getCssBackground('#lblDashStatusReplication');
-        expect(pillColor).to.have.string('rgb(206, 58, 58)');
+    it("Test # 110: When freeze mode is on", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=110`, {
+            waitUntil: "domcontentloaded"
+        });
 
-        // and flashing
-        await libs.delay(500);
-        pillColor = await libs.getCssBackground('#lblDashStatusReplication');
-        expect(pillColor).to.have.string('rgb(243, 243, 243)')
+        // wait for dashboard to be set by the async call
+        await libs.delay(750);
 
-         */
+        // text is correct
+        const cell = await page.$('#lblDashStatusDatabases');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Issues');
+
+        // and pill has the YELLOW color
+        let pillColor = await libs.getCssBackground('#lblDashStatusDatabases');
+        expect(pillColor).to.have.string('rgb(234, 184, 59)')
+    });
+
+    it("Test # 111: Journal file is missing and state = enabled/on", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=111`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(750);
+
+        // text is correct
+        const cell = await page.$('#lblDashStatusDatabases');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Issues');
+
+        // and pill has the RED color
+        let pillColor = await libs.getCssBackground('#lblDashStatusDatabases');
+        expect(pillColor).to.have.string('rgb(234, 184, 59)')
     });
 });
 
@@ -649,30 +810,6 @@ describe("CLIENT: Dashboard: Events", async () => {
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
         expect(isVisible).to.be.true;
-    });
-
-    it("Test # 121: Refreshing the Dashboard", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=121`, {
-            waitUntil: "domcontentloaded"
-        });
-
-        // wait for dashboard to be set by the async call
-        await libs.delay(500);
-
-        let btnClick = await page.$("#menuDashboard");
-        await btnClick.click();
-
-        // wait for dialog to be set by the async call
-        await libs.delay(500);
-
-        // text is correct
-        const cell = await page.$('#lblDashStatusDatabases');
-        const text = await page.evaluate(el => el.textContent, cell);
-        expect(text).to.have.string('Healthy');
-
-        // and pill has the correct color
-        let pillColor = await libs.getCssBackground('#lblDashStatusDatabases');
-        expect(pillColor).to.have.string('rgb(100, 165, 85)')
     });
 
     it("Test # 122: Clicking the System info menu item", async () => {
@@ -707,7 +844,7 @@ describe("CLIENT: Dashboard: Events", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(500);
+        await libs.delay(1000);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalDeviceInfo') !== 'none';

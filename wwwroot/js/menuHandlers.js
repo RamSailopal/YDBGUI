@@ -111,5 +111,6 @@ app.ui.menu.processRefresh = () => {
 
     // region view handlers
     $('#menuSystemAdministrationRegionViewLi').on('click', () => app.ui.regionSelect.show(status.regions, app.ui.regionView.show));
+    // region delete handlers
     $('#menuSystemAdministrationRegionDeleteLi').on('click', () => app.ui.regionSelect.show(status.regions, app.ui.regionDelete.show));
 };

@@ -16,6 +16,8 @@
 ; ****************************************************************
 ; getAll(resJson,params)
 ;
+; Related URL: GET api/dashboard/getAll
+;
 ; PARAMS:
 ; resJson			array byRef
 ; params			array byRef
@@ -23,7 +25,7 @@
 getDashboard(resJson,params)
 	new res,jsonErr,ret,cnt,regionsData,file,files,region,devices
 	new lastIndex,mountpoint,ldevices,ldevice,warnings,list,region,regions
-	new file,fbuffer,envVars
+	new file,fbuffer,envVars,mountpoint
 	;
 	set warnings=0
 	;
@@ -34,6 +36,9 @@ getDashboard(resJson,params)
 	set res("data","systemInfo","zroutines")=$zroutines
 	set res("data","systemInfo","gld")=$zgbldir
 	set res("data","systemInfo","chset")=$zchset
+	; Encryption library
+	set res("data","systemInfo","encryptionLibrary")=$select($zsearch("$ydb_dist/plugin/libgtmcrypt.so")="":"false",1:"true")
+	;
 	;
 	; get env vars
 	set file="/proc/self/environ"
@@ -62,7 +67,8 @@ getDashboard(resJson,params)
 	;
 	; enumerate regions
 	do enumRegions^%ydbguiGde(.regions)
-	; get single region data
+	;
+	; reorganize the array so that numbering is correct
 	s region="" for  set region=$order(regions(region)) quit:region=""  do
 	. kill regionData
 	. do getRegionStruct^%ydbguiRegions(region,.regionData,.warnings)
@@ -78,12 +84,27 @@ getDashboard(resJson,params)
 	. . set devices(regionsData(region,"dbFile","flags","mountpoint"),lastIndex,"region")=region
 	. . set devices(regionsData(region,"dbFile","flags","mountpoint"),lastIndex,"file")=$get(regionsData(region,"dbFile","flags","file"))
 	. . set devices(regionsData(region,"dbFile","flags","mountpoint"),lastIndex,"device")=$get(regionsData(region,"dbFile","flags","device"))
-	. ;
+	. . set devices(regionsData(region,"dbFile","flags","mountpoint"),lastIndex,"fsBlockSize")=$get(regionsData(region,"dbFile","flags","fsBlockSize"))
+	. . set devices(regionsData(region,"dbFile","flags","mountpoint"),lastIndex,"deviceId")=$get(regionsData(region,"dbFile","flags","deviceId"))
+	. . set devices(regionsData(region,"dbFile","flags","mountpoint"),lastIndex,"iNodesTotal")=$get(regionsData(region,"dbFile","flags","iNodesTotal"))
+	. . set devices(regionsData(region,"dbFile","flags","mountpoint"),lastIndex,"iNodesFree")=$get(regionsData(region,"dbFile","flags","iNodesFree"))
+	. . ;
 	. if $get(regionsData(region,"journal","flags","mountpoint"))'="" do
 	. . set lastIndex=lastIndex+1
 	. . set devices(regionsData(region,"journal","flags","mountpoint"),lastIndex,"region")=region
 	. . set devices(regionsData(region,"journal","flags","mountpoint"),lastIndex,"file")=$get(regionsData(region,"journal","flags","file"))
 	. . set devices(regionsData(region,"journal","flags","mountpoint"),lastIndex,"device")=$get(regionsData(region,"journal","flags","device"))
+	. . set devices(regionsData(region,"journal","flags","mountpoint"),lastIndex,"fsBlockSize")=$get(regionsData(region,"journal","flags","fsBlockSize"))
+	. . set devices(regionsData(region,"journal","flags","mountpoint"),lastIndex,"deviceId")=$get(regionsData(region,"journal","flags","deviceId"))
+	. . set devices(regionsData(region,"journal","flags","mountpoint"),lastIndex,"iNodesTotal")=$get(regionsData(region,"journal","flags","iNodesTotal"))
+	. . set devices(regionsData(region,"journal","flags","mountpoint"),lastIndex,"iNodesFree")=$get(regionsData(region,"journal","flags","iNodesFree"))
+	;
+	; reset the first leg
+	set mountpoint=0
+	for  set mountpoint=$order(devices(mountpoint)) quit:mountpoint=""  do
+	. set cnt=$order(devices(mountpoint,"")) if cnt>1 do
+	. . merge devices(mountpoint,1)=devices(mountpoint,cnt)
+	. . kill devices(mountpoint,cnt)
 	;
 	set (lastIndex,cnt)=0
 	for  set cnt=$order(devices(cnt)) quit:cnt=""  do
@@ -98,6 +119,10 @@ getDashboard(resJson,params)
 	. set ldevices(lastIndex,"freeBlocks")=$piece(ldevice," ",4)
 	. set ldevices(lastIndex,"percentUsed")=$extract($p(ldevice," ",5),1,$length($piece(ldevice," ",5))-1)
 	. set ldevices(lastIndex,"mountPoint")=$piece(ldevice," ",6)
+	. set ldevices(lastIndex,"fsBlockSize")=devices(cnt,1,"fsBlockSize")
+	. set ldevices(lastIndex,"deviceId")=devices(cnt,1,"deviceId")
+	. set ldevices(lastIndex,"iNodesTotal")=devices(cnt,1,"iNodesTotal")
+	. set ldevices(lastIndex,"iNodesFree")=devices(cnt,1,"iNodesFree")
 	;
 	; remove unused data by the client
 	set cnt=0 for  set cnt=$order(ldevices(cnt)) quit:cnt=""  do
@@ -122,6 +147,8 @@ getDashboardQuit
 	;
 ; ****************************************************************
 ; getRegion(resJson,arguments)
+;
+; Related URL: GET api/regions/{region}
 ;
 ; PARAMS:
 ; resJson			array byRef
@@ -152,19 +179,47 @@ getRegion(resJson,arguments)
 ; ****************************************************************
 ; deleteRegion(resJson,arguments)
 ;
+; Related URL: DELETE api/regions/{region}
+;
 ; PARAMS:
-; arguments			array byRef
 ; resJson			array byRef
+; arguments			array byRef
 ; ****************************************************************
 deleteRegion(resJson,arguments)
+	new jsonErr,res,regionName,regions,deleteFiles
 	;
-	s resJson="{""result"":""OK""}"
+	; check if param exists
+	set regionName=$get(arguments("region"))
+	if regionName="" do  goto deleteRegionQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The parameter ""region"" is missing or empty"
 	;
-	quit ""
+	set deleteFiles=$data(arguments("deletefiles"))
+	;
+	set regionName=$zconvert(regionName,"u")
+	;
+	; check if region exists
+	do enumRegions^%ydbguiGde(.regions)
+	if $data(regions(regionName))=0 do  goto deleteRegionQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The region "_regionName_" doesn't exist"
+	;
+	; perform the delete
+	set *res=$$delete^%ydbguiRegions(regionName,deleteFiles)
+	;
+deleteRegionQuit	
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit
 	;
 	;
 ; ****************************************************************
-; extendRegion(resJson,arguments)
+; extendRegion(arguments,body,resJson)
+;
+; Related URL: POST api/regions/{region}/extend
 ;
 ; PARAMS:
 ; arguments			array byRef
@@ -172,13 +227,23 @@ deleteRegion(resJson,arguments)
 ; resJson			array byRef
 ; ****************************************************************
 extendRegion(arguments,body,resJson)
-	new jsonErr,res,region,blocks,mupipCmd,ret,shellData
+	new jsonErr,res,region,blocks,mupipCmd,ret,shellData,regions
 	;
+	; check if param region exist
 	set region=$get(arguments("region"))
 	if region="" do  goto extendRegionQuit
 	. set res("result")="ERR"
 	. set res("error","description")="The parameter ""region"" is missing or empty"
 	;
+	set region=$zconvert(region,"u")
+	;
+	; check if region exists
+	do enumRegions^%ydbguiGde(.regions)
+	if $data(regions(region))=0 do  goto extendRegionQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The region "_region_" doesn't exist"
+	;
+	; check the blocks parameter
 	set blocks=$get(arguments("blocks"))
 	if +blocks=0 do  goto extendRegionQuit
 	. set res("result")="ERR"
@@ -209,6 +274,8 @@ extendRegionQuit
 ; ****************************************************************
 ; journalSwitch(resJson,arguments)
 ;
+; Related URL: POST api/regions/{region}/journalSwitch
+;
 ; PARAMS:
 ; arguments			array byRef
 ; body				array byRef
@@ -217,11 +284,21 @@ extendRegionQuit
 journalSwitch(arguments,body,resJson)
 	new jsonErr,res,region,turn,mupipCmd,ret,shellData
 	;
+	; check if param region exist
 	set region=$get(arguments("region"))
 	if region="" do  goto journalSwitchQuit
 	. set res("result")="ERR"
 	. set res("error","description")="The parameter ""region"" is missing or empty"
 	;
+	set region=$zconvert(region,"u")
+	;
+	; check if region exists
+	do enumRegions^%ydbguiGde(.regions)
+	if $data(regions(region))=0 do  goto journalSwitchQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The region "_region_" doesn't exist"
+	;
+	; check the turn parameter
 	set turn=$zconvert($get(arguments("turn")),"u")
 	if turn'="ON",turn'="OFF" do  goto journalSwitchQuit
 	. set res("result")="ERR"
@@ -234,7 +311,7 @@ journalSwitch(arguments,body,resJson)
 	. set res("result")="ERR"
 	. set res("error","description")="The shell returned the following error: "_ret
 	;
-	if $find($get(shellData(1)),"%YDB-I-JNLSTATE")!($find($get(shellData(4)),"%YDB-I-JNLSTATE"))!($find($get(shellData(1)),"%YDB-I-JNLCREATE")) do
+	if $find($get(shellData(1)),"%YDB-I-JNLSTATE")!($find($get(shellData(4)),"%YDB-I-JNLSTATE"))!($find($get(shellData(1)),"%YDB-I-JNLCREATE"))!($find($get(shellData(1)),"%YDB-I-FILERENAME"))!($find($get(shellData(1)),"%YDB-I-JNLFNF")) do
 	. set res("result")="OK"
 	else  do
 	. set res("result")="ERR"
@@ -251,6 +328,8 @@ journalSwitchQuit
 	;
 ; ****************************************************************
 ; createDb(resJson,arguments)
+;
+; Related URL: POST api/regions/{region}/createDb
 ;
 ; PARAMS:
 ; arguments			array byRef
@@ -294,6 +373,8 @@ createDbQuit
 ; ****************************************************************
 ; getTemplates(resJson,arguments)
 ;
+; Related URL: GET api/dashboard/getTemplates
+;
 ; PARAMS:
 ; resJson			array byRef
 ; arguments			array byRef
@@ -315,7 +396,7 @@ getTemplates(resJson,arguments)
 	. set templates("region",key,"value")=value
 	. set templates("region",key,"min")=minreg(key)
 	. set templates("region",key,"max")=maxreg(key)
-	;	
+	;
 	for type="BG","MM" do
 	. set key="" for  set key=$order(templates("segment",type,key)) quit:key=""  do
 	. . set value=templates("segment",type,key)
@@ -323,7 +404,7 @@ getTemplates(resJson,arguments)
 	. . set templates("segment",type,key,"value")=value
 	. . set templates("segment",type,key,"min")=$g(minseg(type,key))
 	. . set templates("segment",type,key,"max")=$g(maxseg(type,key))
-	;	
+	;
 	merge res("data")=templates
 	set res("result")="OK"
 	;
@@ -337,6 +418,8 @@ getTemplates(resJson,arguments)
 	;
 ; ****************************************************************
 ; parseNamespace(arguments,body,resJson)
+;
+; Related URL: POST api/regions/parseNamespace
 ;
 ; PARAMS:
 ; arguments			array byRef
@@ -378,7 +461,7 @@ parseNamespace(arguments,bodyJson,resJson)
 	set res("data","parseResult")=$get(shellResult(7))
 	set:res("data","parseResult")="GDE> " res("data","parseResult")="OK"
 	;
-parseNamespaceQuit	
+parseNamespaceQuit
 	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
 	if $data(jsonErr) do  quit
 	. ; FATAL, can not convert json
@@ -389,6 +472,8 @@ parseNamespaceQuit
 ; ****************************************************************
 ; validatePath(arguments,body,resJson)
 ;
+; Related URL: POST api/regions/validatePath
+;
 ; PARAMS:
 ; arguments			array byRef
 ; body				array byRef
@@ -396,7 +481,7 @@ parseNamespaceQuit
 ; ****************************************************************
 validatePath(arguments,bodyJson,resJson)
 	new jsonErr,body,res,dir,ret,shellResult,command
-	new dirRights
+	new deviceInfo
 	;
 	; get the full path
 	do decode^%webjson($name(bodyJson),$name(body),$name(jsonErr))
@@ -417,7 +502,7 @@ validatePath(arguments,bodyJson,resJson)
 	. set res("error","description")="File aready exists..."
 	;
 	set dir=$zparse(body("path"),"directory")
-	; check permissions 
+	; check permissions
 	set ret=$$tryCreateFile(dir)
 	if ret=0 do  goto validatePathQuit
 	. ; error
@@ -426,6 +511,12 @@ validatePath(arguments,bodyJson,resJson)
 	;
 	set res("data","validation")=$zsearch(dir)
 	set res("data","fileExist")=$zsearch(body("path"))
+	;
+	; get the device info to extract the block size of the device needed for ASYNCIO validation
+	if res("data","validation")'="" do 
+	. set ret=$$runShell^%ydbguiUtils("stat -fc %s "_dir,.deviceInfo)
+	. set res("data","deviceBlockSize")=$get(deviceInfo(1),0)
+	else  set res("data","deviceBlockSize")=0
 	;
 	set res("result")="OK"
 	;
@@ -440,6 +531,8 @@ validatePathQuit
 	;
 ; ****************************************************************
 ; addRegion(arguments,body,resJson)
+;
+; Related URL: POST api/regions/add
 ;
 ; PARAMS:
 ; arguments			array byRef
@@ -456,18 +549,51 @@ addRegion(arguments,bodyJson,resJson)
 	;
 	; Perform the creation
 	set *res=$$create^%ydbguiRegions(.body)
-	;	
+	;
 	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
 	if $data(jsonErr) do  quit
 	. ; FATAL, can not convert json
 	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
-	;	
+	;
 	quit ""
 	;
 	;
 ; ****************************************************************
+; error(resJson,arguments)
+;
+; Related URL: 	GET api/test/error/
+;				DELETE api/test/error
+;
+; PARAMS:
+; resJson			array byRef
+; arguments			array byRef
+; ****************************************************************
+error(resJson,arguments)
+	s a=1/0
+	;
+	quit
+	;
+	;
+; ****************************************************************
+; errorPost(resJson,arguments)
+;
+; Related URL: POST api/test/error
+;
+; PARAMS:
+; resJson			array byRef
+; arguments			array byRef
+; ****************************************************************
+errorPost(arguments,bodyJson,resJson)
+	s a=1/0
+	;
+	quit
+	;
+	;
+; ****************************************************************
 ; tryCreateFile(filename)
-; ;
+; 
+; Related URL: POST api/regions/add
+;
 ; PARAMS:
 ; filename		string
 ; RETURNS:
@@ -479,7 +605,7 @@ tryCreateFile:(dir)
 	new $ztrap,$etrap
 	;
 	set ret=0
-	set $ztrap="goto tryCreateFileQuit"	
+	set $ztrap="goto tryCreateFileQuit"
 	;
 	; Create the file
 	set file=dir_"/~tmp"
@@ -490,3 +616,5 @@ tryCreateFile:(dir)
 	;
 tryCreateFileQuit
 	quit ret
+	;
+	;

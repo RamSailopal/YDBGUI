@@ -128,7 +128,7 @@ app.ui.regionNames.validateName = async namespace => {
         }
 
     } catch (err) {
-        await app.ui.msgbox.show('A REST error occurred while validating the namespace', 'ERROR', true);
+        await app.ui.msgbox.show(app.REST.parseError(err), 'ERROR', true);
         remoteParsing = false
     }
 

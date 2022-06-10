@@ -18,7 +18,19 @@ app.ui.regionView.init = () => {
         if (app.ui.regionView.isFresh) {
             app.ui.dashboard.refresh()
         }
-    })
+    });
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
+        const divRegionViewAdvancedParameters = $('#divRegionViewAdvancedParameters');
+        const target = event.target.toString();
+
+        if (target.indexOf('Names') > -1 || target.indexOf('Stats') > -1 || target.indexOf('Locks') > -1) {
+            divRegionViewAdvancedParameters.css('display', 'none');
+
+        } else {
+            divRegionViewAdvancedParameters.css('display', 'inline');
+        }
+    });
 };
 
 app.ui.regionView.isFresh = false;
@@ -30,6 +42,8 @@ app.ui.regionView.show = regionName => {
 
     //clear the checkbox
     $('#chkRegionViewAdvancedMode').prop('checked', false);
+    // and ensure it is visible
+    $('#divRegionViewAdvancedParameters').css('display', 'inline');
 
     // ************************************
     // DISPLAY DIALOG
@@ -84,11 +98,29 @@ app.ui.regionView.refresh = () => {
                 result.database.alert = 'The database shared memory is corrupted'
             } else {
                 // File exist and is GOOD
-                result.database.caption = 'Healthy';
-                result.database.class = 'ydb-status-green';
-                result.database.alert = '';
+
+                // check extension
+                const dbStatus = app.ui.dashboard.computeRegionSpace(region);
+                if (dbStatus.class !== 'ydb-status-green') {
+                    // Extension is fine, no issues found
+                    result.database.caption = dbStatus.caption;
+                    result.database.class = dbStatus.class;
+                    result.database.alert = dbStatus.popup.caption
+
+                } // check freeze status
+                else if (region.dbFile.flags.freeze > 0) {
+                    result.database.caption = 'Issue';
+                    result.database.class = 'ydb-status-amber';
+                    result.database.alert = 'The database is frozen by user: ' + region.dbFile.flags.freeze
+
+                } else {
+                    result.database.caption = 'Healthy';
+                    result.database.class = 'ydb-status-green';
+                    result.database.alert = ''
+                }
             }
         }
+
     } else {
         result.database.caption = app.ui.getKeyValue(region.dbFile.data, 'AUTO_DB') ? 'No database file' : 'Critical';
         result.database.class = app.ui.getKeyValue(region.dbFile.data, 'AUTO_DB') ? 'ydb-status-amber' : 'ydb-status-red';
@@ -125,13 +157,21 @@ app.ui.regionView.refresh = () => {
             .css('width', region.dbFile.usage.usedPercent + '%')
             .text(region.dbFile.usage.usedPercent + ' %');
 
+        const extension = app.ui.getKeyValue(region.dbFile.data, 'EXTENSION_COUNT');
         const rangeStyle = {};
-        app.userSettings.dashboard.regionRanges.forEach(el => {
-            if (region.dbFile.usage.usedPercent >= el.min && region.dbFile.usage.usedPercent <= el.max) {
-                rangeStyle.class = el.class;
-                rangeStyle.flash = el.flash;
-            }
-        });
+
+        // Use ranges only if extension is 0
+        if (extension > 0) {
+            rangeStyle.class = 'ydb-status-green';
+            rangeStyle.flash = false
+        } else {
+            app.userSettings.dashboard.regionRanges.forEach(el => {
+                if (region.dbFile.usage.usedPercent >= el.min && region.dbFile.usage.usedPercent <= el.max) {
+                    rangeStyle.class = el.class;
+                    rangeStyle.flash = el.flash;
+                }
+            });
+        }
         rngRegionViewRegionUsedSpace
             .removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray')
             .addClass(rangeStyle.class);
@@ -143,6 +183,7 @@ app.ui.regionView.refresh = () => {
 
         $('#puRegionViewDbUsage')
             .attr('data-content', devicePopup)
+        //.attr('title','Device usage');
     } else {
         rngRegionViewRegionUsedSpace
             .css('width', '100%')
@@ -174,7 +215,7 @@ app.ui.regionView.refresh = () => {
         const tblRegionViewRegionRegion = $('#tblRegionViewRegionRegion > tbody');
         const divRegionViewTableLeftContainer = $('#divRegionViewTableLeftContainer');
 
-        if (region.dbFile.flags.fileExist === false) {
+        if (divRegionViewRegionAlert.css('display') === 'block') {
             divRegionViewTableLeftContainer.css('height', 206)
 
         } else {
@@ -204,6 +245,7 @@ app.ui.regionView.refresh = () => {
             });
         }
     }
+
     // button create db
     const btnRegionViewRegionCreateDbFile = $('#btnRegionViewRegionCreateDbFile');
 
@@ -250,6 +292,7 @@ app.ui.regionView.refresh = () => {
     // ************************************
     const navRegionViewJournal = $('#navRegionViewJournal');
     const btnRegionViewJournalSwitch = $('#btnRegionViewJournalSwitch');
+    let journalFileMissing = false;
 
     btnRegionViewJournalSwitch.on('click', () => app.ui.regionJournalSwitch.show(regionName));
 
@@ -262,49 +305,59 @@ app.ui.regionView.refresh = () => {
         // Journal status pill
         const replStatus = region.replication !== undefined;
 
-        if (replStatus && region.replication.flags.status === REPL_STATUS_WASON) {
+        if (region.journal.flags.state === JOURNAL_STATE_ENABLED_ON && (region.journal.flags.fileExist === false || app.ui.getKeyValue(region.journal.data, 'JFILE_NAME') === '')) {
             result.journaling.class = 'ydb-status-red';
-            result.journaling.caption = 'WAS ON';
-            result.journaling.alert = 'Replication is in WAS ON status'
+            result.journaling.caption = 'NO FILE';
+            result.journaling.alert = 'The journal file is missing';
+            $('#btnRegionViewJournalSwitch').text('Recreate...');
+            journalFileMissing = true;
+
 
         } else {
-            if (replStatus && region.replication.flags.status > 0 && region.dbFile.flags.sessions > 0) {
-                // replicated region and active (sessions > 0)
-                if (region.journal.flags.state === JOURNAL_STATE_ENABLED_OFF) {
-                    result.journaling.class = 'ydb-status-red';
-                    result.journaling.caption = 'Critical';
-                    result.journaling.alert = 'Journaling must be turned on in an active replicated region'
-
-                } else if (region.journal.flags.state === JOURNAL_STATE_DISABLED) {
-                    result.journaling.class = 'ydb-status-red';
-                    result.journaling.caption = 'Critical';
-                    result.journaling.alert = 'Journaling must be enabled and turned on in an active replicated region'
-                } else {
-                    result.journaling.caption = 'Enabled / On';
-                    result.journaling.alert = '';
-                    result.journaling.class = 'ydb-status-green';
-                }
+            if (replStatus && region.replication.flags.status === REPL_STATUS_WASON) {
+                result.journaling.class = 'ydb-status-red';
+                result.journaling.caption = 'WAS ON';
+                result.journaling.alert = 'Replication is in WAS ON status'
 
             } else {
-                // not replicated region
+                if (replStatus && region.replication.flags.status > 0 && region.dbFile.flags.sessions > 0) {
+                    // replicated region and active (sessions > 0)
+                    if (region.journal.flags.state === JOURNAL_STATE_ENABLED_OFF) {
+                        result.journaling.class = 'ydb-status-red';
+                        result.journaling.caption = 'Critical';
+                        result.journaling.alert = 'Journaling must be turned on in an active replicated region'
 
-                if (region.journal.flags === undefined) region.journal.flags = {state: JOURNAL_STATE_DISABLED};
-
-                if (region.journal.flags.state === JOURNAL_STATE_DISABLED) {
-                    result.journaling.class = 'ydb-status-gray';
-                    result.journaling.caption = 'Disabled';
-                    result.journaling.alert = ''
-
-                } else if (region.journal.flags.state === JOURNAL_STATE_ENABLED_OFF) {
-                    result.journaling.class = 'ydb-status-amber';
-                    result.journaling.caption = 'Enabled/Off';
-                    result.journaling.alert = 'Journaling needs to be turned on'
+                    } else if (region.journal.flags.state === JOURNAL_STATE_DISABLED) {
+                        result.journaling.class = 'ydb-status-red';
+                        result.journaling.caption = 'Critical';
+                        result.journaling.alert = 'Journaling must be enabled and turned on in an active replicated region'
+                    } else {
+                        result.journaling.caption = 'Enabled / On';
+                        result.journaling.alert = '';
+                        result.journaling.class = 'ydb-status-green';
+                    }
 
                 } else {
-                    result.journaling.caption = 'Enabled / On';
-                    result.journaling.alert = '';
-                    result.journaling.class = 'ydb-status-green';
+                    // not replicated region
 
+                    if (region.journal.flags === undefined) region.journal.flags = {state: JOURNAL_STATE_DISABLED};
+
+                    if (region.journal.flags.state === JOURNAL_STATE_DISABLED) {
+                        result.journaling.class = 'ydb-status-gray';
+                        result.journaling.caption = 'Disabled';
+                        result.journaling.alert = ''
+
+                    } else if (region.journal.flags.state === JOURNAL_STATE_ENABLED_OFF) {
+                        result.journaling.class = 'ydb-status-amber';
+                        result.journaling.caption = 'Enabled/Off';
+                        result.journaling.alert = 'Journaling needs to be turned on'
+
+                    } else {
+                        result.journaling.caption = 'Enabled / On';
+                        result.journaling.alert = '';
+                        result.journaling.class = 'ydb-status-green';
+
+                    }
                 }
             }
         }
@@ -314,7 +367,9 @@ app.ui.regionView.refresh = () => {
             .removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray')
             .addClass(result.journaling.class);
 
-        btnRegionViewJournalSwitch.text(( region.journal.flags.state === 1 ? 'Turn ON...' : 'Turn OFF...' ));
+        if (journalFileMissing === false) {
+            btnRegionViewJournalSwitch.text((region.journal.flags.state === 1 ? 'Turn ON...' : 'Turn OFF...'));
+        }
         btnRegionViewJournalSwitch.css('display', region.journal.flags.state === 0 ? 'none' : 'inline');
 
         const divRegionViewJournalAlert = $('#divRegionViewJournalAlert');
@@ -449,8 +504,7 @@ app.ui.regionView.refresh = () => {
             });
         }
     }
-}
-;
+};
 
 app.ui.regionView.refreshBtn = async () => {
 
@@ -482,10 +536,9 @@ app.ui.regionView.refreshBtn = async () => {
     } catch (err) {
         app.ui.wait.hide();
 
-        await app.ui.msgbox.show('An error occurred while fetching the region data', 'ERROR', true);
+        app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
     }
 };
-
 
 // ************************************
 // ************************************
@@ -528,7 +581,8 @@ app.ui.regionView.renderRow = (key, value) => {
     let valueCell = '<td>';
     let helpLink = {
         start: '',
-        end: ''
+        end: '',
+        startUnderlineLink: ''
     };
     let rowDef = '<tr class="region-view-detail-table-row">';
 
@@ -538,7 +592,7 @@ app.ui.regionView.renderRow = (key, value) => {
     if (newName === undefined) newName = {caption: key};
 
     // hide it if not in advanced mode
-    if ( advancedMode === false && typeof newName.advancedMode !== 'undefined' ) {
+    if (advancedMode === false && typeof newName.advancedMode !== 'undefined') {
         return '';
 
     }
@@ -546,7 +600,7 @@ app.ui.regionView.renderRow = (key, value) => {
     // or it is found and gets translated
     else {
         // if advanced mode gray off also the left cell if required
-        if ( newName.class !== undefined && typeof newName.advancedMode !== 'undefined' ) {
+        if (newName.class !== undefined && typeof newName.advancedMode !== 'undefined') {
             leftClass = 'class="' + newName.class + '"';
         }
 
@@ -579,6 +633,7 @@ app.ui.regionView.renderRow = (key, value) => {
         // helpLink
         if (newName.helpLink !== undefined && newName.helpLink !== '') {
             helpLink.start = '<a href="' + newName.helpLink + ' " target="_blank" class="region-view-detail-table-row">';
+            helpLink.startUnderlineLink = '<a href="' + newName.helpLink + ' " target="_blank" class="region-view-detail-table-row link-underline">';
             helpLink.end = '</a>';
         }
 
@@ -595,7 +650,7 @@ app.ui.regionView.renderRow = (key, value) => {
 
     return rowDef +
         '<td style="text-align: left!important;"' + leftClass + '>' +
-        helpLink.start +
+        helpLink.startUnderlineLink +
         newName.caption + ':' +
         helpLink.end +
         '</td>' +

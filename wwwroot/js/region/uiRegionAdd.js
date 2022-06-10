@@ -144,7 +144,7 @@ app.ui.regionAdd.show = async () => {
         templates = await app.REST._getTemplates()
 
     } catch (err) {
-        await app.ui.msgbox.show('An error occurred while fetching the templates', 'ERROR', true);
+        await app.ui.msgbox.show(app.REST.parseError(err), 'ERROR', true);
 
         return
     }
@@ -279,15 +279,65 @@ app.ui.regionAdd.okPressed = async () => {
     const segmentArray = dbFileModeBg === true ? app.ui.regionShared.manifest.dbFile.bg : app.ui.regionShared.manifest.dbFile.mm;
     const dbAccessArray = app.ui.regionShared.manifest.dbAccess;
     const journalArray = app.ui.regionShared.manifest.journal;
-
     const journalEnabled = getEl(journalArray, 'journalEnabled').value === 1;
     const createDbFile = getEl(segmentArray, 'createFile').value === 1;
     const switchJournalOn = getEl(journalArray, 'switchOn').value === 1;
 
     // Perform basic validation
+
+    // BG and journal type
     if (dbFileModeBg === false && journalEnabled === true && getEl(journalArray, 'beforeImage').value === 1) {
         app.ui.msgbox.show('A region with MM segment can not have a "beforeImage" journaling', 'WARNING');
         return
+    }
+
+    // Collation
+    const collation = getEl(dbAccessArray, 'collation').value;
+    if (collation > 0) {
+        // search for related env var
+        const found = app.system.systemInfo.envVars.find(envVar => {
+            return envVar.name === 'ydb_collate_' + collation
+        });
+
+        if (found === undefined) {
+            app.ui.msgbox.show('You have chosen a different collation, but the related environment variable was not found...', 'WARNING')
+
+            return
+        }
+    }
+
+    // BG asyncIO sector size
+    if (dbFileModeBg === true && getEl(segmentArray, 'asyncIo').value === 1) {
+        // fetch the file system sector size
+        let res;
+        try {
+            res = await app.REST._validatePath(getEl(segmentArray, 'filename').value);
+
+            if (res.result !== 'OK') {
+                app.ui.msgbox.show('An error occurred while trying to validate the database path and get the file system sector size needed for the ASYNC IO', 'ERROR');
+
+                return
+            }
+
+            if (res.data.validation === '') {
+                app.ui.msgbox.show('The path could not be validated.', 'WARNING');
+
+                return
+
+            }
+
+        } catch (err) {
+            app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
+
+            return
+        }
+
+        // get the remainder
+        if (res.data.deviceBlockSize % getEl(segmentArray, 'blockSize').value !== 0) {
+            app.ui.msgbox.show('The region block size must be equal or a multiple of the device block size, which is: ' + res.data.deviceBlockSize, 'WARNING')
+
+            return
+        }
     }
 
     const inputboxText = 'You are going to create a new region called: ' + app.ui.regionAdd.name.region + '<br><br>' +
@@ -361,7 +411,7 @@ app.ui.regionAdd.okPressed = async () => {
             }
 
             // filenames
-            payload.segmentFilename = dbFileModeBg === true ? getEl(app.ui.regionShared.manifest.dbFile.mm, 'filename').value : getEl(app.ui.regionShared.manifest.dbFile.mm, 'filename').value;
+            payload.segmentFilename = dbFileModeBg === true ? getEl(app.ui.regionShared.manifest.dbFile.bg, 'filename').value : getEl(app.ui.regionShared.manifest.dbFile.mm, 'filename').value;
             payload.journalFilename = getEl(app.ui.regionShared.manifest.journal, 'jfilename').value;
 
             // Post-creation operations
@@ -418,7 +468,7 @@ app.ui.regionAdd.okPressed = async () => {
                 }
             } catch (err) {
                 $('#modalRegionAdd').modal('hide');
-                app.ui.msgbox.show('A REST error occurred while submitting the request', 'ERROR');
+                app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
 
             }
         }

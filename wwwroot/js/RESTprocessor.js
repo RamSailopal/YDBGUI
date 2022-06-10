@@ -87,7 +87,7 @@ app.REST._dashboardGetAll = () => {
 app.REST._regionGet = (region) => {
     return new Promise(function (resolve, reject) {
 
-        app.REST.execute('get', 'regions/'+ region + '/', {}, data => {
+        app.REST.execute('get', 'regions/' + region, {}, data => {
             resolve(data)
 
         }, err => {
@@ -99,10 +99,10 @@ app.REST._regionGet = (region) => {
 // ********************************
 // delete region
 // ********************************
-app.REST._regionDelete = (region) => {
+app.REST._regionDelete = (region, withDelete) => {
     return new Promise(function (resolve, reject) {
 
-        app.REST.execute('delete', 'regions/' + region + '/', {}, data => {
+        app.REST.execute('delete', 'regions/' + region + '?' + (withDelete === true ? 'deleteFiles=true' : ''), {}, data => {
             resolve(data)
 
         }, err => {
@@ -195,3 +195,28 @@ app.REST.execute = (type, command, DATA = {}, okCallback, errCallback) => {
     });
 };
 
+app.REST.parseError = err => {
+    let message = 'The following error occurred while fetching the data: ';
+
+    if (err.status === 500) {
+        if (typeof err.responseJSON === 'object') {
+            const error = err.responseJSON.error.errors[0];
+
+            message += '<br>';
+            message += '<br>Location: ' + error.message.split(',')[1];
+            message += '<br>Mcode: ' + error.mcode;
+            message += '<br>Error: ' + error.message.split(',')[3];
+
+        } else {
+            if (err.error !== undefined) {
+                message += err.error.description
+            } else {
+                message += 'Internal error ' + err.responseText
+            }
+        }
+    } else {
+        message += 'REST status: ' + err.status
+    }
+
+    return message
+};

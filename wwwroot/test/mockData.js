@@ -46,28 +46,60 @@ const testLoadData = () => {
             }
 
             // REGION LIST: Db file
-            case 40: {
+            case 35: {
                 mockData.data.regions.DEFAULT.replication.flags.status = 1;
                 break;
             }
-            case 41: {
+            case 36: {
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": "/data/r1.34_x86_64/g/yottadb.dat"};
                 break;
             }
-            case 42: {
+            case 37: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
                 mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
                 break;
             }
-            case 43: {
+            case 38: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
                 mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
                 break;
             }
-            case 44: {
+            case 39: {
                 mockData.data.regions.DEFAULT.dbFile.flags.shmenHealthy = false;
+                break;
+            }
+            case 40: {
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 10000 14% /';
+                // 80K 8   45K 5  15K  2
+                break;
+            }
+            case 41: {
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 45000 14% /';
+                break;
+            }
+            case 42: {
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 320000 14% /';
+                break;
+            }
+            case 43: {
+                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 1000 14% /';
+                break;
+            }
+            case 44: {
+                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 2000 14% /';
+                break;
+            }
+            case 45: {
+                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 12000 14% /';
+                break;
+            }
+            case 46: {
+                mockData.data.regions.DEFAULT.dbFile.flags.freeze = 1;
                 break;
             }
 
@@ -149,6 +181,11 @@ const testLoadData = () => {
                 mockData.data.regions.DEFAULT.dbFile.flags.sessions = 1;
                 break;
             }
+            case 63: {
+                mockData.data.regions.DEFAULT.journal.flags.state = 2;
+                mockData.data.regions.DEFAULT.journal.flags.fileExist = false;
+                break;
+            }
 
             // Devices
             case 70: {
@@ -220,6 +257,14 @@ const testLoadData = () => {
                 mockData.data.regions.DEFAULT.replication.flags.status = 2;
                 break;
             }
+            case 110: {
+                mockData.data.regions.DEFAULT.dbFile.flags.freeze = 1;
+                break;
+            }
+            case 111: {
+                mockData.data.regions.DEFAULT.dbFile.flags.freeze = 1;
+                break;
+            }
 
             // system info
             case 151: {
@@ -287,14 +332,17 @@ const testLoadData = () => {
             }
             case 255: {
                 mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 80;
+                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
                 break
             }
             case 256: {
                 mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 95;
+                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
                 break
             }
             case 257: {
                 mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 99;
+                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
                 break
             }
             case 259: {
@@ -350,48 +398,81 @@ const testLoadData = () => {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileBad = true;
                 break
             }
+            case 287: {
+                mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 95;
+                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 1000};
+                break
+            }
+            case 288: {
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 25000 14% /';
+                // 80K 8   45K 5  15K  2
+                break;
+            }
+            case 289: {
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 180000 14% /';
+                break;
+            }
+            case 290: {
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 320000 14% /';
+                break;
+            }
+            case 291: {
+                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 1000 14% /';
+                break;
+            }
+            case 292: {
+                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 2000 14% /';
+                break;
+            }
+            case 293: {
+                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 12000 14% /';
+                break;
+            }
 
             // Region view: journal
-            case 290: {
+            case 300: {
                 mockData.data.regions.DEFAULT.journal.flags.state = 0;
                 break
             }
-            case 291: {
+            case 301: {
                 mockData.data.regions.DEFAULT.journal.flags.state = 1;
                 break
             }
-            case 293: {
+            case 303: {
                 mockData.data.regions.DEFAULT.replication.flags.status = 2;
                 break
             }
-            case 294: {
+            case 304: {
                 mockData.data.regions.DEFAULT.journal.flags.state = 1;
                 mockData.data.regions.DEFAULT.replication.flags.status = 1;
                 break
             }
-            case 295: {
+            case 305: {
                 mockData.data.regions.DEFAULT.replication.flags.status = 1;
                 break
             }
-            case 296: {
+            case 306: {
                 mockData.data.regions.DEFAULT.replication.flags.status = 1;
                 mockData.data.regions.DEFAULT.journal.flags.state = 2;
                 mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
                 break
             }
-            case 297: {
+            case 307: {
                 mockData.data.regions.DEFAULT.replication.flags.status = 1;
                 mockData.data.regions.DEFAULT.journal.flags.state = 0;
                 mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
                 break
             }
-            case 298: {
+            case 308: {
                 mockData.data.regions.DEFAULT.replication.flags.status = 1;
                 mockData.data.regions.DEFAULT.journal.flags.state = 1;
                 mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
                 break
             }
-            case 299: {
+            case 309: {
                 mockData.data.regions.DEFAULT.replication.flags.status = 1;
                 mockData.data.regions.DEFAULT.journal.flags.state = 2;
                 mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
@@ -437,6 +518,16 @@ const testLoadData = () => {
                 mockData.data.regions.DEFAULT.journal.flags.state = 1;
                 mockData.data.regions.DEFAULT.replication.flags.status = 0;
                 mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
+                break
+            }
+            case 322: {
+                mockData.data.regions.DEFAULT.journal.flags.state = 2;
+                mockData.data.regions.DEFAULT.journal.flags.fileExist = false;
+                break
+            }
+            case 323: {
+                mockData.data.regions.DEFAULT.journal.flags.state = 2;
+                mockData.data.regions.DEFAULT.journal.flags.fileExist = false;
                 break
             }
             case 375: {
@@ -519,32 +610,6 @@ const testLoadData = () => {
                 ];
                 break
             }
-            case 390: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 2;
-                break
-            }
-            case 400:
-            case 401:
-            case 402:
-            case 403: {
-                app.ui.regionDelete.show('DEFAULT');
-                break
-            }
-            case 440:
-            case 441:
-            case 442:
-            case 443:
-            case 444: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
-                break
-            }
-            case 450:
-            case 451:
-            case 452: {
-                setTimeout(() => app.ui.regionJournalSwitch.show('DEFAULT'), 50);
-                break
-            }
             case 490:
             case 491:
             case 492:
@@ -599,6 +664,36 @@ const testLoadData = () => {
 
                 }, 250);
             }
+            case 390: {
+                mockData.data.regions.DEFAULT.replication.flags.status = 2;
+                break
+            }
+            case 400:
+            case 401:
+            case 402:
+            case 403: {
+                app.ui.regionDelete.show('DEFAULT');
+                break
+            }
+            case 404: {
+                app.ui.regionDelete.show('YDBOCTO');
+                break
+            }
+            case 440:
+            case 441:
+            case 442:
+            case 443:
+            case 444: {
+                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
+                break
+            }
+            case 450:
+            case 451:
+            case 452: {
+                setTimeout(() => app.ui.regionJournalSwitch.show('DEFAULT'), 50);
+                break
+            }
         }
 
         return mockData
@@ -614,6 +709,10 @@ let testMock = {
                 totalBlocks: 263174212,
                 type: "overlay",
                 usedBlocks: 15591036,
+                deviceId: 'fedc9aa3bd65bc57',
+                fsBlockSize: 4096,
+                iNodesFree: 4243423,
+                iNodesTotal: 43243243,
                 usedBy: [
                     {
                         "file": "/data/r1.34_x86_64/g/yottadb.dat",
@@ -731,7 +830,12 @@ let testMock = {
                                         "sessions":
                                             0,
                                         "shmenHealthy":
-                                            true
+                                            true,
+                                        deviceId: 'fedc9aa3bd65bc57',
+                                        fsBlockSize: 4096,
+                                        iNodesFree: 4243423,
+                                        iNodesTotal: 43243243,
+
                                     }
                                 ,
                                 "usage":
@@ -781,7 +885,12 @@ let testMock = {
                                         "mountpoint":
                                             "/",
                                         "state":
-                                            2
+                                            2,
+                                        deviceId: 'fedc9aa3bd65bc57',
+                                        fsBlockSize: 4096,
+                                        iNodesFree: 4243423,
+                                        iNodesTotal: 43243243,
+
                                     }
                             }
                         ,
@@ -992,7 +1101,11 @@ let testMock = {
                                         "sessions":
                                             0,
                                         "shmenHealthy":
-                                            true
+                                            true,
+                                        deviceId: 'fedc9aa3bd65bc57',
+                                        fsBlockSize: 4096,
+                                        iNodesFree: 4243423,
+                                        iNodesTotal: 43243243,
                                     }
                                 ,
                                 "usage":
@@ -1294,7 +1407,11 @@ let testMock = {
                                         "sessions":
                                             0,
                                         "shmenHealthy":
-                                            true
+                                            true,
+                                        deviceId: 'fedc9aa3bd65bc57',
+                                        fsBlockSize: 4096,
+                                        iNodesFree: 4243423,
+                                        iNodesTotal: 43243243,
                                     }
                                 ,
                                 "usage":
@@ -1344,7 +1461,11 @@ let testMock = {
                                         "mountpoint":
                                             "/",
                                         "state":
-                                            2
+                                            2,
+                                        deviceId: 'fedc9aa3bd65bc57',
+                                        fsBlockSize: 4096,
+                                        iNodesFree: 4243423,
+                                        iNodesTotal: 43243243,
                                     }
                             }
                         ,

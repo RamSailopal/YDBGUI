@@ -78,6 +78,16 @@ const _RESTpost = (path, data = {}) => {
     })
 };
 
+const _RESTdelete = (path, data = {}) => {
+    return new Promise(async function (resolve, reject) {
+        fetch('http://localhost:8089/api/' + path,
+            {
+                method: "DELETE",
+                body: JSON.stringify(data),
+            }).then(async response => resolve(JSON.parse(await response.text()))).catch(err => reject(err))
+    })
+};
+
 module.exports.delay = delay;
 module.exports.getCssDisplay = getCssDisplay;
 module.exports.getCssColor = getCssColor;
@@ -85,3 +95,4 @@ module.exports.getCssBackground = getCssBackground;
 module.exports.randomRegionName = randomRegionName;
 module.exports._REST = _REST;
 module.exports._RESTpost = _RESTpost;
+module.exports._RESTdelete = _RESTdelete;

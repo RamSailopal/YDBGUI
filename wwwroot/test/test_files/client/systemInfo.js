@@ -297,4 +297,28 @@ describe("CLIENT: System Info", async () => {
         let text = await page.evaluate(el => el.textContent, cell);
         expect(text).to.have.string('GTM_CALLIN_START');
     });
+
+    it("Test # 174: Confirm that the encryption flag is populated correctly", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=174`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#menuSystemInfo");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        const isVisible = await libs.getCssDisplay('#modalSystemInfo') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // lblSystemInfoRoutines text is correct
+        let cell = await page.$('#lblSystemInfoEncryption');
+        let text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Not installed');
+    });
 });

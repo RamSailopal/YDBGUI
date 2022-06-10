@@ -51,6 +51,8 @@ app.ui.regionShared.renderTable = $tableTbody => {
     manifestArray.forEach(el => {
         if (el.id === 'journalEnabled') return;
 
+        if (el.id === 'encryptionFlag' && app.system.systemInfo.encryptionLibrary === false) return;
+
         const isAdvancedMode = $('#chkRegionAddAdvancedMode').is(':checked');
         if (el.advancedMode !== undefined && el.advancedMode === true && isAdvancedMode === false) return;
 
@@ -324,7 +326,7 @@ app.ui.regionFilename.validate = async () => {
 
     } catch (err) {
         if (res.result === 'ERROR') {
-            app.ui.msgbox.show(res.error.description, 'ERROR');
+            app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
             result = false;
         }
 

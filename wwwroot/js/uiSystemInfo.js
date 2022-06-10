@@ -28,6 +28,7 @@ app.ui.systemInfo.show = () => {
     $('#lblSystemInfoRoutines').text(app.system.systemInfo.zroutines);
     $('#lblSystemInfoGlobalDirectory').text(app.system.systemInfo.gld);
     $('#lblSystemInfoMode').text(app.system.systemInfo.chset);
+    $('#lblSystemInfoEncryption').text(app.system.systemInfo.encryptionLibrary === true ? 'Installed' : 'Not installed');
 
     const tblSystemInfoPlugins = $('#tblSystemInfoPlugins > tbody');
 

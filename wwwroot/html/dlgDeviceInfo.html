@@ -14,17 +14,32 @@
                 <div class="ydb-back6">
                     <br>
                     <div class="row-12" style="display: flex;">
-                        <div class="col-2">
+                        <div class="col-3">
                             <span class="ydb-fore3 bold">Mountpoint:</span>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <span id="lblDeviceInfoMountpoint"></span>
                         </div>
                         <div class="col-3">
                             <span class="ydb-fore3 bold">File system:</span>
                         </div>
                         <div class="col-3">
-                            <span  id="lblDeviceInfoFileSystem"></span>
+                            <span id="lblDeviceInfoFileSystem"></span>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row-12" style="display: flex;">
+                        <div class="col-3">
+                            <span class="ydb-fore3 bold">Block size:</span>
+                        </div>
+                        <div class="col-3">
+                            <span id="lblDeviceInfoBlockSize"></span>
+                        </div>
+                        <div class="col-3">
+                            <span class="ydb-fore3 bold">File system ID:</span>
+                        </div>
+                        <div class="col-3">
+                            <span id="lblDeviceInfoId"></span>
                         </div>
                     </div>
                     <br>
@@ -38,33 +53,33 @@
                         </div>
                     </div>
                     <div class="row-12" style="display: flex;">
-                        <div class="col-6">
-                            <div class="row-12" style="display: flex; margin-left: -15px;">
-                                <div class="col-6">
-                                    Total blocks:<br><br>
-                                    Blocks available:<br>
-                                    Blocks used:
-                                </div>
-                                <div class="col-6" style="text-align: right;">
-                                    <span  id="lblDeviceInfoTotalBlocks"></span>
-                                    <br><br>
-                                    <span  id="lblDeviceInfoBlocksUsed"></span>
-                                    <br>
-                                    <span  id="lblDeviceInfoBlockAvailable"></span>
-                                    <br>
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-5">
+                            Total space:<br>
+                            Space used:<br>
+                            Space available:<br><br>
+                            Percent used:<br><br>
+                            Total inodes:<br>
+                            Free inodes:<br>
+                        </div>
+                        <div class="col-7">
+                            <span id="lblDeviceInfoTotalBlocks"></span>
+                            <br>
+                            <span id="lblDeviceInfoBlocksUsed"></span>
+                            <br>
+                            <span id="lblDeviceInfoBlockAvailable"></span>
                             <br><br>
-                            Percent used:<br>
-                            <div class="progress" style="vertical-align: middle; position: inherit;">
+                            <div class="progress" style="vertical-align: middle; position: inherit; height: 25px;">
                                 <div class="progress-bar ydb-status-green" role="progressbar"
                                      id="rngDeviceInfoPercentUsed"
-                                     style="width: 0%; color: white; font-size: 15px;"
+                                     style="width: 0; color: white; font-size: 15px;"
                                      aria-valuemin="0" aria-valuemax="100">
                                 </div>
                             </div>
+                            <br>
+                            <span id="lblDeviceInfoINodesTotal"></span>
+                            <br>
+                            <span id="lblDeviceInfoINodesFree"></span>
+                            <br>
                         </div>
                     </div>
                     <br>

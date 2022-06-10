@@ -26,7 +26,13 @@ app.ui.regionSelect.show = (regions, onOkPressed) => {
 
     let isFirst = true;
     regions.forEach(region => {
-        const filename = app.ui.getKeyValue(app.system.regions[region].dbFile.data, 'FILE_NAME');
+        let filename = '';
+
+        if (app.system.regions[region] === undefined) return;
+
+        if (app.system.regions[region].dbFile !== undefined) {
+            filename = app.ui.getKeyValue(app.system.regions[region].dbFile.data, 'FILE_NAME');
+        }
 
         let row = '<a class="nav-link ' + (isFirst ? 'active' : '') + '" id="navRegionSelect_' + region + '" data-toggle="pill" role="tab" ondblclick="app.ui.regionSelect.okPressed()"><div class="row"><div class="col-3">';
 
@@ -56,32 +62,47 @@ app.ui.regionSelect.okPressed = () => {
 // Region Delete
 // **************************************
 app.ui.regionDelete.show = (region) => {
-    app.ui.inputbox.show('WARNING: you are deleting the region: ' + region + '<br><br>This will delete all the references to the region.<br><br>Are you really sure this is what you want to do ?', 'WARNING', ret => {
+    const checkbox = '<div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="chkRegionDeleteFiles" checked>' +
+        '<label class="custom-control-label" for="chkRegionDeleteFiles">Delete also all the files</label></div>';
+
+
+    app.ui.inputbox.show('WARNING: you are deleting the region: ' + region + '<br><br>This will delete all the references to the region.<br><br>Are you really sure this is what you want to do ?<br><br>' + checkbox, 'WARNING', ret => {
         if (ret === 'YES') {
-            setTimeout(app.ui.regionDelete.confirmAgain, 600);
+            setTimeout(app.ui.regionDelete.confirmAgain, 600, region, $('#chkRegionDeleteFiles').is(':checked'));
         }
     })
 };
 
-app.ui.regionDelete.confirmAgain = () => {
-    app.ui.inputbox.show('THIS OPERATION CAN NOT BE UNDONE !!!<br><br>Is this what you really want to do ?', 'WARNING', async ret => {
+app.ui.regionDelete.confirmAgain = (region, withDelete) => {
+    const deleteText = withDelete === true ? '<br><br>This will delete also all the database and journal files.' : '';
+
+    app.ui.inputbox.show('THIS OPERATION CAN NOT BE UNDONE !!!' + deleteText + '<br><br>Is this what you really want to do ?', 'WARNING', async ret => {
         if (ret === 'YES') {
             try {
-                const res = await app.REST._regionDelete(app.ui.regionExtend.regionName);
+                const res = await app.REST._regionDelete(region, withDelete);
 
                 $('#modalExtend').modal('hide');
 
                 if (res.result === 'OK') {
                     app.ui.msgbox.show('The database has been deleted', 'SUCCESS');
 
-                    app.ui.RegionUtilsRefresh()
+                    app.ui.dashboard.refresh();
 
                 } else {
-                    app.ui.msgbox.show('The following error occurred while deleting the region: ' + res.error.description, 'FATAL')
+                    let messageText = 'The following error occurred while deleting the region: ' + res.error.description;
+
+                    if (Array.isArray(res.error.dump)) {
+                        messageText += '<br> Details:';
+
+                        res.error.dump.forEach(dumpLine => {
+                            messageText += '<br>' + dumpLine
+                        })
+                    }
+                    app.ui.msgbox.show(messageText, 'FATAL')
                 }
 
             } catch (err) {
-                app.ui.msgbox.show('The following error occurred while executing the REST call: ' + err.status + ' ' + err.statusText, 'FATAL')
+                app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
 
             }
         }
@@ -249,7 +270,7 @@ app.ui.regionExtend.okPressed = () => {
                     }
 
                 } catch (err) {
-                    app.ui.msgbox.show('The following error occurred while executing the REST call: ' + err.status + ' ' + err.statusText, 'FATAL')
+                    app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
 
                 }
             }
@@ -315,7 +336,7 @@ app.ui.regionCreateDbFile.okPressed = () => {
                     }
 
                 } catch (err) {
-                    app.ui.msgbox.show('The following error occurred while executing the REST call: ' + err.status + ' ' + err.statusText, 'FATAL')
+                    app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
 
                 }
             }
@@ -328,9 +349,19 @@ app.ui.regionCreateDbFile.okPressed = () => {
 // **************************************
 app.ui.regionJournalSwitch.show = (regionName) => {
     const region = app.system.regions[regionName];
-    const mode = region.journal.flags.state === 1 ? 'on' : 'off';
+    let mode = region.journal.flags.state === 1 ? 'on' : 'off';
+    const repairJournal = $('#btnRegionViewJournalSwitch').text() === 'Recreate...';
+    let message = '';
 
-    app.ui.inputbox.show('This will turn the journaling ' + mode.toUpperCase() + ' in the region: ' + regionName + '<br><br>Are you sure ?', mode === 'on' ? 'Warning' : 'WARNING', async ret => {
+    if (repairJournal === true) {
+        message = 'This will recreate the journal file ';
+        mode = 'on';
+
+    } else {
+        message = 'This will turn the journaling ' + mode.toUpperCase()
+    }
+
+    app.ui.inputbox.show(message + ' in the region: ' + regionName + '<br><br>Are you sure ?', mode === 'on' ? 'Warning' : 'WARNING', async ret => {
             if (ret === 'YES') {
                 try {
                     const res = await app.REST._JournalSwitch(regionName, mode);
@@ -345,7 +376,7 @@ app.ui.regionJournalSwitch.show = (regionName) => {
                     }
 
                 } catch (err) {
-                    app.ui.msgbox.show('The following error occurred while executing the REST call: ' + err.status + ' ' + err.statusText, 'FATAL')
+                    app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
 
                 }
             }

@@ -14,14 +14,13 @@
     font-family: 'FiraGO';
     font-style: normal;
     font-weight: 400;
-    url('../fonts/FiraGO-Regular.woff2') format('woff2'), /* Super Modern Browsers */
-    url('../fonts/FiraGO-Regular.woff') format('woff') /* Modern Browsers */
+    src: url("../fonts/FiraGO-Regular.woff2") format('woff2')
 }
 @font-face {
     font-family: 'Inconsolata';
     font-style: normal;
     font-weight: 400;
-    url('../fonts/Inconsolata-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+    src: url("../fonts/Inconsolata-Regular.woff2") format('woff2')
 }
 
 :root {
@@ -579,7 +578,7 @@ input[type=range]::-ms-thumb {
 }
 
 .dash-stats-header {
-    padding-right: 3px;
+    padding-right: 6px;
 }
 
 .stats-table {
@@ -630,4 +629,21 @@ input[type=range]::-ms-thumb {
 
 .table-center {
     margin: 0 auto;
+}
+
+.link-underline {
+    text-decoration: underline !important;
+}
+
+.link-underline:hover {
+    text-decoration: underline !important;
+}
+
+.reload {
+    font-family: Lucida Sans Unicode
+}
+
+.font-inconsolata {
+    font-family: 'Inconsolata', sans-serif;
+    text-align: right;
 }

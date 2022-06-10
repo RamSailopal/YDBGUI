@@ -15,6 +15,8 @@
 const libs = require('../../libs');
 const {expect} = require("chai");
 const {execSync, exec} = require('child_process');
+const fs = require('fs');
+let regionToBeDeleted;
 
 describe("SERVER: Create Region", async () => {
     it("Test # 1310: Create random region with default params and verify creation + file existence", async () => {
@@ -52,7 +54,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -113,7 +115,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -174,7 +176,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -228,7 +230,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -282,7 +284,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -336,7 +338,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -390,7 +392,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -437,7 +439,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -503,7 +505,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -515,7 +517,7 @@ describe("SERVER: Create Region", async () => {
         val = res.data.dbAccess.data[1].KEY_SIZE === 567;
         expect(val).to.be.true;
 
-        val = res.data.dbAccess.data[3].LOCK_CRIT_SEPARATE === false;
+        val = res.data.dbAccess.data[4].LOCK_CRIT_SEPARATE === false;
         expect(val).to.be.true;
     });
 
@@ -588,7 +590,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -662,7 +664,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -712,7 +714,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -762,7 +764,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -836,7 +838,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -981,14 +983,14 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and have the correct properties
         val = res.data.journal.flags.state === 1;
 
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and check the result to be OK
         expect(res.result === 'OK').to.be.true;
@@ -1018,7 +1020,7 @@ describe("SERVER: Create Region", async () => {
 
     it("Test # 1325: Create random region with all journal field different, store them on template, create a new region and verify\n", async () => {
         // generate a random region name
-        let regionName = libs.randomRegionName();
+        regionToBeDeleted = libs.randomRegionName();
 
         let body = {
             dbAccess: {
@@ -1055,17 +1057,17 @@ describe("SERVER: Create Region", async () => {
                 region: []
             },
             journalEnabled: true,
-            journalFilename: '/data/r1.35_x86_64/g/' + regionName + '.mjl',
+            journalFilename: '/data/r1.35_x86_64/g/' + regionToBeDeleted + '.mjl',
             names: [
-                {value: regionName}
+                {value: regionToBeDeleted}
             ],
             postProcessing: {
                 createDbFile: true,
                 switchJournalOn: false
             },
-            regionName: regionName,
+            regionName: regionToBeDeleted,
             segmentData: [],
-            segmentFilename: '/data/r1.35_x86_64/g/' + regionName + '.dat',
+            segmentFilename: '/data/r1.35_x86_64/g/' + regionToBeDeleted + '.dat',
             segmentTypeBg: true,
             templates: {
                 updateTemplateDb: false,
@@ -1080,7 +1082,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // recreate the region with no new params
-        regionName = libs.randomRegionName();
+        const regionName = libs.randomRegionName();
 
         body = {
             dbAccess: {
@@ -1118,7 +1120,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and verify that the region exists
-        res = await libs._REST('regions/' + regionName + '/');
+        res = await libs._REST('regions/' + regionName);
 
         // and have the correct properties
         let val = res.data.journal.flags.state === 1;
@@ -1135,5 +1137,57 @@ describe("SERVER: Create Region", async () => {
 
         val = res.data.journal.data[7].BUFFER_SIZE === 2313;
         expect(val).to.be.true;
+    });
+});
+
+describe("SERVER: Delete Region", async () => {
+    it("Test # 1370: Delete using a bad region name", async () => {
+
+        // execute the call
+        let res = await libs._RESTdelete('regions/idontexist', {}).catch(() => {});
+
+        const error = res.error.description;
+        expect(error).to.have.string('doesn\'t exist')
+    });
+
+    it("Test # 1371: Delete using a null region name", async () => {
+
+        // execute the call
+        let res = await libs._RESTdelete('regions/', {}).catch(() => {});
+
+        const error = res.error.description;
+        expect(error).to.have.string('The parameter "region" is missing or empty')
+    });
+
+    it("Test # 1372: Delete an existing region", async () => {
+        // WARNING: This test is related to 1325 and it uses the region name for deleting
+
+        // execute the call
+        let res = await libs._RESTdelete('regions/' + regionToBeDeleted, {}).catch(() => {});
+
+        // and check the result to be OK
+        expect(res.result === 'OK').to.be.true;
+    });
+
+    it("Test # 1373: Delete an existing region and delete the files", async () => {
+
+        // get the YDBOCTO region to extract the filenames
+        let res = await libs._REST('regions/YDBOCTO');
+
+        const segmentFilename = res.data.dbFile.flags.file;
+        const journalFilename = res.data.journal.flags.file;
+
+        // perform the delete
+        res = await libs._RESTdelete('regions/YDBOCTO?deleteFiles=true', {}).catch(() => {});
+
+        // and check the result to be OK
+        expect(res.result === 'OK').to.be.true;
+
+        // now check for the db file
+        expect(fs.existsSync(segmentFilename)).to.be.false;
+
+        // and journal
+        expect(fs.existsSync(journalFilename)).to.be.false;
+
     });
 });

@@ -42,79 +42,6 @@ getTemplates2
 	quit *templates
 	;
 ; **************************
-; deleteRegionAll(regionName)
-;
-; PARAMS:
-; regionName	string
-; It will delete the region, segment and name having regioName as identifier
-; RETURNS:
-; 1 if OK
-; **************************
-deleteRegionAll(regionName)
-	new shellRet,command,ret
-	;
-	set regionName=$zconvert(regionName,"u")
-	;
-	;set command=". /opt/yottadb/current/ydb_env_set && yottadb -r GDE  <<< "
-	set command=command_"'delete -name "_regionName_$char(10)
-	;set command=command_"delete -region "_regionName_$char(10)
-	;set command=command_"delete -segment "_regionName_$char(10)
-	set command=command_"verify"_$char(10)_"exit"_$c(10)_"'"
-	w !,command,!
-	;
-	set ret=$$runShell^%ydbguiUtils(command,.shellRet)
-	zwr shellRet
-	;
-	q
-	;
-	;
-; **************************
-; deleteAll(regionName)
-;
-; PARAMS:
-; regionName	string
-; It will delete the region, segment and name having regioName as identifier
-; RETURNS:
-; 1 if OK
-; **************************
-deleteAll(regionName)
-	s $ztrap="w !,$zs"
-	new ERR,gdequiet,gdeweberror,gdewebquit,REGION,SEGMENT,NAME
-	new useio,io,varsRetLabelverifyStatus
-	;
-	; push GDE variables in the stack
-	new BOL,FALSE,HEX,MAXGVSUBS,MAXGVSUBS,MAXNAMLN,MAXREGLN,MAXSEGLN,MAXSTRLEN
-	new ONE,PARNAMLN,PARREGLN,PARSEGLN,SIZEOF,TAB,TRUE,TWO,ZERO,accmeth,am,bs
-	new chset,combase,comlevel,comline,create,dbfilpar,defdb,defgld,defgldext
-	new defglo,defreg,defseg,dflreg,encsupportedplat,endian,f,file,filesize
-	new filexfm,gdeerr,glo,gnams,gtm64,hdrlab,helpfile,i,inst,killed,ks,l,label
-	new len,log,logfile,lower,mach,matchLen,maxgnam,maxinst,maxreg,maxseg,mingnam
-	new minreg,minseg,nams,nommbi,olabel,quitLoop,rec,reghasv550fields
-	new reghasv600fields,regs,renpref,resume,s,seghasencrflag,segs,sep,syntab
-	new tfile,tmpacc,tmpreg,tmpseg,tokens,typevalue,update,upper,v30,v44,v532
-	new v533,v534,v542,v550,v5ft1,v600,v621,v631,v63a,ver,x,y,map,map2,mapdisp,s1,s2,l1,j
-	;
-deleteAll2
-	; setup required variables
-	s gdequiet=1
-	s io=$io
-	s useio="io"
-	d setup
-	;
-	; Perform the delete
-	s (NAME,REGION,SEGMENT)=$zconvert(regionName,"u")
-	d NAME^GDEDELET
-	d REGION^GDEDELET
-	d SEGMENT^GDEDELET
-	;
-	; Perform verification
-	s verifyStatus=$$ALL^GDEVERIF
-	w !,"verifyStatus:"_verifyStatus,!
-	s test=$$GDEPUT^GDEPUT
-	w !,test
-	;
-	q
-; **************************
 ; enumRegions(regions)
 ;
 ; PARAMS:
@@ -141,11 +68,13 @@ enumRegions2
 	quit
 	;
 ; **************************
-; getRegion(regionName,buffer)
+; getRegion(regionName,buffer,namesOnly)
 ; **************************
-getRegion(regionName,buffer)
+getRegion(regionName,buffer,namesOnly)
 	new ERR,gdequiet,gdeweberror,gdewebquit
 	new useio,io,varsRetLabel,region
+	;
+	set namesOnly=$get(namesOnly,0)
 	;
 	; push GDE variables in the stack
 	set varsRetLabel="getRegion2"
@@ -169,6 +98,9 @@ getRegion2
 	merge buffer("names")=nams
 	zkill buffer("names")
 	merge buffer("map")=map2
+	;
+	if namesOnly goto getRegionQuit
+	;
 	merge buffer("globalNames")=gnams
 	zkill buffer("globalNames")
 	;
@@ -179,206 +111,10 @@ getRegion2
 	merge buffer("segments")=segs(regionName)
 	zkill buffer("segments")
 	;
+getRegionQuit	
 	quit
 	;
 	;
-;
-; Delete given global directory element(s)
-;
-; @param {Array} ARGS - Passed by reference. Unused variable, used only to conform to interface specification for web server
-; @param {Array/Object} BODY - Passed by reference. JSON array or object that describes the global directory element to delete
-; @param {Array} RESULT - Passed by reference. JSON object that contains errors, verification state, and the resulting global
-;                         directory after the deletion
-; @returns {String} - Empty string unless an error occurs. Errors are found in ^TMP($J)
-;
-; @example
-; s BODY="{""name"":{""NAME"":""ZZYOTTADB1""},""region"":{""REGION"":""ZZYOTTADB""},""segment"":{""SEGMENT"":""ZZYOTTADB""}}"
-; s STATUS=$$delete^GDEWEB(.ARGS,.BODY,.RESULT)
-;
-delete(ARGS,BODY,RESULT)
-	n JSON,ERR,gdequiet,gdeweberror,gdewebquit
-	n useio,io
-	;
-	; GDE variables in the stack
-	n BOL,FALSE,HEX,MAXGVSUBS,MAXGVSUBS,MAXNAMLN,MAXREGLN,MAXSEGLN,MAXSTRLEN
-	n ONE,PARNAMLN,PARREGLN,PARSEGLN,SIZEOF,TAB,TRUE,TWO,ZERO,accmeth,am,bs
-	n chset,combase,comlevel,comline,create,dbfilpar,defdb,defgld,defgldext
-	n defglo,defreg,defseg,dflreg,encsupportedplat,endian,f,file,filesize
-	n filexfm,gdeerr,glo,gnams,gtm64,hdrlab,helpfile,i,inst,killed,ks,l,label
-	n len,log,logfile,lower,mach,matchLen,maxgnam,maxinst,maxreg,maxseg,mingnam
-	n minreg,minseg,nams,nommbi,olabel,quitLoop,rec,reghasv550fields
-	n reghasv600fields,regs,renpref,resume,s,seghasencrflag,segs,sep,syntab
-	n tfile,tmpacc,tmpreg,tmpseg,tokens,typevalue,update,upper,v30,v44,v532
-	n v533,v534,v542,v550,v5ft1,v600,v621,v631,v63a,ver,x,y,map,map2,mapdisp,s1,s2,l1,j
-	n attr,filetype,gdeputzs,gdexcept,maxs,record,ref,sreg,tempfile
-	;
-	i (($d(BODY)=0)!($d(BODY)=1))&($g(BODY)="") D SETERROR^%webutils(301,"BODY") quit ""
-	d DECODE^%webjson("BODY","JSON","ERR")
-	i $d(ERR) D SETERROR^%webutils(202) quit ""
-	;
-	; setup required variables
-	s gdequiet=1
-	s io=$io
-	s useio="io"
-	d setup
-	;
-	n NAME,REGION,SEGMENT,RSLT,getMapData,verifyStatus,next,x,debug
-	s debug=""
-	;
-	; delete the object we've been given from the global directory
-	i $d(JSON(1)) d
-	. n i,item
-	. s i=0
-	. f  s i=$o(JSON(i)) q:i=""  d
-	. . k item
-	. . m item=JSON(i)
-	. . d deleteone(.item)
-	e  d deleteone(.JSON)
-	; Perform verification
-	i '$d(gdeweberror),$$ALL^GDEVERIF,$$GDEPUT^GDEPUT d
-	. s verifyStatus="true"
-	; We didn't pass validation OR couldn't save the global directory
-	e  s verifyStatus="false",getMapData="" ; null value instead of empty string for getMapData?
-	;
-	; Prepare result
-	s RSLT("verifyStatus")=verifyStatus
-	m RSLT("getMapData")=getMapData
-	m RSLT("errors")=gdeweberror
-	d ENCODE^%webjson("RSLT","RESULT","ERR")
-	i $d(ERR) D SETERROR^%webutils(201) quit ""
-	quit ""
-;
-; Internal line tag for delete line tag that deletes a single item from the global directory. ;
-; This requires a verification and put to save the changes to the global directory. ;
-;
-; @param {Array} JSON - Passed by reference. Contains an array structure for a single entry to be deleted from the global directory
-;
-; @example
-; d deleteone^GDEWEB("{""name"":{""NAME"":""XTMP""}")
-;
-deleteone(JSON)
-	i $d(JSON("name")) d
-	. i $g(JSON("name","NAME"))="#" s gdeweberror($i(gdeweberror("count")))="Can't delete 'Local Locks' name" q
-	. s NAME=$g(JSON("name","NAME"))
-	. d NAME^GDEDELET
-	i $d(JSON("region")) d
-	. s REGION=$tr($g(JSON("region","REGION")),lower,upper)
-	. d REGION^GDEDELET
-	i $d(JSON("segment")) d
-	. s SEGMENT=$tr($g(JSON("segment","SEGMENT")),lower,upper)
-	. d SEGMENT^GDEDELET
-	quit
-;
-; Save a given global directory
-;
-; @param {Array} ARGS - Passed by reference. Unused variable, used only to conform to interface specification for web server
-; @param {Array/Object} BODY - Passed by reference. JSON object that describes the global directory entries to save
-; @param {Array} RESULT - Passed by reference. JSON object that contains errors, verification state, and the resulting global
-;                         directory after the operation
-; @returns {String} - Empty string unless an error occurs. Errors are found in ^TMP($J)
-;
-; @example
-; s BODY="{""names"":{""ZZYOTTADB2(1:3)"":""TEMP""}}"
-; s STATUS=$$save^GDEWEB(.ARGS,.BODY,.RESULT)
-;
-save(ARGS,BODY,RESULT)
-	n JSON,ERR,gdequiet,gdeweberror,gdewebquit
-	n useio,io
-	;
-	; GDE variables in the stack
-	n BOL,FALSE,HEX,MAXGVSUBS,MAXGVSUBS,MAXNAMLN,MAXREGLN,MAXSEGLN,MAXSTRLEN
-	n ONE,PARNAMLN,PARREGLN,PARSEGLN,SIZEOF,TAB,TRUE,TWO,ZERO,accmeth,am,bs
-	n chset,combase,comlevel,comline,create,dbfilpar,defdb,defgld,defgldext
-	n defglo,defreg,defseg,dflreg,encsupportedplat,endian,f,file,filesize
-	n filexfm,gdeerr,glo,gnams,gtm64,hdrlab,helpfile,i,inst,killed,ks,l,label
-	n len,log,logfile,lower,mach,matchLen,maxgnam,maxinst,maxreg,maxseg,mingnam
-	n minreg,minseg,nams,nommbi,olabel,quitLoop,rec,reghasv550fields
-	n reghasv600fields,regs,renpref,resume,s,seghasencrflag,segs,sep,syntab
-	n tfile,tmpacc,tmpreg,tmpseg,tokens,typevalue,update,upper,v30,v44,v532
-	n v533,v534,v542,v550,v5ft1,v600,v621,v631,v63a,ver,x,y,map,map2,mapdisp,s1,s2,l1,j
-	n attr,filetype,gdeputzs,gdexcept,maxs,record,ref,sreg,tempfile
-	;
-	i (($d(BODY)=0)!($d(BODY)=1))&($g(BODY)="") D SETERROR^%webutils(301,"BODY") quit ""
-	d DECODE^%webjson("BODY","JSON","ERR")
-	i $d(ERR) D SETERROR^%webutils(202) quit ""
-	;
-	; setup required variables
-	s gdequiet=1
-	s io=$io
-	s useio="io"
-	d setup
-	;
-	n verifyStatus,x,region,segment,namPlusCaret,reg,next,debug,NAME,result,getMapData
-	n uname
-	s debug=""
-	;
-	; Convert boolean to integer
-	d booltoint(.JSON)
-	;
-	; Delete items from the global directory
-	n i,item
-	s i=0
-	f  s i=$o(JSON("deletedItems",i)) q:i=""  d
-	. k item
-	. m item=JSON("deletedItems",i)
-	. d deleteone(.item)
-	;
-	; Names:
-	m nams=JSON("names")
-	s x="" f  s x=$o(nams(x)) q:x=""  d
-	. k region,NAME
-	. s region=nams(x)
-	. d:(x'="#")&(x'="*") createnamearray(x)
-	. m nams(x)=NAME
-	. s nams(x)=region
-	;
-	; Global Names:
-	m gnams=JSON("globalNames")
-	;
-	; Regions:
-	s x="" f  s x=$o(JSON("regions",x)) q:x=""  d
-	. m regs(x)=tmpreg
-	. ; remove items that are invalid
-	. k JSON("regions",x,"NAME")
-	. s attr="" f  s attr=$o(JSON("regions",x,attr)) q:attr=""  d
-	. . i '$l($g(JSON("regions",x,attr))) k JSON("regions",x,attr)
-	. ; Now merge the the incoming region
-	. m regs($tr(x,lower,upper))=JSON("regions",x)
-	. ; uppercase the dynamic segment
-	. s regs($tr(x,lower,upper),"DYNAMIC_SEGMENT")=$tr(regs($tr(x,lower,upper),"DYNAMIC_SEGMENT"),lower,upper)
-	;
-	; Segments:
-	s x="" f  s x=$o(JSON("segments",x)) q:x=""  d
-	. i ($l($g(JSON("segments",x,"ACCESS_METHOD")))),($d(tmpseg(JSON("segments",x,"ACCESS_METHOD")))) m segs(x)=tmpseg(JSON("segments",x,"ACCESS_METHOD"))
-	. e  d message^GDE(gdeerr("QUALREQD"),"""Access method""")
-	. ; remove items that are invalid
-	. k JSON("segments",x,"NAME")
-	. s attr="" f  s attr=$o(JSON("segments",x,attr)) q:attr=""  d
-	. . i '$l($g(JSON("segments",x,attr))) k JSON("segments",x,attr)
-	. ; Now merge the incoming segment
-	. m segs($tr(x,lower,upper))=JSON("segments",x)
-	;
-	; Template Access Methods:
-	m tmpacc=JSON("template","accessMethod")
-	;
-	; Template Region:
-	m tmpreg=JSON("template","region")
-	;
-	; Template Segment:
-	m tmpseg=JSON("template","segment")
-	;
-	; Perform verification
-	i ('$d(gdeweberror)),$$ALL^GDEVERIF,$$GDEPUT^GDEPUT d
-	. s verifyStatus="true"
-	; We didn't pass validation OR couldn't save the global directory
-	e  s verifyStatus="false" ; null value instead of empty string for getMapData?
-	;
-	; Prepare result
-	s result("verifyStatus")=verifyStatus
-	m result("errors")=gdeweberror
-	d ENCODE^%webjson("result","RESULT","ERR")
-	i $d(ERR) D SETERROR^%webutils(201) quit ""
-	quit ""
 ;
 ; Verify a given global directory
 ;
@@ -825,4 +561,3 @@ pushVars
 	new v533,v534,v542,v550,v5ft1,v600,v621,v631,v63a,ver,x,y,map,map2,mapdisp,s1,s2,l1,j
 	;
 	goto @varsRetLabel
-	;

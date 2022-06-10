@@ -103,6 +103,8 @@ let app = {
         msgbox: {},
         inputbox: {},
         wait: {},
+        createDir: {},
+        dirSelect: {},
 
         dashboard: {},
 

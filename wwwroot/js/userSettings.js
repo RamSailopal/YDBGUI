@@ -64,6 +64,58 @@ app.userSettings = {
                 class: 'ydb-status-red',
                 flash: false
             },
+        ],
+        autoExtend: [
+            {
+                min: 0,
+                max: 2,
+                class: 'ydb-status-red',
+                flash: true
+            },
+            {
+                min: 3,
+                max: 5,
+                class: 'ydb-status-red',
+                flash: false
+            },
+            {
+                min: 6,
+                max: 10,
+                class: 'ydb-status-amber',
+                flash: false
+            },
+            {
+                min: 11,
+                max: 999999999,
+                class: 'ydb-status-green',
+                flash: false
+            },
+        ],
+        manualExtend: [
+            {
+                min: 0,
+                max: 10,
+                class: 'ydb-status-red',
+                flash: true
+            },
+            {
+                min: 11,
+                max: 20,
+                class: 'ydb-status-red',
+                flash: false
+            },
+            {
+                min: 21,
+                max: 30,
+                class: 'ydb-status-amber',
+                flash: false
+            },
+            {
+                min: 31,
+                max: 99999999999,
+                class: 'ydb-status-green',
+                flash: false
+            },
         ]
     }
 };

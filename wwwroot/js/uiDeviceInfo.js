@@ -23,12 +23,17 @@ app.ui.deviceInfo.init = () => {
 app.ui.deviceInfo.show = (index) => {
     const device = app.system.devices[index];
     const rngDeviceInfoPercentUsed = $('#rngDeviceInfoPercentUsed');
+
     $('#lblDeviceInfoMountpoint').text(device.mountPoint);
     $('#lblDeviceInfoFileSystem').text(device.type);
-    $('#lblDeviceInfoBlockAvailable').text(app.ui.formatThousands(device.freeBlocks));
-    $('#lblDeviceInfoBlocksUsed').text(app.ui.formatThousands(device.usedBlocks));
-    $('#lblDeviceInfoTotalBlocks').text(app.ui.formatThousands(device.totalBlocks));
+    $('#lblDeviceInfoBlockSize').text(device.fsBlockSize + ' bytes');
+    $('#lblDeviceInfoId').text(device.deviceId);
+    $('#lblDeviceInfoBlockAvailable').text(app.ui.formatThousands(device.freeBlocks) + ' blocks ( ' + app.ui.formatBytes(device.freeBlocks * 1024) + ' )');
+    $('#lblDeviceInfoBlocksUsed').text(app.ui.formatThousands(device.usedBlocks) + ' blocks ( ' + app.ui.formatBytes(device.usedBlocks * 1024) + ' )');
+    $('#lblDeviceInfoTotalBlocks').text(app.ui.formatThousands(device.totalBlocks) + ' blocks ( ' + app.ui.formatBytes(device.totalBlocks * 1024) + ' )');
 
+    $('#lblDeviceInfoINodesTotal').text(app.ui.formatThousands(device.iNodesTotal));
+    $('#lblDeviceInfoINodesFree').text(app.ui.formatThousands(device.iNodesFree));
     const rangeStyle = {};
     app.userSettings.dashboard.storageRanges.forEach(el => {
         if (device.percentUsed >= el.min && device.percentUsed <= el.max) {

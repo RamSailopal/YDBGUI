@@ -62,7 +62,7 @@ app.ui.help.init = () => {
             caption: 'Lock space',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#l-ock-space-integer',
             format: 'thousands',
-            unit: 'blocks'
+            unit: 'pages'
         },
         AUTO_DB: { // From GDE
             caption: 'Auto DB',
@@ -71,7 +71,7 @@ app.ui.help.init = () => {
         },
         ASYNCIO: { // "sgmnt_data.asyncio" - 1 means async IO (0 is default)
             caption: 'Async IO',
-            helpLink: '',
+            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/dbmgmt.html#asyncio',
             inBgOnly: true,
             booleanOnOff: true
         },
@@ -102,7 +102,7 @@ app.ui.help.init = () => {
         },
         BLOCK_SIZE: { // "sgmnt_data.blk_size"
             caption: 'Block size',
-            helpLink: '',
+            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#bl-ock-size-size',
             format: 'thousands',
             unit: 'bytes'
         },
@@ -117,6 +117,7 @@ app.ui.help.init = () => {
             caption: 'Mutex slot',
             helpLink: '',
             format: 'thousands',
+            unit: 'slots',
             inBgOnly: true,
             advancedMode: true,
             class: 'ydb-status-gray-no-border'
@@ -142,7 +143,7 @@ app.ui.help.init = () => {
             advancedMode: true,
             class: 'ydb-status-gray-no-border'
         },
-        INST_FREEZE_ON_ERROR: { // â€œjnlpool_ctl_struct.instfreeze_environ_initedâ€ - defer to Advanced
+        INST_FREEZE_ON_ERROR: { // "sgmnt_data.freeze_on_fail" - defer to Advanced
             caption: 'Freeze on error',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/dbrepl.html#instance-freeze',
             booleanYesNo: true,
@@ -162,7 +163,7 @@ app.ui.help.init = () => {
             advancedMode: true,
             class: 'ydb-status-gray-no-border'
         },
-        QDBRUNDOWN: { // Need to find the parameter for this - defer to Advanced
+        QDBRUNDOWN: { // sgmnt_data.mumps_can_bypass - defer to Advanced
             caption: 'Rundown',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-q-dbrundown',
             booleanYesNo: true,
@@ -171,7 +172,7 @@ app.ui.help.init = () => {
         },
         STATS: { // Need to find the parameter for this - defer to Advanced
             caption: 'Statistics',
-            helpLink: 'https://docs.yottadb.com/ProgrammersGuide/utility.html#ygblstat',
+            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-sta-ts',
             booleanOnOff: true,
             advancedMode: true,
             class: 'ydb-status-gray-no-border'
@@ -197,7 +198,8 @@ app.ui.help.init = () => {
         EPOCH_INTERVAL: { // "sgmnt_data.epoch_interval"
             caption: 'Epoch interval',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#ep-och-interval-seconds',
-            format: 'thousands'
+            format: 'thousands',
+            unit: 'seconds'
         },
         EPOCH_TAPER: { // "sgmnt_data.epoch_taper" - defer to Advanced
             caption: 'Epoch taper',
@@ -216,7 +218,7 @@ app.ui.help.init = () => {
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#au-toswitchlimit-blocks',
             advancedMode: true,
             class: 'ydb-status-gray-no-border',
-            unit: 'blocks',
+            unit: 'journal blocks',
             format: 'thousands'
         },
         ALIGNSIZE: { // "sgmnt_data.alignsize" - defer to Advanced
@@ -224,14 +226,14 @@ app.ui.help.init = () => {
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#ali-gnsize-blocks',
             advancedMode: true,
             class: 'ydb-status-gray-no-border',
-            unit: 'blocks',
+            unit: 'journal blocks',
             format: 'thousands'
         },
         BUFFER_SIZE: { // "sgmnt_data.jnl_buffer_size"
             caption: 'Buffer size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#bu-ffer-size-blocks',
             format: 'thousands',
-            unit: 'blocks'
+            unit: 'journal blocks'
         },
         YIELD_LIMIT: { // "sgmnt_data.yield_lmt" - defer to Advanced
             caption: 'Yield limit',

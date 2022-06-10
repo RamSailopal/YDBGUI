@@ -147,5 +147,42 @@ describe("CLIENT: Region Delete", async () => {
         isVisible = await libs.getCssDisplay('#modalInputbox') === 'none';
         expect(isVisible).to.be.true;
     });
+
+    it("Test # 404: Delete a region and verify that message box appears and with correct text", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=404`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dialog to be set by the async call
+        await libs.delay(700);
+
+        // make sure inputbox is visible
+        let isVisible = await libs.getCssDisplay('#txtInputboxText') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // and text is correct
+        let modal = await page.$('#txtInputboxText');
+        let text = await page.evaluate(el => el.textContent, modal);
+        expect(text).to.have.string('WARNING: you are deleting the region');
+
+        let btnClick = await page.$("#btnInputboxYes");
+        await btnClick.click();
+
+        await libs.delay(1500);
+
+        // and text is correct
+        modal = await page.$('#txtInputboxText');
+        text = await page.evaluate(el => el.textContent, modal);
+        expect(text).to.have.string('THIS OPERATION CAN NOT BE UNDONE');
+
+        btnClick = await page.$("#btnInputboxYes");
+        await btnClick.click();
+
+        await libs.delay(1500);
+
+        // make sure inputbox is invisible
+        isVisible = await libs.getCssDisplay('#modalMsgbox') === 'block';
+        expect(isVisible).to.be.true;
+    });
 });
 

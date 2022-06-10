@@ -151,4 +151,43 @@ describe("CLIENT: Devices", async () => {
         let  pillColor = await libs.getCssBackground('#rngDeviceInfoPercentUsed');
         expect(pillColor).to.have.string('rgb(206, 58, 58)')
     });
+
+    it("Test # 195: Ensure that the extra device information is properly displayed", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=195`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(250);
+
+        let btnClick = await page.$("#btnDashStorageView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(150);
+
+        // make sure dialog is visible
+        const isVisible = await libs.getCssDisplay('#modalDeviceInfo') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // blocksize text is populated
+        let cell = await page.$('#lblDeviceInfoBlockSize');
+        let text = await page.evaluate(el => el.textContent, cell);
+        expect(text !== '').to.be.true;
+
+        // device Id text is populated
+        cell = await page.$('#lblDeviceInfoId');
+        text = await page.evaluate(el => el.textContent, cell);
+        expect(text !== '').to.be.true;
+
+        // iNodes total text is populated
+        cell = await page.$('#lblDeviceInfoINodesTotal');
+        text = await page.evaluate(el => el.textContent, cell);
+        expect(text !== '').to.be.true;
+
+        // iNodes free text is populated
+        cell = await page.$('#lblDeviceInfoINodesFree');
+        text = await page.evaluate(el => el.textContent, cell);
+        expect(text !== '').to.be.true;
+    });
 });

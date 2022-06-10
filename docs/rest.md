@@ -19,15 +19,18 @@
 | Method | Endpoint | Params | Description |
 | --- | --- | ---  | --- |
 | GET | [api/dashbboard/getAll](#get-apidashbboardgetall) | | Retrieves full info on all regions, devices and system|
-| GET | [api/regions/{region}/](#get-apiregionsregion) | | Retieves info about a specific region 
-| DELETE | [api/regions/{region}/](#get-apiregionsregion)| | Deletes a specific region
+| GET | [api/regions/{region}](#get-apiregionsregion) | | Retieves info about a specific region 
+| DELETE | [api/regions/{region}](#get-apiregionsregion)| deleteFiles=true | Deletes a specific region
 | POST | [api/regions/{region}/createDb](#post-apiregionsregioncreatedb) | | Creates a database in the specified region
 | POST | [api/regions/{region}/extend](#post-apiregionsregionextend) | blocks=_nnn_ | Extends the specified region for the given amount of blocks 
 | POST | [api/regions/{region}/journalSwitch](#post-apiregionsregionjournalswitch) | mode=_on_  _off_ | Switches the journal `on` or `off` in the given region
 | GET | [api/dashboard/getTemplates](#get-apidashbboardgettemplates) |  | Returns the GDE templates and their numeric limits
-| POST | [api/regions/parseNamespace/](#post-apiregionsparsenamespace) |  | Verify a namespace
-| POST | [api/regions/validatePath/](#post-apiregionsvalidatepath) |  | Validate a filepath
-| POST | [api/regions/add/](#post-apiregionsadd) |  | Creates a region
+| POST | [api/regions/parseNamespace](#post-apiregionsparsenamespace) |  | Verify a namespace
+| POST | [api/regions/validatePath](#post-apiregionsvalidatepath) |  | Validate a filepath
+| POST | [api/regions/add](#post-apiregionsadd) |  | Creates a region
+| GET | [api/test/error](#get-apitesterror) |  | Triggers an M error and returns the error description in the status 500 response
+| POST | [api/test/error](#post-apitesterror) |  | Triggers an M error and returns the error description in the status 500 response
+| DELETE | [api/test/error](#delete-apitesterror) |  | Triggers an M error and returns the error description in the status 500 response
 
 ### `GET` api/dashboard/getAll
 
@@ -107,7 +110,7 @@ res = {
 ---
 
 
-### `GET` api/regions/{region}/
+### `GET` api/regions/{region}
 
 Retrieves information about a specific region
 
@@ -177,13 +180,15 @@ res = {
 ````
 ---
 
-### `DELETE` api/regions/{region}/
+### `DELETE` api/regions/{region}
 
 Deletes the specified region
 
 Parameters: 
 
-`none`
+`deleteFiles=true`
+
+If deleteFiles=true also journal and database files are deleted.
 
 Body: 
 
@@ -218,7 +223,10 @@ ERROR
 ````js
 res = {
     result: 'ERR',
-    error : {description: ''} // The error description
+    error : {
+        description: '',    // The error description
+        dump : []           // Optional response from the shell
+     }
 }
 ````
 
@@ -459,7 +467,6 @@ SUCCESS
 ````js
 res = {
     result: 'OK'
-    }
 }
 ````
 
@@ -489,4 +496,108 @@ res = {
 }
 ````
 
+
 ---
+
+### `GET` api/test/error
+
+Triggers an M error and returns the error description in the status 500 response
+
+Parameters: 
+
+`none`
+
+Returns:
+
+ERROR
+
+````js
+res = {
+    apiVersion: "1.0",
+    error: {
+        code: 500,
+        errors: [
+            {
+                logID: 99999,
+                mcode: " s a=1/0",
+                message: "150373210,error+1^%ydbguiRest,%YDB-E-DIVZERO, Attempt to divide by zero",
+                place: "error+1^%ydbguiRest",
+                reason: ",M9,Z150373210,"
+            }
+        ],
+        message: "Internal Server Error",
+        request: "DELETE /api/test/error/ "
+    }
+}
+````
+
+---
+
+### `POST` api/test/error
+
+Triggers an M error and returns the error description in the status 500 response
+
+Parameters: 
+
+`none`
+
+Returns:
+
+ERROR
+
+````js
+res = {
+    apiVersion: "1.0",
+    error: {
+        code: 500,
+        errors: [
+            {
+                logID: 99999,
+                mcode: " s a=1/0",
+                message: "150373210,error+1^%ydbguiRest,%YDB-E-DIVZERO, Attempt to divide by zero",
+                place: "error+1^%ydbguiRest",
+                reason: ",M9,Z150373210,"
+            }
+        ],
+        message: "Internal Server Error",
+        request: "DELETE /api/test/error/ "
+    }
+}
+````
+
+---
+
+### `DELETE` api/test/error
+
+Triggers an M error and returns the error description in the status 500 response
+
+Parameters: 
+
+`none`
+
+Returns:
+
+ERROR
+
+````js
+res = {
+    apiVersion: "1.0",
+    error: {
+        code: 500,
+        errors: [
+            {
+                logID: 99999,
+                mcode: " s a=1/0",
+                message: "150373210,error+1^%ydbguiRest,%YDB-E-DIVZERO, Attempt to divide by zero",
+                place: "error+1^%ydbguiRest",
+                reason: ",M9,Z150373210,"
+            }
+        ],
+        message: "Internal Server Error",
+        request: "DELETE /api/test/error/ "
+    }
+}
+````
+
+---
+

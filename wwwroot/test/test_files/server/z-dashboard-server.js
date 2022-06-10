@@ -241,10 +241,10 @@ describe("SERVER: Endpoints verification", async () => {
         expect(isNode).to.be.true;
     });
 
-    it("Test # 1001: dashboard/regions/DEFAULT/get", async () => {
+    it("Test # 1001: dashboard/regions/DEFAULT", async () => {
 
         // execute the call
-        const res = await libs._REST('regions/DEFAULT/').catch(() => {});
+        const res = await libs._REST('regions/DEFAULT').catch(() => {});
 
         // Check if it is an object
         const isObject = typeof res === 'object';
@@ -263,6 +263,70 @@ describe("SERVER: Endpoints verification", async () => {
         // DB FILE
         isNode = res.data.dbFile !== undefined;
         expect(isNode).to.be.true;
+    });
+
+
+    it("Test # 1002: Ensure the extra device information is returned", async () => {
+        // execute the call
+        const res = await libs._REST('dashboard/getAll').catch(() => {});
+
+        // Check if it is an object
+        const isObject = typeof res === 'object';
+        expect(isObject).to.be.true;
+
+        // Check the result
+        let isNode = res.result !== undefined;
+        expect(isNode).to.be.true;
+
+        expect(res.result).to.have.string('OK');
+
+        const flags = res.data.regions['DEFAULT'].dbFile.flags;
+
+        const freeze = flags.freeze;
+        expect(freeze === 0).to.be.true;
+
+        const fsBlockSize = flags.fsBlockSize;
+        expect(fsBlockSize !== 0).to.be.true;
+
+        const iNodesFree = flags.iNodesFree;
+        expect(iNodesFree !== 0).to.be.true;
+
+        const iNodesTotal = flags.iNodesTotal;
+        expect(iNodesTotal !== 0).to.be.true;
+
+        const deviceId = flags.deviceId;
+        expect(deviceId !== '').to.be.true;
+    });
+
+    it("Test # 1020: Use a wrong REST path and ensure that a 404 is returned", async () => {
+        // execute the call
+        const res = await libs._REST('dashboard/notacall').catch(() => {});
+
+        expect(res.error.code === 404).to.be.true;
+    });
+
+    it("Test # 1021: Trigger an error in the server on GET and verify that an error is returned", async () => {
+        // execute the call
+        const res = await libs._REST('test/error').catch(() => {});
+        isObject = typeof res === 'object';
+        expect(isObject).to.be.true;
+        expect(res.error.errors[0].mcode === ' s a=1/0').to.be.true;
+    });
+
+    it("Test # 1022: Trigger an error in the server on POST and verify that an error is returned", async () => {
+        // execute the call
+        const res = await libs._RESTpost('test/error').catch(() => {});
+        isObject = typeof res === 'object';
+        expect(isObject).to.be.true;
+        expect(res.error.errors[0].mcode === ' s a=1/0').to.be.true;
+    });
+
+    it("Test # 1023: Trigger an error in the server on DELETE and verify that an error is returned", async () => {
+        // execute the call
+        const res = await libs._RESTdelete('test/error').catch(() => {});
+        isObject = typeof res === 'object';
+        expect(isObject).to.be.true;
+        expect(res.error.errors[0].mcode === ' s a=1/0').to.be.true;
     });
 });
 
@@ -381,6 +445,27 @@ describe("SERVER: JOURNAL", async () => {
         // switch journaling on again
         execSync('. /opt/yottadb/current/ydb_env_set && mupip set -journal=enable,on -region "DEFAULT"', {stdio: 'ignore'});
     });
+
+    it("Test # 1143: Journal file is missing", async () => {
+
+        // get region information
+        let res = await libs._REST('regions/DEFAULT').catch(() => {});
+        isObject = typeof res === 'object';
+        expect(isObject).to.be.true;
+
+        const jFilename = res.data.journal.flags.file;
+
+        // delete journal
+        execSync('rm ' + jFilename, {stdio: 'ignore'});
+
+        // execute the call
+        res = await libs._REST('regions/DEFAULT').catch(() => {});
+        isObject = typeof res === 'object';
+        expect(isObject).to.be.true;
+
+        expect(res.data.journal.flags.file === undefined).to.be.true;
+
+    });
 });
 
 describe("SERVER: REPLICATION", async () => {
@@ -468,4 +553,3 @@ describe("SERVER: LOCKS", async () => {
         expect(res.data.regions.DEFAULT.locks.locks[0].waiters.length === 2).to.be.true;
     });
 });
-

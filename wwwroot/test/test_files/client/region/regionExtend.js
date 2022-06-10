@@ -85,7 +85,7 @@ describe("CLIENT: Region Extend", async () => {
 
         modal = await page.$('#lblRegionExtendBlockSize');
         text = await page.evaluate(el => el.textContent, modal);
-        expect(text).to.have.string('Kib')
+        expect(text).to.have.string('KiB')
     });
 
     it("Test # 412: Based on entered ext. size, ensure that New size and New avail. space are correct", async () => {

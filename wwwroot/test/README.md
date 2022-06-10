@@ -46,11 +46,18 @@ The Server testing is not using the interface at all and is fully focused on the
 
 | Number | Description |
 | :---:| ---      |
-| 40 | when region[0] file is replicated (asterisk)
-| 41 | when region[0] has a valid file
-| 42 | when region[0] has a file missing + no auto db
-| 43 | when region[0] has a file missing + auto db
-| 44 | when region[0] has a file ok but shmem is bad
+| 35 | when region[0] file is replicated (asterisk)
+| 36 | when region[0] has a valid file
+| 37 | when region[0] has a file missing + no auto db
+| 38 | when region[0] has a file missing + auto db
+| 39 | when region[0] has a file ok but shmem is bad
+| 40 | Extension count > 0: 1 extensions left
+| 41 | Extension count > 0: 4 extensions left
+| 42 | Extension count > 0: 9 extensions left
+| 43 | Extension count = 0: 10% of db size left
+| 44 | Extension count = 0: 15% of db size left
+| 45 | Extension count = 0: 25% of db size left
+|  46 | Freeze mode is on
 
 #### REGION LIST: Journal file 
 
@@ -69,6 +76,7 @@ The Server testing is not using the interface at all and is fully focused on the
 | 61 |  when journal file is enabled but off AND repl on AND >0 users 
 | 62 |  when journal file is enabled and on (before) AND repl on AND >0 users 
 | 63 |  when journal file is enabled and on (nobefore) AND repl on AND >0 users 
+| 64 | Journal file is missing and state = 2
 
 #### DEVICES
 
@@ -93,13 +101,14 @@ The Server testing is not using the interface at all and is fully focused on the
 | 107 | When no region has replication turned on
 | 108 | When some regions have the replication turned on
 | 109 | When at least one region is in wasOn state
-
+| 110 | When freeze mode is on
+| 111 | Journal file is missing and state = 2
+ 
 #### EVENTS 
 
 | Number | Description |
 | :---:| ---      |
 | 120 | Clicking the region list[0] icon
-| 121 | Refreshing the Dashboard
 | 122 | Clicking the System info menu item
 | 123 | Clicking the devices[0] icon
 
@@ -114,6 +123,7 @@ The Server testing is not using the interface at all and is fully focused on the
 | 171 | Confirm that the list is populate with only system info
 | 172 | Confirm that the list is populate with only YDB data
 | 173 | Confirm that the list is populate with only GTM data
+| 174 | Confirm that the encryption flag is populated correctly
 
 ## **DEVICES** 
 
@@ -124,6 +134,7 @@ The Server testing is not using the interface at all and is fully focused on the
 | 192 | Gauge when disk space is >70% and <90%
 | 193 | Gauge when disk space is >90% and <97%
 | 194 | Gauge when disk space is >97% and <101%
+| 195 | Ensure that the extra device information is properly displayed
 
 ## **PULLDOWN MENUS** 
 
@@ -162,22 +173,29 @@ The Server testing is not using the interface at all and is fully focused on the
 | 284 | Button Extend db: verify that is disabled  when database file does NOT exists
 | 285 | Button Extend db: verify that is disabled  when database file is invalid
 | 286 | Select Advanced Params and verify that extra fields are displayed in the db access table
+| 287 | when db file >90 % and extension > 0 should be green
+| 288 | Extension count > 0: 1 extensions left
+| 289 | Extension count > 0: 5 extensions left
+| 290 | Extension count > 0: 8 extensions left
+| 291 | Extension count = 0: 10% of db size left
+| 292 | Extension count = 0: 15% of db size left
+| 293 | Extension count = 0: 25% of db size left
 
 #### JOURNAL TAB 
 
 | Number | Description |
 | :---:| ---      |
-| 290 | Status when journal file is disabled AND repl off
-| 291 | Status when journal file is enabled but off AND repl off
-| 292 | Status when journal file is enabled and on AND repl off
-| 293 | Status when journal file is enabled and in WasOn status
-| 294 | Status when journal file is enabled but off AND repl on AND 0 users 
-| 295 | Status when journal file is enabled and on (before) AND repl on AND 0 users 
-| 296 | Status when journal file is enabled and on (nobefore) AND repl on AND 0 users 
-| 297 | Status when journal file is disabled AND repl on AND >0 users 
-| 298 | Status when journal file is enabled but off AND repl on AND >0 users 
-| 299 | Status when journal file is enabled and on AND repl on AND >0 users 
-| 300 | If no journal, turn on/off button should be invisible
+| 300 | Status when journal file is disabled AND repl off
+| 301 | Status when journal file is enabled but off AND repl off
+| 302 | Status when journal file is enabled and on AND repl off
+| 303 | Status when journal file is enabled and in WasOn status
+| 304 | Status when journal file is enabled but off AND repl on AND 0 users 
+| 305 | Status when journal file is enabled and on (before) AND repl on AND 0 users 
+| 306 | Status when journal file is enabled and on (nobefore) AND repl on AND 0 users 
+| 307 | Status when journal file is disabled AND repl on AND >0 users 
+| 308 | Status when journal file is enabled but off AND repl on AND >0 users 
+| 309 | Status when journal file is enabled and on AND repl on AND >0 users 
+| 310 | If no journal, turn on/off button should be invisible
 | 313 | Verify that Type pill is properly populated with the type when journaling is enabled and Before
 | 314 | Verify that Type pill is properly populated with the type when journaling is enabled and Nobefore
 | 315 | Verify that Type pill is properly populated with the type when journaling disabled
@@ -187,6 +205,8 @@ The Server testing is not using the interface at all and is fully focused on the
 | 319 | Alert message when replication is on and journal is disabled
 | 320 | Alert message when replication is on and journal is enabled / off
 | 321 | Alert message when replication is off and journal is enabled / off
+| 322 | Journal file is missing and state = 2: verify alert
+| 323 | Journal file is missing and state = 2: verify button text
 
 #### NAMES TAB 
 
@@ -194,6 +214,7 @@ The Server testing is not using the interface at all and is fully focused on the
 | :---:| ---      |
 | 350 | Verify that the list is empty
 | 351 | Verify that the list content changes when clicking the checkbox and display also the %YDBTEST
+| 352 | Ensure, when choosing a tab different than Region or Journal, that checkbox "Advanced" is hidden
 
 #### STATS TAB 
 
@@ -225,6 +246,7 @@ The Server testing is not using the interface at all and is fully focused on the
 | 401 | Verify that clicking YES it will display a second dialog
 | 402 | Verify that clicking YES in the second dialog the delete procedure starts
 | 403 | Verify that clicking NO in the second dialog it will abort the procedure
+| 404 | Delete a region and verify that message box appears and with correct text
 
 ## EXTEND REGION dialog
 
@@ -298,6 +320,16 @@ The Server testing is not using the interface at all and is fully focused on the
 | :---:| ---      |
 | 1000 | dashboard/getAll |
 | 1001 | regions/{region}/get |
+| 1002 | Ensure the extra device information is returned
+
+#### REST SERVER ERRORS
+
+| Number | Description |
+| :---:| ---      |
+| 1020 | Use a wrong REST path and ensure that a 404 is returned
+| 1021 | Trigger an error in the server on GET and verify that an error is returned
+| 1022 | Trigger an error in the server on POST and verify that an error is returned
+| 1023 | Trigger an error in the server on DELETE and verify that an error is returned
 
 #### GLD ERRORS 
 
@@ -312,6 +344,7 @@ The Server testing is not using the interface at all and is fully focused on the
 | 1120 | Rename the default.dat file to make it appear missing  |
 | 1121 | Check # of sessions by increasing it with a timed session accessing a global |
 
+
 #### JOURNAL 
 
 | Number | Description |
@@ -319,6 +352,7 @@ The Server testing is not using the interface at all and is fully focused on the
 | 1140 | Switch journaling off in DEFAULT |
 | 1141 | Enable journaling in YDBAIM and verify that the state is correct |
 | 1142 | Disable journaling in DEFAULT |
+| 1143 | Journal file is missing
 
 #### REPLICATION 
 
@@ -409,3 +443,10 @@ The Server testing is not using the interface at all and is fully focused on the
 | 1323 | Create random region with all journal fields different and verify them all
 | 1324 | Create random region with all segment field different, store them on template, create a new region and verify
 | 1325 | Create random region with all journal field different, store them on template, create a new region and verify
+
+#### Delete Region
+
+| 1370 | Delete using a bad region name
+| 1371 | Delete using a null region name
+| 1372 | Delete an existing region
+| 1373 | Delete an existing region and delete the files

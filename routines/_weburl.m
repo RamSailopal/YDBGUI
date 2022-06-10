@@ -18,9 +18,12 @@
 	;
 URLMAP ;
 	;;GET ping ping^%webapi
-	;;GET api/regions/{region}/ getRegion^%ydbguiRest
+	;;GET api/test/error error^%ydbguiRest
+	;;DELETE api/test/error error^%ydbguiRest
+	;;POST api/test/error errorPost^%ydbguiRest
+	;;GET api/regions/{region} getRegion^%ydbguiRest
 	;;GET api/dashboard/getAll getDashboard^%ydbguiRest
-	;;DELETE api/regions/{region}/ deleteRegion^%ydbguiRest
+	;;DELETE api/regions/{region} deleteRegion^%ydbguiRest
 	;;POST api/regions/{region}/createDb createDb^%ydbguiRest
 	;;POST api/regions/{region}/extend extendRegion^%ydbguiRest
 	;;POST api/regions/{region}/journalSwitch journalSwitch^%ydbguiRest

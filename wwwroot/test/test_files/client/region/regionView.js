@@ -14,7 +14,6 @@
 
 const libs = require('../../../libs');
 const {expect} = require("chai");
-
 describe("CLIENT: Region View: Database tab", async () => {
     it("Test # 250: Db status when db file is missing and autodb is on", async () => {
         await page.goto(`http://localhost:${MDevPort}//index.html?test=250`, {
@@ -607,11 +606,232 @@ describe("CLIENT: Region View: Database tab", async () => {
         let text = await page.evaluate(el => el.textContent, cell);
         expect(text).to.have.string('Null subscripts:');
     });
+
+    it("Test # 287: when db file >90 % and extension > 0 should be green", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=287`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // check if text is correct
+        const cell = await page.$('#rngRegionViewRegionUsedSpace');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('95 %');
+
+        // and pill has the GREEN color
+        const pillColor = await libs.getCssBackground('#rngRegionViewRegionUsedSpace');
+        expect(pillColor).to.have.string('rgb(100, 165, 85)')
+    });
+
+    it("Test # 288: Extension count > 0: 1 extensions left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=288`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // make sure alert is visible
+        isVisible = await libs.getCssDisplay('#divRegionViewRegionAlert') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // check if text is correct
+        const cell = await page.$('#lblRegionViewRegionAlert');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('You have 1 extension');
+
+        // and alert has the RED color
+        const pillColor = await libs.getCssBackground('#lblRegionViewRegionAlert');
+        expect(pillColor).to.have.string('rgb(206, 58, 58)')
+    });
+
+    it("Test # 289: Extension count > 0: 5 extensions left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=289`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // make sure alert is visible
+        isVisible = await libs.getCssDisplay('#divRegionViewRegionAlert') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // check if text is correct
+        const cell = await page.$('#lblRegionViewRegionAlert');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('You have 5 extension');
+
+        // and alert has the RED color
+        const pillColor = await libs.getCssBackground('#lblRegionViewRegionAlert');
+        expect(pillColor).to.have.string('rgb(206, 58, 58)')
+    });
+
+    it("Test # 290: Extension count > 0: 8 extensions left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=290`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // make sure alert is visible
+        isVisible = await libs.getCssDisplay('#divRegionViewRegionAlert') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // check if text is correct
+        const cell = await page.$('#lblRegionViewRegionAlert');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('You have 8 extension');
+
+        // and alert has the RED color
+        const pillColor = await libs.getCssBackground('#lblRegionViewRegionAlert');
+        expect(pillColor).to.have.string('rgb(234, 184, 59)')
+    });
+
+    it("Test # 291: Extension count = 0: 10% of db size left\n", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=291`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // make sure alert is visible
+        isVisible = await libs.getCssDisplay('#divRegionViewRegionAlert') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // check if text is correct
+        const cell = await page.$('#lblRegionViewRegionAlert');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('You have a low disk space for extension');
+
+        // and alert has the RED color
+        const pillColor = await libs.getCssBackground('#lblRegionViewRegionAlert');
+        expect(pillColor).to.have.string('rgb(206, 58, 58)')
+    });
+
+    it("Test # 292: Extension count = 0: 15% of db size left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=292`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // make sure alert is visible
+        isVisible = await libs.getCssDisplay('#divRegionViewRegionAlert') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // check if text is correct
+        const cell = await page.$('#lblRegionViewRegionAlert');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('You have a low disk space for extension');
+
+        // and alert has the RED color
+        const pillColor = await libs.getCssBackground('#lblRegionViewRegionAlert');
+        expect(pillColor).to.have.string('rgb(206, 58, 58)')
+    });
+
+    it("Test # 293: Extension count = 0: 25% of db size left", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=293`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // make sure alert is visible
+        isVisible = await libs.getCssDisplay('#divRegionViewRegionAlert') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // check if text is correct
+        const cell = await page.$('#lblRegionViewRegionAlert');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('You have a low disk space for extension');
+
+        // and alert has the YELLOW color
+        const pillColor = await libs.getCssBackground('#lblRegionViewRegionAlert');
+        expect(pillColor).to.have.string('rgb(234, 184, 59)')
+    });
+
 });
 
 describe("CLIENT: Region View: Journal tab", async () => {
-    it("Test # 290: Status when journal file is disabled AND repl off", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=290`, {
+    it("Test # 300: Status when journal file is disabled AND repl off", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=300`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -638,8 +858,8 @@ describe("CLIENT: Region View: Journal tab", async () => {
         expect(pillColor).to.have.string('rgb(243, 243, 243)')
     });
 
-    it("Test # 291: Status when journal file is enabled but off AND repl off", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=291`, {
+    it("Test # 301: Status when journal file is enabled but off AND repl off", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=301`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -666,8 +886,8 @@ describe("CLIENT: Region View: Journal tab", async () => {
         expect(pillColor).to.have.string('rgb(234, 184, 59)')
     });
 
-    it("Test # 292: Status when journal file is enabled and on (before) AND repl off", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=292`, {
+    it("Test # 302: Status when journal file is enabled and on (before) AND repl off", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=302`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -694,8 +914,8 @@ describe("CLIENT: Region View: Journal tab", async () => {
         expect(pillColor).to.have.string('rgb(100, 165, 85)')
     });
 
-    it("Test # 293: Status when journal file is enabled and in WasOn status", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=293`, {
+    it("Test # 303: Status when journal file is enabled and in WasOn status", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=303`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -722,8 +942,8 @@ describe("CLIENT: Region View: Journal tab", async () => {
         expect(pillColor).to.have.string('rgb(206, 58, 58)')
     });
 
-    it("Test # 294: Status when journal file is enabled but off AND repl on AND 0 users", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=294`, {
+    it("Test # 304: Status when journal file is enabled but off AND repl on AND 0 users", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=304`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -750,8 +970,8 @@ describe("CLIENT: Region View: Journal tab", async () => {
         expect(pillColor).to.have.string('rgb(234, 184, 59)')
     });
 
-    it("Test # 295: Status when journal file is enabled and on (before) AND repl on AND 0 users", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=295`, {
+    it("Test # 305: Status when journal file is enabled and on (before) AND repl on AND 0 users", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=305`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -778,8 +998,8 @@ describe("CLIENT: Region View: Journal tab", async () => {
         expect(pillColor).to.have.string('rgb(100, 165, 85)')
     });
 
-    it("Test # 296: Status when journal file is enabled and on (nobefore) AND repl on AND 0 users", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=296`, {
+    it("Test # 306: Status when journal file is enabled and on (nobefore) AND repl on AND 0 users", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=306`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -806,8 +1026,8 @@ describe("CLIENT: Region View: Journal tab", async () => {
         expect(pillColor).to.have.string('rgb(100, 165, 85)')
     });
 
-    it("Test # 297: Status when journal file is disabled AND repl on AND >0 users", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=297`, {
+    it("Test # 307: Status when journal file is disabled AND repl on AND >0 users", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=307`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -834,8 +1054,8 @@ describe("CLIENT: Region View: Journal tab", async () => {
         expect(pillColor).to.have.string('rgb(206, 58, 58)')
     });
 
-    it("Test # 298: Status when journal file is enabled but off AND repl on AND >0 users", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=298`, {
+    it("Test # 308: Status when journal file is enabled but off AND repl on AND >0 users", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=308`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -862,8 +1082,8 @@ describe("CLIENT: Region View: Journal tab", async () => {
         expect(pillColor).to.have.string('rgb(206, 58, 58)')
     });
 
-    it("Test # 300: If no journal, turn on/off button should be invisible", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=300`, {
+    it("Test # 310: If no journal, turn on/off button should be invisible", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=310`, {
             waitUntil: "domcontentloaded"
         });
 
@@ -1144,6 +1364,64 @@ describe("CLIENT: Region View: Journal tab", async () => {
         const pillColor = await libs.getCssBackground('#lblRegionViewJournalAlert');
         expect(pillColor).to.have.string('rgb(234, 184, 59)')
     });
+
+    it("Test # 322: Journal file is missing and state = 2: verify alert", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=322`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // make sure alert is visible
+        isVisible = await libs.getCssDisplay('#divRegionViewJournalAlert') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // check if text is correct
+        const cell = await page.$('#lblRegionViewJournalAlert');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('The journal file is missing');
+
+        // and alert has the correct color as RED
+        const pillColor = await libs.getCssBackground('#lblRegionViewJournalAlert');
+        expect(pillColor).to.have.string('rgb(206, 58, 58)')
+    });
+
+    it("Test # 323: Journal file is missing and state = 2: verify button text", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=323`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // check if button text is correct
+        const cell = await page.$('#btnRegionViewJournalSwitch');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Recreate...');
+    });
+
+
 });
 
 describe("CLIENT: Region View: Names tab", async () => {
@@ -1165,9 +1443,6 @@ describe("CLIENT: Region View: Names tab", async () => {
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
         expect(isVisible).to.be.true;
 
-        // make sure table has NO data
-        let cell = await page.$('#tblRegionViewNames >tbody >tr >td ');
-        expect(cell === null).to.be.true;
     });
 
     it("Test # 351: Verify that the list content changes when clicking the checkbox and display also the %YDBOCTO", async () => {
@@ -1186,6 +1461,33 @@ describe("CLIENT: Region View: Names tab", async () => {
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+    });
+
+    it("Test # 352: Ensure, when choosing a tab different than Region or Journal, that checkbox \"Advanced\" is hidden", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=352`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView2");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // select the Stats tab
+        btnClick = await page.$("#navRegionViewStats");
+        await btnClick.click();
+
+        // make sure the checkbox is not visible
+        isVisible = await libs.getCssDisplay('#divRegionViewAdvancedParameters') !== 'none';
         expect(isVisible).to.be.true;
     });
 

@@ -23,7 +23,7 @@
 ; ****************************************************************
 getRegionStruct(regionName,regionData,warnings)
 	new gdeData,res,segmentFilename,journalFilename,fhead,cnt,deviceInfo
-	new fheadOk,dataCnt,map,newNames,name,regionMap,mapCnt,lsof,lockBuffer,record
+	new fheadOk,dataCnt,map,newNames,name,regionMap,mapCnt,lsof,lockBuffer,record,devInfo
 	;
 	set fheadOk=0,segmentFilename=""
 	;
@@ -65,6 +65,19 @@ getRegionStruct(regionName,regionData,warnings)
 	. . . set deviceInfo=$$strRemoveExtraSpaces^%ydbguiUtils(deviceInfo(2))
 	. . . set regionData("dbFile","flags","mountpoint")=$piece(deviceInfo," ",6)
 	. . . set regionData("dbFile","flags","device")=deviceInfo
+	. . . ; get extra info
+	. . . kill deviceInfo
+	. . . set ret=$$runShell^%ydbguiUtils("stat -fc %s_%i_%c_%d "_$zparse(gdeData("segments","FILE_NAME"),"DIRECTORY"),.deviceInfo)
+	. . . if ret'=0 do
+	. . . . ;error handler for device
+	. . . . set warnings($increment(warnings))="Error occurred while fetching the database device for region: "_regionName_" error is: "_ret
+	. . . else  do
+	. . . . set *devInfo=$$SPLIT^%MPIECE(deviceInfo(1),"_")
+	. . . . set regionData("dbFile","flags","fsBlockSize")=devInfo(1)
+	. . . . set regionData("dbFile","flags","deviceId")=devInfo(2)
+	. . . . set regionData("dbFile","flags","iNodesTotal")=devInfo(3)
+	. . . . set regionData("dbFile","flags","iNodesFree")=devInfo(4)
+	. ;
 	. else  do
 	. . set regionData("dbFile","flags","file")=segmentFilename
 	. . ; file found on file system
@@ -94,10 +107,29 @@ getRegionStruct(regionName,regionData,warnings)
 	. . . . set deviceInfo=$$strRemoveExtraSpaces^%ydbguiUtils(deviceInfo(2))
 	. . . . set regionData("dbFile","flags","mountpoint")=$piece(deviceInfo," ",6)
 	. . . . set regionData("dbFile","flags","device")=deviceInfo
+	. . . . kill deviceInfo
+	. . . . set ret=$$runShell^%ydbguiUtils("stat -fc %s_%i_%c_%d "_segmentFilename,.deviceInfo)
+	. . . . if ret'=0 do
+	. . . . . ;error handler for device
+	. . . . . set warnings($increment(warnings))="Error occurred while fetching the database device for region: "_regionName_" error is: "_ret
+	. . . . . set deviceInfo="error"
+	. . . . . set regionData("dbFile","flags","mountpoint")="error"
+	. . . . . set regionData("dbFile","flags","device")="error"
+	. . . . else  do
+	. . . . . set *devInfo=$$SPLIT^%MPIECE(deviceInfo(1),"_")
+	. . . . . set regionData("dbFile","flags","fsBlockSize")=devInfo(1)
+	. . . . . set regionData("dbFile","flags","deviceId")=devInfo(2)
+	. . . . . set regionData("dbFile","flags","iNodesTotal")=devInfo(3)
+	. . . . . set regionData("dbFile","flags","iNodesFree")=devInfo(4)
 	. . . ; compute the # of users, if possible
 	. . . set ret=$$dbnopen(segmentFilename),regionData("dbFile","flags","shmenHealthy")="true"
 	. . . if ret>-1 set regionData("dbFile","flags","sessions")=ret quit
-	. . . if ret=-999999 set regionData("dbFile","flags","sessions")="n/a",regionData("dbFile","flags","shmenHealthy")="false" quit
+	. . . if ret=-999999 do  quit
+	. . . . ; shmem error, try to open the region and check if it got fixed
+	. . . . set ret=$$tryOpenRegion(regionName)
+	. . . . if ret=0 set regionData("dbFile","flags","sessions")="n/a",regionData("dbFile","flags","shmenHealthy")="false"
+	. . . . else  set ret=$$dbnopen(segmentFilename) if ret=999999 set regionData("dbFile","flags","shmenHealthy")="false" quit
+	. . . ;
 	. . . if ret=-130 set regionData("dbFile","flags","fileBad")="true" quit
 	. . . ; process extra errors
 	. . . set warnings($increment(warnings))="Error occurred while fetching the users for region: "_regionName_" error is: "_ret
@@ -110,26 +142,45 @@ getRegionStruct(regionName,regionData,warnings)
 	set journalFilename=$zsearch(-1)
 	set journalFilename=$zsearch($translate(record("sgmnt_data.jnl_file_name"),$char(0),""))
 	; extract the device mountpoint
-	do:journalFilename'=""
-	. set ret=$$runShell^%ydbguiUtils("df "_journalFilename,.deviceInfo)
-	. if ret'=0 do
-	. . ;error handler
-	. . set warnings($increment(warnings))="Error occurred while fetching the journal device for region: "_regionName_" error is: "_ret
-	. . set regionData("journal","flags","file")="error"
-	. . set regionData("journal","flags","mountpoint")="error"
-	. . set regionData("journal","flags","device")="error"
-	. . set regionData("journal","flags","file")="error"
-	. else  do
-	. . set deviceInfo=$$strRemoveExtraSpaces^%ydbguiUtils(deviceInfo(2))
-	. . set regionData("journal","flags","file")=journalFilename
-	. . set regionData("journal","flags","mountpoint")=$piece(deviceInfo," ",6)
-	. . set regionData("journal","flags","device")=deviceInfo
-	. . set regionData("journal","flags","file")=journalFilename
+	do:journalFilename'=""	
+	. set regionData("journal","flags","fileExist")=$select($zsearch(journalFilename,-1)="":"false",1:"true")
+	. if regionData("journal","flags","fileExist")="true" do
+	. . set ret=$$runShell^%ydbguiUtils("df "_journalFilename,.deviceInfo)
+	. . if ret'=0 do
+	. . . ;error handler
+	. . . set warnings($increment(warnings))="Error occurred while fetching the journal device for region: "_regionName_" error is: "_ret
+	. . . set regionData("journal","flags","file")="error"
+	. . . set regionData("journal","flags","mountpoint")="error"
+	. . . set regionData("journal","flags","device")="error"
+	. . . set regionData("journal","flags","file")="error"
+	. . else  do
+	. . . set deviceInfo=$$strRemoveExtraSpaces^%ydbguiUtils(deviceInfo(2))
+	. . . set regionData("journal","flags","file")=journalFilename
+	. . . set regionData("journal","flags","mountpoint")=$piece(deviceInfo," ",6)
+	. . . set regionData("journal","flags","device")=deviceInfo
+	. . . set regionData("journal","flags","file")=journalFilename
+	. . . kill deviceInfo
+	. . . set ret=$$runShell^%ydbguiUtils("stat -fc %s_%i_%c_%d "_journalFilename,.deviceInfo)
+	. . . if ret'=0 do
+	. . . . ;error handler for device
+	. . . . set warnings($increment(warnings))="Error occurred while fetching the database device for region: "_regionName_" error is: "_ret
+	. . . . set deviceInfo="error"
+	. . . . set regionData("journal","flags","mountpoint")="error"
+	. . . . set regionData("journal","flags","device")="error"
+	. . . else  do
+	. . . . set *devInfo=$$SPLIT^%MPIECE(deviceInfo(1),"_")
+	. . . . set regionData("journal","flags","fsBlockSize")=devInfo(1)
+	. . . . set regionData("journal","flags","deviceId")=devInfo(2)
+	. . . . set regionData("journal","flags","iNodesTotal")=devInfo(3)
+	. . . . set regionData("journal","flags","iNodesFree")=devInfo(4)
 	;
 	set regionData("journal","flags","state")=record("sgmnt_data.jnl_state")
 	set:regionData("journal","flags","state")=2 regionData("journal","flags","state")=$select(+$get(record("node_local.jnl_file.u.inode"),0):3,1:2) ;status 2: on, but inactive, status 3: on and active
 	set regionData("journal","flags","inode")=$get(record("node_local.jnl_file.u.inode"),0)
 	set regionData("replication","flags","status")=record("sgmnt_data.repl_state") ;0: closed/inactive 1: open/active 2: wasOn (was on but now not active)
+	;
+	; FREEZE status
+	set regionData("dbFile","flags","freeze")=record("sgmnt_data.freeze")
 	;
 	; Using dataCnt makes an object returned to the GUI an array, which lets us control the order in which the data is presented. ;
 	;
@@ -159,12 +210,11 @@ getRegionStruct(regionName,regionData,warnings)
 	set regionData("dbAccess","data",$increment(dataCnt),"RECORD_SIZE")=record("sgmnt_data.max_rec_size")
 	set regionData("dbAccess","data",$increment(dataCnt),"KEY_SIZE")=record("sgmnt_data.max_key_size")
 	set regionData("dbAccess","data",$increment(dataCnt),"COLLATION_DEFAULT")=record("sgmnt_data.def_coll")
-	;set regionData("dbAccess","data",$increment(dataCnt),"INST_FREEZE_ON_ERROR")=record("jnlpool_ctl_struct.instfreeze_environ_init")
+	set regionData("dbAccess","data",$increment(dataCnt),"INST_FREEZE_ON_ERROR")=$select(record("sgmnt_data.freeze_on_fail"):"false",1:"true")
 	set regionData("dbAccess","data",$increment(dataCnt),"LOCK_CRIT_SEPARATE")=$select(record("sgmnt_data.lock_crit_with_db"):"false",1:"true")
 	set regionData("dbAccess","data",$increment(dataCnt),"NULL_SUBSCRIPTS")=$select(record("sgmnt_data.null_subs")=0:"Not allowed",record("sgmnt_data.null_subs")=1:"Allowed",1:"Allow existing")
-	;set regionData("dbAccess","data",$increment(dataCnt),"QDBRUNDOWN")=record("sgmnt_data.?")
-	;set regionData("dbAccess","data",$increment(dataCnt),"STATS")=record("sgmnt_data.?")
-	set regionData("dbAccess","data",$increment(dataCnt),"STDNULLCOLL")=$select(record("sgmnt_data.std_null_coll"):"true",1:"false")
+	set regionData("dbAccess","data",$increment(dataCnt),"QDBRUNDOWN")=$select(record("sgmnt_data.mumps_can_bypass"):"false",1:"true")
+	set regionData("dbAccess","data",$increment(dataCnt),"STATS")=$select(record("sgmnt_data.reservedDBFlags")=0:"true",1:"false")
 	;
 	; fill the journal/data section
 	set dataCnt=0
@@ -242,17 +292,17 @@ getRegionStruct(regionName,regionData,warnings)
 	if $data(lockBuffer) merge regionData("locks")=lockBuffer
 	else  do
 	. set warnings($increment(warnings))="Error occurred while fetching the locks for region: "_regionName_" error is: "_ret
-	. set regionData("locks","processesOnQueue")="error"
-	. set regionData("locks","slotsInUse")="error"
-	. set regionData("locks","slotsBytesInUse")="error"
-	. set regionData("locks","estimatedFreeLockSpace")="error"
+	. set regionData("locks","processesOnQueue")="N/A"
+	. set regionData("locks","slotsInUse")="N/A"
+	. set regionData("locks","slotsBytesInUse")="N/A"
+	. set regionData("locks","estimatedFreeLockSpace")="N/A"
 	;
 getRegionStructQuit
 	quit
 	;
 	;
 ; ****************************************************************
-; create:(req)
+; create(req)
 ;
 ; PARAMS:
 ; body					array byRef
@@ -274,7 +324,7 @@ create(body)
 	set gldFilename=$zparse($zgbldir,"NAME")_".bak"
 	set cpCmd="cp "_$zgbldir_" "_gldPath_"/"_gldFilename
 	set ret=$$runShell^%ydbguiUtils(cpCmd,.shellResult)
-	do:ret<0 
+	do:ret<0
 	. set res("result")="WARNING"
 	. set warningFlag=warningFlag+1
 	. set res("error",warningFlag,"description")="Couldn't create the backup file. Error: "_ret
@@ -284,15 +334,15 @@ create(body)
 	set cmdHeader="$ydb_dist/yottadb -r GDE"
 	set cmdExit=" exit"_NL
 	set cmdQuit=" quit"_NL
-	;	
+	;
 	; create templates commands if needed
 	if body("templates","updateTemplateDb")="true",$data(body("segmentData")) set segmentTcmd=$$buildSegmentCommand(.body)
 	if (body("templates","updateTemplateDb")="true")&($data(body("dbAccess","region")))!(body("templates","updateTemplateJournal")="true"&($data(body("dbAccess","journal")))) set regionTcmd=$$buildRegionCommand(.body,.autoDbFlag)
-	; 
+	;
 	; create now the commands for the region
 	if (body("templates","updateTemplateDb")="false"&($data(body("segmentData"))))!(body("segmentTypeBg")="false") set segmentCmd=$$buildSegmentCommand(.body)
 	if (body("templates","updateTemplateDb")="false"&($data(body("dbAccess","region"))))!(body("templates","updateTemplateJournal")="false"&($data(body("dbAccess","journal")))) set regionCmd=$$buildRegionCommand(.body,.autoDbFlag)
-	;	
+	;
 	; if any template update... update them first ;
 	if segmentTcmd'=""!(regionTcmd'="") do  goto:$data(verifyStatus)>9 createQuit
 	. set:segmentTcmd'="" segmentTcmd="TEMPLATE -SEGMENT "_segmentTcmd,cmd=cmd_segmentTcmd_NL
@@ -301,7 +351,7 @@ create(body)
 	. ; temp debug line
 	. s res("templateCmd")=cmd
 	. ;finalize command
-	. if $get(body("debugMode")) set cmd=cmd_"VERIFY"_NL_cmdQuit_NL ;this will verify and exit without saving: 
+	. if $get(body("debugMode")) set cmd=cmd_"VERIFY"_NL_cmdQuit_NL ;this will verify and exit without saving:
 	. else  set cmd=cmd_NL_cmdExit_NL
 	. ;
 	. ; execute the shell
@@ -329,16 +379,16 @@ create(body)
 	. ; if the string already had a -j=() section, append it, otherwise create a new one
 	. if $extract(regionCmd,$length(regionCmd))=")" set regionCmd=$extract(regionCmd,1,$length(regionCmd)-1)_",FILE_NAME="""_body("journalFilename")_""")"
 	. else  set regionCmd=regionCmd_" -JOURNAL=(FILE_NAME="""_body("journalFilename")_""")"
-	;	
+	;
 	; region creation params
 	set cmd=cmd_"ADD -REGION "_body("regionName")_" -DYNAMIC="_body("regionName")_" "_regionCmd_NL
-	;	
+	;
 	;names
 	set ix="" for  set ix=$order(body("names",ix)) quit:ix=""  do
 	. set cmd=cmd_"ADD -NAME "_body("names",ix,"value")_" -REGION="_body("regionName")_NL
 	;
 	;finalize command
-	if $get(body("debugMode")) set cmd=cmd_"VERIFY"_NL_cmdQuit_NL ;this will verify and exit without saving: 
+	if $get(body("debugMode")) set cmd=cmd_"VERIFY"_NL_cmdQuit_NL ;this will verify and exit without saving:
 	else  set cmd=cmd_NL_cmdExit_NL
 	;
 	; temp debug line
@@ -361,7 +411,7 @@ create(body)
 	. . set postCmd="$ydb_dist/mupip CREATE -REGION="_body("regionName")
 	. . kill shellResult
 	. . set ret=$$runShell^%ydbguiUtils(postCmd,.shellResult)
-	. . do:ret<0 
+	. . do:ret<0
 	. . . set res("result")="WARNING"
 	. . . set warningFlag=warningFlag+1
 	. . . set res("error",warningFlag,"description")="Couldn't create database file. Error: "_ret
@@ -373,7 +423,7 @@ create(body)
 	. . set postCmd=postCmd_""" -REGION "_body("regionName")
 	. . kill shellResult
 	. . set ret=$$runShell^%ydbguiUtils(postCmd,.shellResult)
-	. . do:ret<0 
+	. . do:ret<0
 	. . . set res("result")="WARNING"
 	. . . set warningFlag=warningFlag+1
 	. . . set res("error",warningFlag,"description")="Couldn't turn journal on. Error: "_ret
@@ -389,12 +439,90 @@ create(body)
 	. zkill verifyStatus
 	. merge res("error","dump")=verifyStatus
 	;
-createQuit	
+createQuit
 	quit *res
 	;
 	;
+; **************************
+; delete(regionName)
+;
+; PARAMS:
+; regionName	string
+; It will delete the region, segment and name having regioName as identifier
+; RETURNS:
+; 1 if OK
+; **************************
+delete(regionName,deleteFiles)
+	new shellResult,ret,res,namesList
+	new deleteCmd,name,command,LF,ix,cnt,verifyStatus
+	new regionData,warnings,dbFilename,journalFilename
+	;
+	; initialize variables
+	set regionName=$zconvert(regionName,"u")
+	set deleteCmd=""
+	set LF=$char(10)
+	set command="$ydb_dist/yottadb -r GDE"
+	do getRegionStruct(regionName,.regionData,.warnings)
+	;
+	; get the names list
+	set *namesList=$$getNames(regionName)
+	;
+	; prepare the delete list in the deleteCmd with names
+	set name="" for  set name=$order(namesList(name)) quit:name=""  do
+	. set deleteCmd=deleteCmd_"DELETE -NAME "_name_LF
+	;
+	; and segment / region
+	set deleteCmd=deleteCmd_"DELETE -SEGMENT "_regionName_LF
+	set deleteCmd=deleteCmd_"DELETE -REGION "_regionName_LF
+	; and save the changes
+	set deleteCmd=deleteCmd_"exit"_LF
+	;
+	;execute the command
+	set ret=$$runIntShell^%ydbguiUtils(command,deleteCmd,.shellResult)
+	;
+	; and parse the result
+	set (verifyStatus,cnt)=0
+	set ix="" for  set ix=$order(shellResult(ix)) quit:ix=""!(verifyStatus=1)  do
+	. quit:ix<4
+	. if shellResult(ix)="%GDE-I-VERIFY, Verification OK" set verifyStatus=1 quit
+	. if shellResult(ix)'="",shellResult(ix)'="GDE> " set cnt=cnt+1,verifyStatus(cnt)=shellResult(ix)
+	;
+	if $data(verifyStatus)>9 do  goto deleteQuit
+	. set res("result")="ERROR"
+	. set res("error","description")="Error deleting the region: "_regionName
+	. zkill verifyStatus
+	. merge res("error","dump")=verifyStatus
+	;
+	; need to delete files ?
+	if deleteFiles do  go:$get(res("result"))="ERROR" deleteQuit
+	. set dbFilename=$get(regionData("dbFile","flags","file"))
+	. set journalFilename=$get(regionData("journal","flags","file"))
+	. ;
+	. if dbFilename'="" do  if $get(res("result"))="ERROR" quit
+	. . kill shellResult
+	. . set ret=$$runShell^%ydbguiUtils("rm "_dbFilename,.shellResult)
+	. . if ret'=0 do
+	. . . set res("result")="ERROR"
+	. . . set res("error","description")="Error deleting the file: "_dbFilename
+	. ;
+	. if journalFilename'="" do
+	. . kill shellResult
+	. . set ret=$$runShell^%ydbguiUtils("rm "_journalFilename_"*",.shellResult)
+	. . if ret'=0 do
+	. . . set res("result")="ERROR"
+	. . . set res("error","description")="Error deleting the file: "_journalFilename
+	;
+	set res("result")="OK"
+	;
+deleteQuit
+	quit *res
+	;
+; ------------------------------------------------------------------------------
+; ------------------------------------------------------------------------------
 ; ------------------------------------------------------------------------------
 ; LOCAL ROUTINES
+; ------------------------------------------------------------------------------
+; ------------------------------------------------------------------------------
 ; ------------------------------------------------------------------------------
 ;
 buildSegmentCommand:(body) ; Builds a command to update the segment
@@ -439,7 +567,7 @@ buildRegionCommand:(body,autoDbFlag) ; Builds a command to update the region
 	. . set:field="qbRundown" cmd=cmd_" -"_$select(body("dbAccess","region",ix,"value")=0:"NO",1:"")_"QDBRUNDOWN"
 	. . set:field="stats" cmd=cmd_" -"_$select(body("dbAccess","region",ix,"value")=0:"NO",1:"")_"STATS"
 	;
-	;	
+	;
 	do:$data(body("dbAccess","journal"))&(body("journalEnabled")="true")
 	. set cmd=cmd_" -JOURNAL=("
 	. set prefixString=""
@@ -506,7 +634,7 @@ dbnopen:(dbfile)	; Report number of processes accessing a YottaDB database file
 getLocksData:(regionName)
 	new lockBuffer,ret,cnt,lockCnt,waiterCnt,lockData
 	;
-	kill lockData
+	kill lockData,lockBuffer
 	;
 	set ret=$$runShell^%ydbguiUtils("lke show -all -wait -region="_regionName,.lockBuffer)
 	quit:ret'=0 ret
@@ -529,7 +657,8 @@ getLocksData:(regionName)
 	. . set lockData("locks",lockCnt,"pid")=$piece(lockBuffer(cnt)," ",5)
 	;
 	do parseLockSpaceInfo(lockBuffer(cnt))
-	do parseLockSpaceUse(lockBuffer(cnt+1))
+	set cnt=cnt+$select($find(lockBuffer(cnt+1),"%YDB-I-NOLOCKMATCH"):2,1:1)
+	do parseLockSpaceUse(lockBuffer(cnt))
 	;
 getLocksDataQuit
 	quit *lockData
@@ -548,3 +677,56 @@ parseLockSpaceUse:(string)
 	;
 	quit
 	;
+	;
+; ****************************************************************
+; tryOpenRegion(regionName)
+; ;
+; PARAMS:
+; regionName		string
+; RETURNS:
+; >0				OK
+; 0					Could NOT open the region
+; ****************************************************************
+tryOpenRegion(regionName)
+	new ret
+	new $ztrap,$etrap
+	;
+	set $ztrap="goto tryOpenRegionQuit"
+	set ret=0
+	;
+	set ret=$$^%PEEKBYNAME("sgmnt_data.blk_size",region)
+	;
+tryOpenRegionQuit
+	quit ret
+	;
+	;
+; ****************************************************************
+; getNames(regionName)
+; ;
+; PARAMS:
+; regionName		string
+; RETURNS:
+; array with names as subscripts
+; ****************************************************************
+getNames:(regionName)
+	new cnt,map,name,newNames,regionMap,gdeData
+	;
+	; get the names
+	do getRegion^%ydbguiGde(regionName,.gdeData)
+	;quit *gdeData
+	;
+	set cnt=0
+	set map="" for  set map=$order(gdeData("map",map)) quit:map=""  do
+	. if $get(gdeData("map",map,"region"))=regionName do
+	. . set name="" for  set name=$order(gdeData("names",name)) quit:name=""  do
+	. . . if $extract(name,1,$length(name)-1)=$get(gdeData("map",map,"from"))!(name=$get(gdeData("map",map,"from"))) do
+	. . . . set cnt=cnt+1
+	. . . . set newNames(name,cnt,"from")=$get(gdeData("map",map,"from"))
+	. . . . set newNames(name,cnt,"to")=$get(gdeData("map",map,"to"))
+	;
+	set (cnt,name)=""
+	for  set name=$order(newNames(name)) quit:name=""  do
+	. set cnt=$increment(cnt)
+	. set regionMap(name)=""
+	;
+	quit *regionMap
