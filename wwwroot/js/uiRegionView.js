@@ -12,6 +12,7 @@
 
 app.ui.regionView.init = () => {
     $('#btnRegionViewRefresh').on('click', () => app.ui.regionView.refreshBtn());
+    $('#chkRegionViewAdvancedMode').on('click', () => app.ui.regionView.refresh());
 
     $('#modalRegionView').on('hide.bs.modal', () => {
         if (app.ui.regionView.isFresh) {
@@ -22,7 +23,13 @@ app.ui.regionView.init = () => {
 
 app.ui.regionView.isFresh = false;
 app.ui.regionView.currentRegion = '';
+
 app.ui.regionView.show = regionName => {
+    $('#btnRegionViewRegionExtendDbFile').on('click', () => app.ui.regionExtend.show(regionName));
+    $('#btnRegionViewRegionCreateDbFile').on('click', () => app.ui.regionCreateDbFile.show(regionName));
+
+    //clear the checkbox
+    $('#chkRegionViewAdvancedMode').prop('checked', false);
 
     // ************************************
     // DISPLAY DIALOG
@@ -83,8 +90,8 @@ app.ui.regionView.refresh = () => {
             }
         }
     } else {
-        result.database.caption = app.ui.getKeyValue(region.dbAccess.data, 'AUTO_DB') ? 'No database file' : 'Critical';
-        result.database.class = app.ui.getKeyValue(region.dbAccess.data, 'AUTO_DB') ? 'ydb-status-amber' : 'ydb-status-red';
+        result.database.caption = app.ui.getKeyValue(region.dbFile.data, 'AUTO_DB') ? 'No database file' : 'Critical';
+        result.database.class = app.ui.getKeyValue(region.dbFile.data, 'AUTO_DB') ? 'ydb-status-amber' : 'ydb-status-red';
         result.database.alert = 'The database file is missing.';
     }
 
@@ -107,10 +114,11 @@ app.ui.regionView.refresh = () => {
             .addClass(result.database.class);
         divRegionViewRegionAlert
             .css('display', 'block')
-            .css('height', '209px')
+            .css('height', '56px')
     }
 
     // Used space
+    const blockSize = app.ui.getKeyValue(region.dbFile.data, 'BLOCK_SIZE');
     const rngRegionViewRegionUsedSpace = $('#rngRegionViewRegionUsedSpace');
     if (region.dbFile.flags.fileExist && region.dbFile.flags.fileBad === false) {
         rngRegionViewRegionUsedSpace
@@ -128,6 +136,14 @@ app.ui.regionView.refresh = () => {
             .removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray')
             .addClass(rangeStyle.class);
 
+        // and related popup
+        const devicePopup = '<strong>Total blocks:</strong> ' + region.dbFile.usage.totalBlocks + ' ( ' + app.ui.formatBytes(region.dbFile.usage.totalBlocks * blockSize) + ' )<br>' +
+            '<strong>Free blocks: </strong>' + region.dbFile.usage.freeBlocks + ' ( ' + app.ui.formatBytes(region.dbFile.usage.freeBlocks * blockSize) + ' )<br>' +
+            '<strong>Used blocks: </strong>' + region.dbFile.usage.usedBlocks + ' ( ' + app.ui.formatBytes(region.dbFile.usage.usedBlocks * blockSize) + ' )';
+
+        $('#puRegionViewDbUsage')
+            .attr('data-content', devicePopup)
+        //.attr('title','Device usage');
     } else {
         rngRegionViewRegionUsedSpace
             .css('width', '100%')
@@ -135,7 +151,10 @@ app.ui.regionView.refresh = () => {
             .text(0 + ' %')
             .removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray')
             .addClass('ydb-status-gray');
+
     }
+
+
     // User Sessions
     const pillRegionViewRegionSessions = $('#pillRegionViewRegionSessions');
     if (region.dbFile.flags.fileExist && region.dbFile.flags.fileBad === false) {
@@ -147,14 +166,23 @@ app.ui.regionView.refresh = () => {
 
     // Database file table
     const divRegionViewRegionTables = $('#divRegionViewRegionTables');
-    if ((region.dbFile.flags.fileExist === false && app.ui.getKeyValue(region.dbAccess.data, 'AUTO_DB') === false) || (region.dbFile.flags.fileExist === true && region.dbFile.flags.fileBad === true)) {
+    if ((region.dbFile.flags.fileExist === false && app.ui.getKeyValue(region.dbFile.data, 'FILE_NAME') === '') || (region.dbFile.flags.fileExist === true && region.dbFile.flags.fileBad === true)) {
         divRegionViewRegionTables.css('display', 'none');
 
     } else {
         divRegionViewRegionTables.css('display', 'block');
 
         const tblRegionViewRegionRegion = $('#tblRegionViewRegionRegion > tbody');
-        $(tblRegionViewRegionRegion).empty();
+        const divRegionViewTableLeftContainer = $('#divRegionViewTableLeftContainer');
+
+        if (region.dbFile.flags.fileExist === false) {
+            divRegionViewTableLeftContainer.css('height', 206)
+
+        } else {
+            divRegionViewTableLeftContainer.css('height', 260)
+        }
+
+        tblRegionViewRegionRegion.empty();
 
         region.dbFile.data.forEach(el => {
             let rowData = '';
@@ -167,19 +195,21 @@ app.ui.regionView.refresh = () => {
         const tblRegionViewRegionSegment = $('#tblRegionViewRegionSegment > tbody');
         $(tblRegionViewRegionSegment).empty();
 
-        region.dbAccess.data.forEach(el => {
-            let rowData = '';
-            for (const key in el) {
-                rowData += app.ui.regionView.renderRow(key, el[key])
-            }
-            tblRegionViewRegionSegment.append(rowData)
-        });
+        if (region.dbAccess !== undefined && region.dbAccess.data !== undefined && Array.isArray(region.dbAccess.data)) {
+            region.dbAccess.data.forEach(el => {
+                let rowData = '';
+                for (const key in el) {
+                    rowData += app.ui.regionView.renderRow(key, el[key])
+                }
+                tblRegionViewRegionSegment.append(rowData)
+            });
+        }
     }
     // button create db
     const btnRegionViewRegionCreateDbFile = $('#btnRegionViewRegionCreateDbFile');
 
     if (region.dbFile.flags.fileExist === false) {
-        if (app.ui.getKeyValue(region.dbAccess.data, 'AUTO_DB') === false) {
+        if (app.ui.getKeyValue(region.dbFile.data, 'FILE_NAME') === '') {
             btnRegionViewRegionCreateDbFile
                 .attr('disabled', true)
                 .addClass('disabled')
@@ -220,13 +250,17 @@ app.ui.regionView.refresh = () => {
     // JOURNAL
     // ************************************
     const navRegionViewJournal = $('#navRegionViewJournal');
+    const btnRegionViewJournalSwitch = $('#btnRegionViewJournalSwitch');
+
+    btnRegionViewJournalSwitch.on('click', () => app.ui.regionJournalSwitch.show(regionName));
+
     navRegionViewJournal.removeClass('disabled');
     if (region.dbFile.flags.fileExist === false || (region.dbFile.flags.fileExist && region.dbFile.flags.fileBad)) {
         navRegionViewJournal.addClass('disabled');
+        btnRegionViewJournalSwitch.css('display', 'none');
 
     } else {
         // Journal status pill
-
         const replStatus = region.replication !== undefined;
 
         if (replStatus && region.replication.flags.status === REPL_STATUS_WASON) {
@@ -280,8 +314,9 @@ app.ui.regionView.refresh = () => {
             .html(result.journaling.caption)
             .removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray')
             .addClass(result.journaling.class);
-        //}
-        $('#btnRegionViewJournalTurnOn').attr('disabled', region.journal.flags.state !== JOURNAL_STATE_ENABLED_OFF);
+
+        btnRegionViewJournalSwitch.text(( region.journal.flags.state === 1 ? 'Turn ON...' : 'Turn OFF...' ));
+        btnRegionViewJournalSwitch.css('display', region.journal.flags.state === 0 ? 'none' : 'inline');
 
         const divRegionViewJournalAlert = $('#divRegionViewJournalAlert');
         if (result.journaling.alert === '') {
@@ -492,6 +527,7 @@ app.ui.regionView.populateNamesTable = () => {
 
 app.ui.regionView.renderRow = (key, value) => {
     let newName = app.ui.help.getRegionByKey(key);
+    let leftClass = '';
     let valueCell = '<td>';
     let helpLink = {
         start: '',
@@ -499,11 +535,24 @@ app.ui.regionView.renderRow = (key, value) => {
     };
     let rowDef = '<tr class="region-view-detail-table-row">';
 
+    const advancedMode = $('#chkRegionViewAdvancedMode').is(':checked');
+
     // use old name if doesn't exists
     if (newName === undefined) newName = {caption: key};
 
+    // hide it if not in advanced mode
+    if ( advancedMode === false && typeof newName.advancedMode !== 'undefined' ) {
+        return '';
+
+    }
+
     // or it is found and gets translated
     else {
+        // if advanced mode gray off also the left cell if required
+        if ( newName.class !== undefined && typeof newName.advancedMode !== 'undefined' ) {
+            leftClass = 'class="' + newName.class + '"';
+        }
+
         // format
         if (newName.format !== undefined) {
             if (newName.format === 'thousands') {
@@ -548,7 +597,7 @@ app.ui.regionView.renderRow = (key, value) => {
     }
 
     return rowDef +
-        '<td style="text-align: left!important;">' +
+        '<td style="text-align: left!important;"' + leftClass + '>' +
         helpLink.start +
         newName.caption + ':' +
         helpLink.end +

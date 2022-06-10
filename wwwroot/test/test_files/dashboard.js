@@ -22,15 +22,16 @@ describe("CLIENT: Dashboard: gld file", async () => {
         });
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure msgbox is visible
         const isVisible = await libs.getCssDisplay('#txtMsgboxText') !== 'none';
         expect(isVisible).to.be.true;
 
         // and text is correct
-        const modal = await page.$('#modalMsgbox');
+        const modal = await page.$('#txtMsgboxText');
         const text = await page.evaluate(el => el.textContent, modal);
+        console.log(text)
         expect(text).to.have.string('The .gld file doesn\'t exists')
     });
 });
@@ -42,7 +43,7 @@ describe("CLIENT: Dashboard: Regions list: Database", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // and text is correct
         const cell = await page.$('#txtDashboardRegionTableFilename0');
@@ -57,7 +58,7 @@ describe("CLIENT: Dashboard: Regions list: Database", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // check if text is correct
         const cell = await page.$('#txtDashboardRegionTableFilename0');
@@ -76,7 +77,7 @@ describe("CLIENT: Dashboard: Regions list: Database", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(350);
 
         // check if text is correct
         const cell = await page.$('#pillDashboardRegionTableDb0');
@@ -94,7 +95,7 @@ describe("CLIENT: Dashboard: Regions list: Database", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // check if text is correct
         const cell = await page.$('#pillDashboardRegionTableDb0');
@@ -112,7 +113,7 @@ describe("CLIENT: Dashboard: Regions list: Database", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // check if text is correct
         const cell = await page.$('#pillDashboardRegionTableDb0');
@@ -150,7 +151,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -168,7 +169,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -186,7 +187,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -204,7 +205,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -222,7 +223,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -240,7 +241,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -258,7 +259,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -276,7 +277,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -294,7 +295,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -312,7 +313,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -330,7 +331,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -348,7 +349,7 @@ describe("CLIENT: Dashboard: Regions list: Journal", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // and text is correct
         const cell = await page.$('#bdgSplashRegionsJournal0');
@@ -369,7 +370,7 @@ describe("CLIENT: Dashboard: Regions list: Devices", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // pill has the GREEN color
         const pillColor = await libs.getCssBackground('#pgsDashStorageUsage0');
@@ -382,7 +383,7 @@ describe("CLIENT: Dashboard: Regions list: Devices", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // pill has the YELLOW color
         const pillColor = await libs.getCssBackground('#pgsDashStorageUsage0');
@@ -395,7 +396,7 @@ describe("CLIENT: Dashboard: Regions list: Devices", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // pill has the RED color
         const pillColor = await libs.getCssBackground('#pgsDashStorageUsage0');
@@ -408,7 +409,7 @@ describe("CLIENT: Dashboard: Regions list: Devices", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(150);
+        await libs.delay(300);
 
         // pill has the RED color
         let pillColor = await libs.getCssBackground('#pgsDashStorageUsage0');
@@ -447,7 +448,7 @@ describe("CLIENT: Dashboard: Global status", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         // text is correct
         const cell = await page.$('#lblDashStatusDatabases');
@@ -472,15 +473,18 @@ describe("CLIENT: Dashboard: Global status", async () => {
         const text = await page.evaluate(el => el.textContent, cell);
         expect(text).to.have.string('Critical');
 
+        /*
         // pill has the RED color
-        await libs.delay(100);
+        await libs.delay(300);
         let pillColor = await libs.getCssBackground('#lblDashStatusDatabases');
         expect(pillColor).to.have.string('rgb(206, 58, 58)');
 
         // and flashing
-        await libs.delay(400);
+        await libs.delay(500);
         pillColor = await libs.getCssBackground('#lblDashStatusDatabases');
         expect(pillColor).to.have.string('rgb(243, 243, 243)')
+
+         */
     });
 
     it("Test # 103: When all journals are ok", async () => {
@@ -489,7 +493,7 @@ describe("CLIENT: Dashboard: Global status", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         // text is correct
         const cell = await page.$('#lblDashStatusJournals');
@@ -507,7 +511,7 @@ describe("CLIENT: Dashboard: Global status", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         // text is correct
         const cell = await page.$('#lblDashStatusJournals');
@@ -525,7 +529,7 @@ describe("CLIENT: Dashboard: Global status", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         // text is correct
         const cell = await page.$('#lblDashStatusJournals');
@@ -550,15 +554,18 @@ describe("CLIENT: Dashboard: Global status", async () => {
         const text = await page.evaluate(el => el.textContent, cell);
         expect(text).to.have.string('Critical');
 
+        /*
         // pill has the RED color
-        await libs.delay(100);
+        await libs.delay(300);
         let pillColor = await libs.getCssBackground('#lblDashStatusJournals');
         expect(pillColor).to.have.string('rgb(206, 58, 58)');
 
         // and flashing
-        await libs.delay(400);
+        await libs.delay(500);
         pillColor = await libs.getCssBackground('#lblDashStatusJournals');
         expect(pillColor).to.have.string('rgb(243, 243, 243)')
+
+         */
     });
 
     it("Test # 107: When no region has replication turned on", async () => {
@@ -567,7 +574,7 @@ describe("CLIENT: Dashboard: Global status", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         // text is correct
         const cell = await page.$('#lblDashStatusReplication');
@@ -585,7 +592,7 @@ describe("CLIENT: Dashboard: Global status", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         // text is correct
         const cell = await page.$('#lblDashStatusReplication');
@@ -610,15 +617,18 @@ describe("CLIENT: Dashboard: Global status", async () => {
         const text = await page.evaluate(el => el.textContent, cell);
         expect(text).to.have.string('Critical');
 
+        /*
         // pill has the RED color
-        await libs.delay(100);
+        await libs.delay(300);
         let pillColor = await libs.getCssBackground('#lblDashStatusReplication');
         expect(pillColor).to.have.string('rgb(206, 58, 58)');
 
         // and flashing
-        await libs.delay(400);
+        await libs.delay(500);
         pillColor = await libs.getCssBackground('#lblDashStatusReplication');
         expect(pillColor).to.have.string('rgb(243, 243, 243)')
+
+         */
     });
 });
 
@@ -629,7 +639,7 @@ describe("CLIENT: Dashboard: Events", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
@@ -648,13 +658,13 @@ describe("CLIENT: Dashboard: Events", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#menuDashboard");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // text is correct
         const cell = await page.$('#lblDashStatusDatabases');
@@ -672,7 +682,7 @@ describe("CLIENT: Dashboard: Events", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#menuSystemInfo");
         await btnClick.click();
@@ -692,7 +702,7 @@ describe("CLIENT: Dashboard: Events", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashStorageView0");
         await btnClick.click();
@@ -704,5 +714,46 @@ describe("CLIENT: Dashboard: Events", async () => {
         const isVisible = await libs.getCssDisplay('#modalDeviceInfo') !== 'none';
         expect(isVisible).to.be.true;
 
+    });
+});
+
+describe("CLIENT: Dashboard: PULLDOWN MENUS", async () => {
+    it("Test # 200: Make at least one region with no file AND autodb = true and verify that create db menu is enabled", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=200`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        // make sure menu entry has orange color
+        const menuColor = await libs.getCssColor('#menuSystemAdministrationRegionCreateDatabase');
+        expect(menuColor).to.have.string('rgb(255, 127, 39)')
+    });
+
+    it("Test # 201: Remove all journals from all regions (state = 0) and verify that journaling on/off is disabled", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=201`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        // make sure menu entry has gray color
+        const menuColor = await libs.getCssColor('#menuSystemAdministrationRegionJournaling');
+        expect(menuColor).to.have.string('rgb(170, 170, 170)')
+    });
+
+    it("Test # 202: If all no regions have a file, extend menu is disabled", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=202`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        // make sure menu entry has gray color
+        const menuColor = await libs.getCssColor('#menuSystemAdministrationRegionExtendDatabaseLi');
+        expect(menuColor).to.have.string('rgb(170, 170, 170)')
     });
 });

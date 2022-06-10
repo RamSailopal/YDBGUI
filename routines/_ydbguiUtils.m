@@ -13,10 +13,10 @@
 	;
 	quit
 	;
-; --------------------------------------------	
+; --------------------------------------------
 ; --------------------------------------------
 ; OS
-; --------------------------------------------	
+; --------------------------------------------
 ; --------------------------------------------
 runShell(command,return)
 	new device,counter,string,currentdevice
@@ -28,11 +28,11 @@ runShell(command,return)
 	open device:(shell="/bin/sh":command=command:readonly)::"pipe"
 	use device for  quit:$zeof=1  read string:2 set return($increment(counter))=string quit:'$test
 	close device if $get(return(counter))="" kill return(counter)
-	use currentdevice 
+	use currentdevice
 	quit $zclose
 	;
 	;
-runIntShell(command,sendCmd,return) 	
+runIntShell(command,sendCmd,return)
 	new device,counter,string,currentdevice
 	;
 	set counter=0
@@ -63,4 +63,3 @@ strRemoveExtraSpaces(string)
 	. else  set newString=newString_char,toggle=0
 	;
 	quit newString
-	;

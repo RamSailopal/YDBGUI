@@ -1,0 +1,145 @@
+<!-- Extend dialog -->
+<div class="modal fade" id="modalExtend" tabindex="-1" role="dialog" style="top: 16px; z-index: 2000">
+    <div class="modal-dialog modal-width-600" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="modal-title" id="lblRegionExtendModalHeader"></label>
+                <button type="button" class="close" data-dismiss="modal" tabindex="-1" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row form-fields">
+                    <div class="col-5 bold">
+                        Current size:
+                    </div>
+                    <div class="col-7">
+                        <span id="lblRegionExtendCurrentSize"></span>
+                    </div>
+                </div>
+                <div class="row form-fields">
+                    <div class="col-5 bold">
+                        Available space:
+                    </div>
+                    <div class="col-7">
+                        <span id="lblRegionExtendAvailableSpace"></span>
+                    </div>
+                </div>
+                <div class="row form-fields" style="padding-bottom: 10px;">
+                    <div class="col-5 bold">
+                        Block size:
+                    </div>
+                    <div class="col-7">
+                        <span id="lblRegionExtendBlockSize"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <hr>
+                    </div>
+                </div>
+
+                <div class="row form-fields">
+                    <div class="col-2 bold">
+                        Extension:
+                    </div>
+                    <div class="col-3 bold" style="font-size: 12px;">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="optRegionExtendTypeBlocks" checked name="optRegionExtendType"
+                                   class="custom-control-input">
+                            <label class="custom-control-label" for="optRegionExtendTypeBlocks">In blocks</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="optRegionExtendTypeBytes" name="optRegionExtendType"
+                                   class="custom-control-input">
+                            <label class="custom-control-label" for="optRegionExtendTypeBytes">In Bytes</label>
+                        </div>
+                    </div>
+                    <div id="divRegionExtendTypeBlocks" style="display: block;" class="col-5">
+                        <input type="number" class="form-control form-control-sm" id="numRegionExtendBlocks"
+                               placeholder="Enter the extension in blocks" min="0" max="224000000" step="1000" value="1">
+                    </div>
+                    <div id="divRegionExtendTypeBlocks2" style="display: block;" class="col-2">
+                        <span>blocks</span>
+                    </div>
+                    <div id="divRegionExtendTypeBytes" style="display: none;" class="col-5">
+                        <input type="number" class="form-control form-control-sm" id="numRegionExtendBytes"
+                               placeholder="Enter the extension in bytes" min="0" step="10" value="1">
+                    </div>
+                    <div id="divRegionExtendTypeBytes2" style="display: none;" class="col-2">
+                        <span>bytes</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <hr>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body stats-card-body shadow ydb-back6">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="progress"
+                                     style="background: var(--ydb-status-green); margin-top: 5px; height: 10px">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="background: var(--ydb-orange);" id="rngRegionExtendRegionUsedSpace">
+                                    </div>
+                                    <div class="progress-bar ydb-status-amber" role="progressbar"
+                                         id="rngRegionExtendRegionUsedSpace2">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-top: 10px; font-size: 10px;">
+                            <div class="col-4">
+                                <i class="bi bi-square-fill" style="color: var(--ydb-orange)"></i> Current size
+                            </div>
+                            <div class="col-4">
+                                <i class="bi bi-square-fill" style="color: var(--ydb-status-amber)"></i> Extension
+                            </div>
+                            <div class="col-4">
+                                <i class="bi bi-square-fill" style="color: var(--ydb-status-green)"></i> Available space
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="row form-fields">
+                            <div class="col-4 bold">
+                                New size:&nbsp;
+                                <span data-toggle="popover" data-trigger="hover" title="New size" data-content="
+                                    This specifies the number of database blocks/bytes by which to extend the region. YottaDB automatically adds any bitmap blocks needed for the extension.">
+                                    <i class="bi-info-circle-fill" style="font-size: 12px;"></i>
+                                </span>
+                            </div>
+                            <div class="col-6">
+                                <span id="lblRegionExtendGrandSize"></span>
+                            </div>
+                        </div>
+                        <div class="row form-fields" style="padding-bottom: 10px;">
+                            <div class="col-4 bold">
+                                Available space:
+                            </div>
+                            <div class="col-6">
+                                <span id="lblRegionExtendGrandAvailableSize"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer center">
+                <button type="button" class="btn btn-outline-info" tabindex="10" id="btnRegionExtendOk">Extend</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" tabindex="-1">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

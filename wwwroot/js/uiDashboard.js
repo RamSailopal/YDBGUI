@@ -19,7 +19,6 @@ app.ui.dashboard.init = () => {
 
     app.ui.dashboard.resetGlobalStatus();
     app.ui.dashboard.resetRegions();
-
     app.ui.dashboard.resetMenus();
 };
 
@@ -118,13 +117,13 @@ app.ui.dashboard.refresh = async () => {
         }
     }
 
-    //debug info
-    console.log(app.system);
+    // Process refresh
+    app.ui.menu.processRefresh();
 
     // **********************
     // YDB version
     // **********************
-    $('#lblYottadbVersion').html(app.system.ydb_version || '');
+    $('#lblYottadbVersion').html(app.system.ydb_version + '<span style="font-size: 10px;"> ( YDBGUI v' + app.version + ' )</span>');
 
     // **********************
     // .gld file missing
@@ -173,7 +172,7 @@ app.ui.dashboard.refresh = async () => {
             '<tr>' +
             '<td style="text-align: center;">' +
             '<button id="btnDashRegionView' + ix + '"" class="btn btn-outline-info btn-sm dash-plus-button" onclick="app.ui.regionView.show(\'' + region + '\')" type="button">' +
-            '<i class="bi-zoom-in" ></i>' +
+            '<i class="bi-zoom-in"></i>' +
             '</button>' +
             '</td>' +
             '<td>' + region + '</td>' +
@@ -211,12 +210,12 @@ app.ui.dashboard.refresh = async () => {
                 }
             }
         } else {
-            result.database.caption = app.ui.getKeyValue(reg.dbAccess.data, 'AUTO_DB') ? 'AutoDB, No File' : 'Critical';
-            result.database.class = app.ui.getKeyValue(reg.dbAccess.data, 'AUTO_DB') ? 'ydb-status-amber' : 'ydb-status-red';
+            result.database.caption = app.ui.getKeyValue(reg.dbFile.data, 'AUTO_DB') ? 'AutoDB, No File' : 'Critical';
+            result.database.class = app.ui.getKeyValue(reg.dbFile.data, 'AUTO_DB') ? 'ydb-status-amber' : 'ydb-status-red';
             result.database.popup = {
                 visible: true,
                 title: 'ISSUES',
-                caption: app.ui.getKeyValue(reg.dbAccess.data, 'AUTO_DB') ? 'Database file doesn\'t exist. Please create it' : 'Database file missing'
+                caption: app.ui.getKeyValue(reg.dbFile.data, 'AUTO_DB') ? 'Database file doesn\'t exist. Please create it' : 'Database file missing'
             }
 
         }
@@ -372,22 +371,23 @@ app.ui.dashboard.refresh = async () => {
             // Database
             if ((reg.dbFile.flags.fileExist === false) || reg.dbFile.flags.fileBad) {
                 status.database.each.push(STATUS_CRITICAL)
-            }
+            } else {
 
-            // Journal
-            if (reg.replication !== undefined && reg.replication.flags.status === REPL_STATUS_WASON) {
-                status.journaling = STATUS_CRITICAL;
-            }
-            if (reg.journal.flags.state === 1 && status.journaling === null) {
-                status.journaling = STATUS_ISSUES
-            }
+                // Journal
+                if (reg.replication !== undefined && reg.replication.flags.status === REPL_STATUS_WASON) {
+                    status.journaling = STATUS_CRITICAL;
+                }
+                if (reg.journal.flags.state === 1 && status.journaling === null) {
+                    status.journaling = STATUS_ISSUES
+                }
 
-            if (reg.popup.database.popup.visible) {
-                status.popup.database += '<strong>' + region + ':&nbsp;</strong>' + reg.popup.database.popup.caption + '<br>'
-            }
+                if (reg.popup.database.popup.visible) {
+                    status.popup.database += '<strong>' + region + ':&nbsp;</strong>' + reg.popup.database.popup.caption + '<br>'
+                }
 
-            if (reg.popup.journaling.popup.visible) {
-                status.popup.journaling += '<strong>' + region + ':&nbsp;</strong>' + reg.popup.journaling.popup.caption + '<br>'
+                if (reg.popup.journaling.popup.visible) {
+                    status.popup.journaling += '<strong>' + region + ':&nbsp;</strong>' + reg.popup.journaling.popup.caption + '<br>'
+                }
             }
     });
 
@@ -475,9 +475,9 @@ app.ui.dashboard.refresh = async () => {
 
         // range help
         let help = '<strong>Mount point: </strong>' + device.mountPoint + '<br>';
-        help += '<strong>Total blocks: </strong>' + app.ui.formatThousands(device.totalBlocks) + '<br>';
-        help += '<strong>Used blocks: </strong>' + app.ui.formatThousands(device.usedBlocks) + '<br>';
-        help += '<strong>Free blocks: </strong>' + app.ui.formatThousands(device.freeBlocks);
+        help += '<strong>Total blocks: </strong>' + app.ui.formatThousands(device.totalBlocks) + ' ( ' + app.ui.formatBytes(device.totalBlocks * 1024) + ' )<br>';
+        help += '<strong>Used blocks: </strong>' + app.ui.formatThousands(device.usedBlocks) + ' ( ' + app.ui.formatBytes(device.usedBlocks * 1024) + ' )<br>';
+        help += '<strong>Free blocks: </strong>' + app.ui.formatThousands(device.freeBlocks) + ' ( ' + app.ui.formatBytes(device.freeBlocks * 1024) + ' )';
 
         let title = '';
         switch (rangeStyle.class) {

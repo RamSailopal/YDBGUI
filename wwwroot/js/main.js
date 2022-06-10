@@ -37,8 +37,20 @@ window.onload = async () => {
         await loadTestScript()
     }
 
-    // Start
-    app.ui.dashboard.refresh()
+    // get YDBGUI version number
+    try {
+        $.getJSON('./ydbguiVersion.json', json => {
+            app.version = json.version;
+
+            // Start
+            app.ui.dashboard.refresh()
+        })
+
+    } catch (err) {
+        console.log('The following error occurred while fetching the version.json file:');
+        console.log(err)
+    }
+
 };
 
 const loadFiles = async (tag) => {
@@ -91,12 +103,15 @@ let app = {
         msgbox: {},
         inputbox: {},
         wait: {},
-        createDir: {},
-        dirSelect: {},
 
         dashboard: {},
 
-        toaster: {},
+        regionView: {},
+        regionCreateDbFile: {},
+        regionSelect: {},
+        regionDelete: {},
+        regionExtend: {},
+        regionJournalSwitch: {},
 
         help: {},
         tabs: {},
@@ -108,7 +123,6 @@ let app = {
         storageWizard: {},
         backupWizard: {},
 
-        regionView: {},
         systemInfo: {
             envVars: {}
         },

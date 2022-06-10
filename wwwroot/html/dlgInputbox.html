@@ -1,0 +1,28 @@
+<!-- inputbox -->
+<div class="modal fade" id="modalInputbox" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+     aria-hidden="true" style="z-index: 10000000;">
+    <div class="modal-dialog modal-lg " role="document"  tabindex="-1" style="z-index: 100000000">
+        <div class="modal-content">
+            <div class="modal-header center" id="inputboxHeader">
+                <h6 class="modal-title" id="txtInputboxTitle"></h6>
+            </div>
+            <div class="modal-body">
+                <span id="txtInputboxText"></span>
+                <br>
+                <div class="custom-control custom-checkbox" style="margin-left: 20px; display: none" id="divInputboxBackground">
+                    <br>
+                    <input type="checkbox" id="optInputboxBackground"
+                           class="custom-control-input">
+                    <label class="custom-control-label" for="optInputboxBackground" style="padding-top: 0px;">Run in background
+                    </label>
+                    <br>
+                </div>
+            </div>
+            <div class="modal-footer center">
+                <button type="button" class="btn btn-outline-info" tabindex="1" id="btnInputboxYes" data-dismiss="modal">Yes</button>
+                <span style="width: 50px;" ></span>
+                <button type="button" class="btn btn-outline-secondary" tabindex="2" id="btnInputboxNo" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>

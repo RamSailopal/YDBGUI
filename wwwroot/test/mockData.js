@@ -57,13 +57,13 @@ const testLoadData = () => {
             case 42: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": false};
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
                 break;
             }
             case 43: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": true};
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
                 break;
             }
             case 44: {
@@ -175,21 +175,21 @@ const testLoadData = () => {
             case 101: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": false};
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
                 break;
             }
             case 102: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": false};
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
 
                 mockData.data.regions.YDBAIM.dbFile.flags.fileExist = false;
                 mockData.data.regions.YDBAIM.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.YDBAIM.dbAccess.data[2] = {"AUTO_DB": false};
+                mockData.data.regions.YDBAIM.dbFile.data[2] = {"AUTO_DB": false};
 
                 mockData.data.regions.YDBOCTO.dbFile.flags.fileExist = false;
                 mockData.data.regions.YDBOCTO.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.YDBOCTO.dbAccess.data[2] = {"AUTO_DB": false};
+                mockData.data.regions.YDBOCTO.dbFile.data[2] = {"AUTO_DB": false};
                 break;
             }
             case 103: {
@@ -241,18 +241,35 @@ const testLoadData = () => {
                 mockData.data.devices[0].percentUsed = 98;
                 break
             }
+            case 200: {
+                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": true};
+                break
+            }
+            case 201: {
+                mockData.data.regions.DEFAULT.journal.flags.state = 0;
+                mockData.data.regions.YDBAIM.journal.flags.state = 0;
+                mockData.data.regions.YDBOCTO.journal.flags.state = 0;
+                break
+            }
+            case 202: {
+                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+                mockData.data.regions.YDBAIM.dbFile.flags.fileExist = false;
+                mockData.data.regions.YDBOCTO.dbFile.flags.fileExist = false;
+                break
+            }
 
             // Region view: db
             case 250: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": true};
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
                 break
             }
             case 251: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": false};
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
                 break
             }
             case 252: {
@@ -287,13 +304,13 @@ const testLoadData = () => {
             case 260: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": true};
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
                 break
             }
             case 261: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": false};
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
                 break
             }
             case 262: {
@@ -307,14 +324,22 @@ const testLoadData = () => {
             }
             case 280: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+                mockData.data.regions.DEFAULT.dbFile.data = [];
                 mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": true};
+                mockData.data.regions.DEFAULT.dbFile.data[1] = {"ALLOCATION": 5000};
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"BLOCK_SIZE": 4096};
+                mockData.data.regions.DEFAULT.dbFile.data[3] = {"AUTO_DB": true};
+                delete mockData.data.regions.DEFAULT.dbAccess;
                 break
             }
             case 281: {
                 mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": false};
+                mockData.data.regions.DEFAULT.dbFile.data = [];
+                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": "/data/temp.dat"};
+                mockData.data.regions.DEFAULT.dbFile.data[1] = {"ALLOCATION": 5000};
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"BLOCK_SIZE": 4096};
+                mockData.data.regions.DEFAULT.dbFile.data[3] = {"AUTO_DB": true};
+                delete mockData.data.regions.DEFAULT.dbAccess;
                 break
             }
             case 284: {
@@ -496,6 +521,32 @@ const testLoadData = () => {
 
 
             }
+            case 390: {
+                mockData.data.regions.DEFAULT.replication.flags.status = 2;
+                break
+            }
+            case 400:
+            case 401:
+            case 402:
+            case 403: {
+                app.ui.regionDelete.show('DEFAULT');
+                break
+            }
+            case 440:
+            case 441:
+            case 442:
+            case 443:
+            case 444: {
+                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
+                break
+            }
+            case 450:
+            case 451:
+            case 452: {
+                setTimeout(() => app.ui.regionJournalSwitch.show('DEFAULT'), 50);
+                break
+            }
         }
 
         return mockData
@@ -559,9 +610,6 @@ let testMock = {
                                             "KEY_SIZE": 255
                                         },
                                         {
-                                            "AUTO_DB": false
-                                        },
-                                        {
                                             "NULL_SUBSCRIPTS": false
                                         }
                                     ]
@@ -585,6 +633,9 @@ let testMock = {
                                         },
                                         {
                                             "ACCESS_METHOD": "BG"
+                                        },
+                                        {
+                                            "AUTO_DB": false
                                         },
                                         {
                                             "GLOBAL_BUFFER_COUNT": 1000

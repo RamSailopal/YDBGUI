@@ -22,13 +22,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -50,13 +50,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -78,13 +78,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -106,13 +106,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -134,13 +134,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -162,13 +162,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -190,13 +190,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -218,13 +218,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -246,13 +246,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -270,13 +270,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -294,13 +294,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -326,13 +326,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -358,13 +358,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -390,13 +390,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -422,13 +422,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -437,7 +437,7 @@ describe("CLIENT: Region View: Database tab", async () => {
         // make sure table has data
         let cell = await page.$('#tblRegionViewRegionRegion >tbody >tr >td:nth-child(1) ');
         let text = await page.evaluate(el => el.textContent, cell);
-        expect(text).to.have.string('File Name:');
+        expect(text).to.have.string('File name:');
     });
 
     it("Test # 271: Db Access lists: Verify that the table gets populated", async () => {
@@ -446,13 +446,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -464,42 +464,42 @@ describe("CLIENT: Region View: Database tab", async () => {
         expect(text).to.have.string('Record size:');
     });
 
-    it("Test # 280: Button Create db: verify that is enabled when db file is missing and autodb is on", async () => {
+    it("Test # 280: Button Create db: verify that is disabled when db file is missing and filename is empty", async () => {
         await page.goto(`http://localhost:${MDevPort}//index.html?test=280`, {
             waitUntil: "domcontentloaded"
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure button is visible as PURPLE
         let btnColor = await libs.getCssColor('#btnRegionViewRegionCreateDbFile');
-        expect(btnColor).to.have.string('rgb(59, 26, 104)')
+        expect(btnColor).to.have.string('rgb(35, 31, 32)')
     });
 
-    it("Test # 281: Button Create db: verify that is enabled when db file is missing and autodb is off", async () => {
+    it("Test # 281: Button Create db: verify that is enabled when db file is missing and filename is specified", async () => {
         await page.goto(`http://localhost:${MDevPort}//index.html?test=281`, {
             waitUntil: "domcontentloaded"
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure button is visible as DARK GRAY
         let btnColor = await libs.getCssColor('#btnRegionViewRegionCreateDbFile');
-        expect(btnColor).to.have.string('rgb(35, 31, 32)')
+        expect(btnColor).to.have.string('rgb(59, 26, 104)')
     });
 
     it("Test # 282: Button Create db: verify that is disabled when db file is good", async () => {
@@ -508,13 +508,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure button is visible as DARK GRAY
         let btnColor = await libs.getCssColor('#btnRegionViewRegionCreateDbFile');
@@ -527,13 +527,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure button is visible as PURPLE
         let btnColor = await libs.getCssColor('#btnRegionViewRegionExtendDbFile');
@@ -546,13 +546,13 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure button is visible as DARD GRAY
         let btnColor = await libs.getCssColor('#btnRegionViewRegionExtendDbFile');
@@ -565,17 +565,47 @@ describe("CLIENT: Region View: Database tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure button is visible as DARK GRAY
         let btnColor = await libs.getCssColor('#btnRegionViewRegionExtendDbFile');
         expect(btnColor).to.have.string('rgb(35, 31, 32)')
+    });
+
+    it("Test # 286: Select Advanced Params and verify that extra fields are displayed in the db access table", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=286`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // click on extended mode
+        btnClick = await page.$("#chkRegionViewAdvancedMode");
+        await btnClick.click();
+
+        await libs.delay(500);
+
+        // make sure table has data
+        let cell = await page.$('#tblRegionViewRegionSegment >tbody >tr:nth-child(3) >td:nth-child(1) ');
+        let text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('Null subscripts:');
     });
 });
 
@@ -586,13 +616,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -614,13 +644,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -642,13 +672,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -670,13 +700,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -698,13 +728,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -726,13 +756,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -754,13 +784,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -782,13 +812,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -810,13 +840,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -832,73 +862,28 @@ describe("CLIENT: Region View: Journal tab", async () => {
         expect(pillColor).to.have.string('rgb(206, 58, 58)')
     });
 
-    it("Test # 310: Verify that Turn on button is enabled when journal is enabled, but off", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=310`, {
+    it("Test # 300: If no journal, turn on/off button should be invisible", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=300`, {
             waitUntil: "domcontentloaded"
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
-        let btnClick = await page.$("#btnDashRegionView0");
+        let btnClick = await page.$("#btnDashRegionView1");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
-        const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
         expect(isVisible).to.be.true;
 
-        // make sure button is enabled with PURPLE
-        let btnColor = await libs.getCssColor('#btnRegionViewJournalTurnOn');
-        expect(btnColor).to.have.string('rgb(59, 26, 104)')
-    });
-
-    it("Test # 311: Verify that Turn on button is disabled when journal is disabled", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=311`, {
-            waitUntil: "domcontentloaded"
-        });
-
-        // wait for dashboard to be set by the async call
-        await libs.delay(250);
-
-        let btnClick = await page.$("#btnDashRegionView0");
-        await btnClick.click();
-
-        // wait for dialog to be set by the async call
-        await libs.delay(150);
-
-        // make sure dialog is visible
-        const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        // make sure dialog is invisible
+        isVisible = await libs.getCssDisplay('#btnRegionViewJournalSwitch') === 'none';
         expect(isVisible).to.be.true;
 
-        // make sure button is enabled with DARK GRAY
-        let btnColor = await libs.getCssColor('#btnRegionViewJournalTurnOn');
-        expect(btnColor).to.have.string('rgb(35, 31, 32)')
-    });
-
-    it("Test # 312: Verify that Turn on button is disabled when journal is enabled and on", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=312`, {
-            waitUntil: "domcontentloaded"
-        });
-
-        // wait for dashboard to be set by the async call
-        await libs.delay(250);
-
-        let btnClick = await page.$("#btnDashRegionView0");
-        await btnClick.click();
-
-        // wait for dialog to be set by the async call
-        await libs.delay(150);
-
-        // make sure dialog is visible
-        const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
-        expect(isVisible).to.be.true;
-
-        // make sure button is enabled with DARK GRAY
-        let btnColor = await libs.getCssColor('#btnRegionViewJournalTurnOn');
-        expect(btnColor).to.have.string('rgb(35, 31, 32)')
     });
 
     it("Test # 313: Verify that Type pill is properly populated with the type when journaling is enabled and Before", async () => {
@@ -907,13 +892,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -935,13 +920,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -963,13 +948,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -991,13 +976,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1006,7 +991,7 @@ describe("CLIENT: Region View: Journal tab", async () => {
         // make sure table has data
         let cell = await page.$('#tblRegionViewJournalParams >tbody >tr >td:nth-child(1) ');
         let text = await page.evaluate(el => el.textContent, cell);
-        expect(text).to.have.string('File Name:');
+        expect(text).to.have.string('File name:');
     });
 
     it("Test # 317: Verify that the entire Journal Parameter list is hidden when journal is disabled", async () => {
@@ -1015,13 +1000,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1038,13 +1023,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1070,13 +1055,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1102,13 +1087,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1134,13 +1119,13 @@ describe("CLIENT: Region View: Journal tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1168,13 +1153,13 @@ describe("CLIENT: Region View: Names tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1191,13 +1176,13 @@ describe("CLIENT: Region View: Names tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView2");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1213,13 +1198,13 @@ describe("CLIENT: Region View: Stats tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1239,13 +1224,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1263,13 +1248,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1287,13 +1272,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1311,13 +1296,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1335,13 +1320,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1358,13 +1343,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1393,13 +1378,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1428,13 +1413,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1467,13 +1452,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1516,13 +1501,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
@@ -1565,13 +1550,13 @@ describe("CLIENT: Region View: Locks tab", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';

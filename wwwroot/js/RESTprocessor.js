@@ -32,7 +32,76 @@ app.REST._dashboardGetAll = () => {
 app.REST._regionGet = (region) => {
     return new Promise(function (resolve, reject) {
 
-        app.REST.execute('get', 'regions/'+ region + '/get', {}, data => {
+        app.REST.execute('get', 'regions/'+ region + '/', {}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
+// delete region
+// ********************************
+app.REST._regionDelete = (region) => {
+    return new Promise(function (resolve, reject) {
+
+        app.REST.execute('delete', 'regions/' + region + '/', {}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
+// create region Db file
+// ********************************
+app.REST._regionCreateDbFile = (region) => {
+    return new Promise(function (resolve, reject) {
+
+        app.REST.execute('post', 'regions/' + region + '/createDb', {}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
+// extend region(blocks)
+// ********************************
+app.REST._regionExtend = (region, blocks) => {
+    return new Promise(function (resolve, reject) {
+        app.REST.execute('post', 'regions/' + region + '/extend?blocks=' + blocks, {}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
+// switch region(mode)
+// state: 'on' || 'off'
+// ********************************
+app.REST._JournalSwitch = (region, mode) => {
+    return new Promise(function (resolve, reject) {
+        if ( mode !== 'on' && mode !== 'off' ) {
+            reject({
+                err: {
+                    description: 'The mode parameter is invalid: ' + mode
+                }
+            });
+
+            return
+        }
+
+        app.REST.execute('post', 'regions/' + region + '/journalSwitch?turn=' + mode, {}, data => {
             resolve(data)
 
         }, err => {
@@ -59,6 +128,7 @@ app.REST.execute = (type, command, DATA = {}, okCallback, errCallback) => {
         success: (data) => {
             //debug info
             console.log('REST success: ');
+            console.log(data)
             okCallback(data);
         },
         error: (err) => {

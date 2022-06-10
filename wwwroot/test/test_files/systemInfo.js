@@ -22,13 +22,13 @@ describe("CLIENT: System Info", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#menuSystemInfo");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalSystemInfo') !== 'none';
@@ -56,13 +56,13 @@ describe("CLIENT: System Info", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#menuSystemInfo");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalSystemInfo') !== 'none';
@@ -91,13 +91,13 @@ describe("CLIENT: System Info", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#menuSystemInfo");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalSystemInfo') !== 'none';
@@ -108,7 +108,7 @@ describe("CLIENT: System Info", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         isVisible = await libs.getCssDisplay('#modalEnvVars') !== 'none';
@@ -121,13 +121,13 @@ describe("CLIENT: System Info", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#menuSystemInfo");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalSystemInfo') !== 'none';
@@ -138,7 +138,7 @@ describe("CLIENT: System Info", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         isVisible = await libs.getCssDisplay('#modalEnvVars') !== 'none';
@@ -164,13 +164,13 @@ describe("CLIENT: System Info", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#menuSystemInfo");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalSystemInfo') !== 'none';
@@ -181,7 +181,7 @@ describe("CLIENT: System Info", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         isVisible = await libs.getCssDisplay('#modalEnvVars') !== 'none';
@@ -194,7 +194,7 @@ describe("CLIENT: System Info", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // Analyze the table
         let cell = await page.$('#tblEnvVars >tbody >tr:nth-child(1) >td:nth-child(1) ');
@@ -216,13 +216,13 @@ describe("CLIENT: System Info", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#menuSystemInfo");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalSystemInfo') !== 'none';
@@ -233,7 +233,7 @@ describe("CLIENT: System Info", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         isVisible = await libs.getCssDisplay('#modalEnvVars') !== 'none';
@@ -246,7 +246,7 @@ describe("CLIENT: System Info", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // Analyze the table
         let cell = await page.$('#tblEnvVars >tbody >tr:nth-child(1) >td:nth-child(1) ');
@@ -260,13 +260,13 @@ describe("CLIENT: System Info", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(500);
 
         let btnClick = await page.$("#menuSystemInfo");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         let isVisible = await libs.getCssDisplay('#modalSystemInfo') !== 'none';
@@ -277,7 +277,7 @@ describe("CLIENT: System Info", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // make sure dialog is visible
         isVisible = await libs.getCssDisplay('#modalEnvVars') !== 'none';
@@ -290,7 +290,7 @@ describe("CLIENT: System Info", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(500);
 
         // Analyze the table
         let cell = await page.$('#tblEnvVars >tbody >tr:nth-child(1) >td:nth-child(1) ');

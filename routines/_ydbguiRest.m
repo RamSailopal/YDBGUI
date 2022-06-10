@@ -147,3 +147,145 @@ getRegion(resJson,arguments)
 	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
 	;
 	quit
+	;
+	;
+; ****************************************************************
+; deleteRegion(resJson,arguments)
+;
+; PARAMS:
+; arguments			array byRef
+; resJson			array byRef
+; ****************************************************************
+deleteRegion(resJson,arguments)
+	;	
+	s resJson="{""result"":""OK""}"
+	;	
+	quit ""
+	;
+	;
+; ****************************************************************
+; extendRegion(resJson,arguments)
+;
+; PARAMS:
+; arguments			array byRef
+; body				array byRef
+; resJson			array byRef
+; ****************************************************************
+extendRegion(arguments,body,resJson)
+	new jsonErr,res,region,blocks,mupipCmd,ret,shellData
+	;
+	set region=$get(arguments("region"))
+	if region="" do  goto extendRegionQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The parameter ""region"" is missing or empty"
+	;
+	set blocks=$get(arguments("blocks"))
+	if +blocks=0 do  goto extendRegionQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The parameter ""blocks"" is missing or not valid"
+	;
+	set mupipCmd="mupip EXTEND "_region_" -BLOCKS="_blocks
+	set ret=$$runShell^%ydbguiUtils(mupipCmd,.shellData)
+	;
+	if ret'=0 do  goto extendRegionQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The shell returned the following error: "_ret
+	;
+	if $find($get(shellData(2)),"Extension successful") do
+	. set res("result")="OK"
+	else  do
+	. set res("result")="ERR"
+	. set res("error","description")=$select($get(shellData(1))="":"unknown",1:shellData(1))
+	;
+extendRegionQuit	
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""
+	;
+	;
+; ****************************************************************
+; journalSwitch(resJson,arguments)
+;
+; PARAMS:
+; arguments			array byRef
+; body				array byRef
+; resJson			array byRef
+; ****************************************************************
+journalSwitch(arguments,body,resJson)
+	new jsonErr,res,region,turn,mupipCmd,ret,shellData
+	;
+	set region=$get(arguments("region"))
+	if region="" do  goto journalSwitchQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The parameter ""region"" is missing or empty"
+	;
+	set turn=$zconvert($get(arguments("turn")),"u")
+	if turn'="ON",turn'="OFF" do  goto journalSwitchQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The parameter ""turn"" must be either ""on"" or ""off"""
+	;
+	set mupipCmd="mupip SET -JOURNAL="_turn_" -region "_region
+	set ret=$$runShell^%ydbguiUtils(mupipCmd,.shellData)
+	;
+	if ret'=0 do  goto journalSwitchQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The shell returned the following error: "_ret
+	;
+	if $find($get(shellData(1)),"%YDB-I-JNLSTATE")!($find($get(shellData(4)),"%YDB-I-JNLSTATE")) do
+	. set res("result")="OK"
+	else  do
+	. set res("result")="ERR"
+	. set res("error","description")=$select($get(shellData(1))="":"unknown",1:shellData(1))
+	;
+journalSwitchQuit	
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""
+	;
+	;
+; ****************************************************************
+; createDb(resJson,arguments)
+;
+; PARAMS:
+; arguments			array byRef
+; body				array byRef
+; resJson			array byRef
+; ****************************************************************
+createDb(arguments,body,resJson)
+	new jsonErr,res,region,mupipCmd,ret,shellData
+	;
+	set region=$get(arguments("region"))
+	if region="" do  goto createDbQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The parameter ""region"" is missing or empty"
+	;
+	set mupipCmd="mupip CREATE -REGION="_region
+	set ret=$$runShell^%ydbguiUtils(mupipCmd,.shellData)
+	;
+	if ret=84 do  goto createDbQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The database already exists"
+	;
+	if ret'=0,ret'=84 do  goto createDbQuit
+	. set res("result")="ERR"
+	. set res("error","description")="The shell returned the following error: "_ret
+	;
+	if $find($get(shellData(1)),"%YDB-I-DBFILECREATED") do
+	. set res("result")="OK"
+	else  do
+	. set res("result")="ERR"
+	. set res("error","description")=$select($get(shellData(1))="":"unknown",1:shellData(1))
+	;
+createDbQuit	
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""

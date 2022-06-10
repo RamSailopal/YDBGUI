@@ -66,13 +66,13 @@ describe("CLIENT: Devices", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(450);
 
         let btnClick = await page.$("#btnDashStorageView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(350);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalDeviceInfo') !== 'none';
@@ -89,13 +89,13 @@ describe("CLIENT: Devices", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(450);
 
         let btnClick = await page.$("#btnDashStorageView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(350);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalDeviceInfo') !== 'none';
@@ -112,13 +112,13 @@ describe("CLIENT: Devices", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(450);
 
         let btnClick = await page.$("#btnDashStorageView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(350);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalDeviceInfo') !== 'none';
@@ -135,13 +135,13 @@ describe("CLIENT: Devices", async () => {
         });
 
         // wait for dashboard to be set by the async call
-        await libs.delay(250);
+        await libs.delay(450);
 
         let btnClick = await page.$("#btnDashStorageView0");
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(150);
+        await libs.delay(350);
 
         // make sure dialog is visible
         const isVisible = await libs.getCssDisplay('#modalDeviceInfo') !== 'none';

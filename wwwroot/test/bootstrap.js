@@ -30,15 +30,15 @@ before (async function () {
   global.expect = expect;
   global.browser = await puppeteer.launch(opts);
   global.page = await global.browser.newPage();
-  global.recorder = new PuppeteerScreenRecorder(page);
+  //global.recorder = new PuppeteerScreenRecorder(page);
   await page.setViewport({ width: 1024, height: 768 });
   global.MDevPort = serverPort ;
-  await recorder.start('./wwwroot/test/results/'+Date.now()+'.mp4');
+  //await recorder.start('./wwwroot/test/results/'+Date.now()+'.mp4');
 });
 
 // close browser and reset global variables
 after (async function () {
-  await recorder.stop();
+  //await recorder.stop();
   await browser.close();
   global.browser = globalVariables.browser;
   global.expect = globalVariables.expect;

@@ -10,7 +10,6 @@
  *                                                              *
  ****************************************************************/
 
-
 app.ui.help.init = () => {
 
     // caption:         The text to display in the table
@@ -23,36 +22,37 @@ app.ui.help.init = () => {
     // booleanYesNo     The (optional) flag to display boolean as Yes and No
     // booleanOnOff     The (optional) flag to display boolean as On and Off
     // statsSection     The (optional) statistics section where the entry will be displayed
+    // advancedMode     The (optional) flag to display the entry only in advanced mode
 
     // Fields with dots (.) in the name must be surrounded by quotes
 
     app.ui.help.region = {
 // DATABASE FILE
         FILE_NAME: { // Use $ZSEARCH() to expand file name from GDE, e.g., yottadb -run %XCMD 'w $zsearch("$ydb_dir/$ydb_rel/g/yottadb.dat"),!' or "sgmnt_data.basedb_fname" (null terminated) or use "sgmnt_data.basedb_fname_len"
-            caption: 'File Name',
+            caption: 'File name',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#file',
         },
         currentSize: { // "sgmnt_data.trans_hist.total_blks"; "sgmnt_data.blk_size" is the block size
-            caption: 'Current Size',
+            caption: 'Current size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/dse.html#examples-for-dump',
             format: 'bytes'
         },
         maximumSize: { // "sgmnt_data.master_map_len" â€“ 992Mi blocks if 253952; x*1040187392/253952 if x
-            caption: 'Maximum Size',
+            caption: 'Maximum size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/dse.html#examples-for-dump',
             format: 'bytes'
         },
         extensionLeft: { // maximumSize-currentSize
-            caption: 'Extension Available',
+            caption: 'Extension available',
             helpLink: '', // no help needed
             format: 'bytes'
         },
         ACCESS_METHOD: { // "sgmnt_data.acc_meth" - 1=BG; 2=MM
-            caption: 'Access Method',
+            caption: 'Access method',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#ac-cess-method-code',
         },
         GLOBAL_BUFFER_COUNT: { // "sgmnt_data.n_bts"
-            caption: 'Global Buffer Count',
+            caption: 'Global buffer count',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#g-lobal-buffer-count-size',
             format: 'thousands',
             unit: 'blocks',
@@ -63,6 +63,11 @@ app.ui.help.init = () => {
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#l-ock-space-integer',
             format: 'thousands',
             unit: 'blocks'
+        },
+        AUTO_DB: { // From GDE
+            caption: 'Auto DB',
+            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-au-todb',
+            booleanYesNo: true
         },
         ASYNCIO: { // "sgmnt_data.asyncio" - 1 means async IO (0 is default)
             caption: 'Async IO',
@@ -98,74 +103,90 @@ app.ui.help.init = () => {
         BLOCK_SIZE: { // "sgmnt_data.blk_size"
             caption: 'Block size',
             helpLink: '',
-            format: 'bytes'
+            format: 'thousands',
+            unit: 'bytes'
         },
         ENCRYPTION_FLAG: { // "sgmnt_data.is_encrypted" - This is an advanced feature; defer for later when we implement an Advanced button
             caption: 'Encryption',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/encryption.html',
-            booleanOnOff: true
+            booleanOnOff: true,
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border'
         },
         MUTEX_SLOTS: { // "sgmnt_data.mutex_spin_parms.mutex_que_entry_space_size" - defer for when we implement Advanced button
             caption: 'Mutex slot',
             helpLink: '',
             format: 'thousands',
-            inBgOnly: true
+            inBgOnly: true,
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border'
         },
 
         // DATABASE ACCESS
         RECORD_SIZE: { // "sgmnt_data.max_rec_size"
             caption: 'Record size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#r-ecord-size-size-in-bytes',
-            format: 'bytes'
+            format: 'thousands',
+            unit: 'bytes'
         },
         KEY_SIZE: { // "sgmnt_data.max_key_size"
             caption: 'Key size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#k-ey-size-size-in-bytes',
-            format: 'bytes'
+            format: 'bytes',
+            unit: 'bytes'
         },
         COLLATION_DEFAULT: { // "sgmnt_data.def_coll" - defer to Advanced
             caption: 'Collation',
             helpLink: 'https://docs.yottadb.com/ProgrammersGuide/internatn.html',
-            format: 'thousands'
-        },
-        AUTO_DB: { // From GDE
-            caption: 'Auto DB',
-            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-au-todb',
-            booleanYesNo: true
+            format: 'thousands',
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border'
         },
         INST_FREEZE_ON_ERROR: { // â€œjnlpool_ctl_struct.instfreeze_environ_initedâ€ - defer to Advanced
             caption: 'Freeze on error',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/dbrepl.html#instance-freeze',
-            booleanYesNo: true
+            booleanYesNo: true,
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border'
         },
         LOCK_CRIT_SEPARATE: { // "sgmnt_data.lock_crit_with_db" - 0 means separate; defer to Advanced
             caption: 'Lock critical separate',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-l-ock-crit-separate',
-            booleanYesNo: true
+            booleanYesNo: true,
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border'
         },
         NULL_SUBSCRIPTS: { // "sgmnt_data.null_subs" - 0 (Default) means null subscripts are not allowed, 1 means allowed, 2 means allow existing nodes but no new nodes; defer to Advanced
             caption: 'Null subscripts',
-            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-n-ull-subscripts-always-never-existing'
+            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-n-ull-subscripts-always-never-existing',
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border'
         },
         QDBRUNDOWN: { // Need to find the parameter for this - defer to Advanced
             caption: 'Rundown',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-q-dbrundown',
-            booleanYesNo: true
+            booleanYesNo: true,
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border'
         },
         STATS: { // Need to find the parameter for this - defer to Advanced
             caption: 'Statistics',
             helpLink: 'https://docs.yottadb.com/ProgrammersGuide/utility.html#ygblstat',
-            booleanOnOff: true
+            booleanOnOff: true,
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border'
         },
         STDNULLCOLL: { // "sgmnt_data.std_null_coll" - defer to Advanced
-            caption: 'Null Collation',
+            caption: 'Null collation',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-std-nullcoll',
-            booleanYesNo: true
+            booleanYesNo: true,
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border'
         },
 
         // JOURNAL
         JFILE_NAME: { // "sgmnt_data.jnl_file_name" - null terminated or "sgmnt_data.jnl_file_len"
-            caption: 'File Name',
+            caption: 'File name',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#f-ilename-journal-filename',
         },
         BEFORE: { // "sgmnt_data.jnl_before_image" - 1 is before_image
@@ -181,7 +202,9 @@ app.ui.help.init = () => {
         EPOCH_TAPER: { // "sgmnt_data.epoch_taper" - defer to Advanced
             caption: 'Epoch taper',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/dbmgmt.html#epochtaper',
-            booleanOnOff: true
+            booleanOnOff: true,
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border'
         },
         SYNC_IO: { // "sgmnt_data.jnl_sync_io" - 1 means sync_io
             caption: 'Sync IO',
@@ -191,19 +214,31 @@ app.ui.help.init = () => {
         AUTO_SWITCH_LIMIT: { // "sgmnt_data.autoswitchlimit" - defer to Advanced
             caption: 'Auto switch limit',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#au-toswitchlimit-blocks',
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border',
+            unit: 'blocks',
+            format: 'thousands'
         },
         ALIGNSIZE: { // "sgmnt_data.alignsize" - defer to Advanced
             caption: 'Align size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#ali-gnsize-blocks',
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border',
+            unit: 'blocks',
+            format: 'thousands'
         },
         BUFFER_SIZE: { // "sgmnt_data.jnl_buffer_size"
             caption: 'Buffer size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#bu-ffer-size-blocks',
-            format: 'thousands'
+            format: 'thousands',
+            unit: 'blocks'
         },
         YIELD_LIMIT: { // "sgmnt_data.yield_lmt" - defer to Advanced
             caption: 'Yield limit',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#y-ield-limit-yieldcount',
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border',
+            unit: 'times'
         },
 
         // Transactions
@@ -301,7 +336,7 @@ app.ui.help.init = () => {
             class: 'align-right'
         },
 
-        // Critical Section Acquisition
+        // Critical Section Aquisition
         'sgmnt_data.gvstats_rec.n_crit_success': {
             caption: 'Total Acquisitions successes',
             format: 'thousands',

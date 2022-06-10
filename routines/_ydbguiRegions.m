@@ -1,4 +1,5 @@
-%ydbguiRegions ; YottaDB Regions; 05-07-2021
+	;
+	%ydbguiRegions ; YottaDB Regions; 05-07-2021
 	;#################################################################
 	;#                                                               #
 	;# Copyright (c) 2022 YottaDB LLC and/or its subsidiaries.       #
@@ -19,10 +20,10 @@
 ; PARAMS:
 ; regionName			string
 ; regionsData			array byRef
-; warnings				array byRef 
+; warnings				array byRef
 ; ****************************************************************
 getRegionStruct(regionName,regionData,warnings)
-	new buffer,res,segmentFilename,journalFilename,fhead,cnt,deviceInfo
+	new gdeData,res,segmentFilename,journalFilename,fhead,cnt,deviceInfo
 	new fheadOk,dataCnt,map,newNames,name,regionMap,mapCnt,lsof,lockBuffer,record
 	;
 	set fheadOk=0,segmentFilename=""
@@ -30,32 +31,48 @@ getRegionStruct(regionName,regionData,warnings)
 	set regionName=$zconvert(regionName,"u")
 	;
 	; Start getting the GDE info
-	do getRegion^%ydbguiGde(regionName,.buffer)
+	do getRegion^%ydbguiGde(regionName,.gdeData)
 	;
 	;Quit if region name is bad
-	quit:$data(buffer("region"))=0
-	;	
+	quit:$data(gdeData("region"))=0
+	;
 	; Begin computing the flags
-	if $get(buffer("segments","FILE_NAME"))="" do  
+	if $get(gdeData("segments","FILE_NAME"))="" do
 	. ; no file specified
 	. set regionData("dbFile","flags","fileExist")="false"
 	. set regionData("dbFile","flags","fileBad")="true"
+	. set regionData("dbFile","data",1,"FILE_NAME")=""
 	else  do
 	. ; Process segment flags
 	. set segmentFilename=$zsearch(-1)
-	. set segmentFilename=$zsearch(buffer("segments","FILE_NAME"))
-	. if segmentFilename="" do  
-	. . ; no file found on file system
+	. set segmentFilename=$zsearch(gdeData("segments","FILE_NAME"))
+	. if segmentFilename="" do
+	. . ; no file found on file system, fill data from GDE for the GUI to create file
+	. . set dataCnt=0
 	. . set regionData("dbFile","flags","fileExist")="false"
 	. . set regionData("dbFile","flags","fileBad")="true"
-	. set regionData("dbAccess","data",1,"AUTO_DB")=$select(buffer("region","AUTODB")=0:"false",1:"true")
+	. . set regionData("dbFile","data",$increment(dataCnt),"FILE_NAME")=gdeData("segments","FILE_NAME")
+	. . set regionData("dbFile","data",$increment(dataCnt),"ALLOCATION")=gdeData("segments","ALLOCATION")
+	. . set regionData("dbFile","data",$increment(dataCnt),"BLOCK_SIZE")=gdeData("segments","BLOCK_SIZE")
+	. . set regionData("dbFile","data",$increment(dataCnt),"AUTO_DB")=$select(gdeData("region","AUTODB")=0:"false",1:"true")
+	. . set ret=$$runShell^%ydbguiUtils("df "_$zparse(gdeData("segments","FILE_NAME"),"DIRECTORY"),.deviceInfo)
+	. . if ret'=0 do
+	. . . ;error handler for device
+	. . . set warnings($increment(warnings))="Error occurred while fetching the database device for region: "_regionName_" error is: "_ret
+	. . . set deviceInfo="error"
+	. . . set regionData("dbFile","flags","mountpoint")="error"
+	. . . set regionData("dbFile","flags","device")="error"
+	. . else  do
+	. . . set deviceInfo=$$strRemoveExtraSpaces^%ydbguiUtils(deviceInfo(2))
+	. . . set regionData("dbFile","flags","mountpoint")=$piece(deviceInfo," ",6)
+	. . . set regionData("dbFile","flags","device")=deviceInfo
 	. else  do
 	. . set regionData("dbFile","flags","file")=segmentFilename
 	. . ; file found on file system
-	. . set regionData("dbFile","flags","fileExist")="true"
+	. . set regionData("dbFile","flags","fileExist")=$select(segmentFilename="":"false",1:"true")
 	. . ;
 	. . ;execute FHEAD and try to read the header
-	. . set ret=$$runShell^%ydbguiUtils("mupip dumpfhead -r "_regionName,.fhead) 
+	. . set ret=$$runShell^%ydbguiUtils("mupip dumpfhead -r "_regionName,.fhead)
 	. . if ret'=0 do
 	. . . ; error while executing dumpfhead
 	. . . set warnings($increment(warnings))="Error occurred while fetching the FHEAD for region: "_regionName_" error is: "_ret
@@ -67,9 +84,9 @@ getRegionStruct(regionName,regionData,warnings)
 	. . . for cnt=3:1 quit:$get(fhead(cnt))=""  set @fhead(cnt)
 	. . . ;
 	. . . ; extract the device mountpoint
-	. . . set ret=$$runShell^%ydbguiUtils("df "_segmentFilename,.deviceInfo) 
+	. . . set ret=$$runShell^%ydbguiUtils("df "_segmentFilename,.deviceInfo)
 	. . . if ret'=0 do
-	. . . . ;error handler for device, need to think about it
+	. . . . ;error handler for device
 	. . . . set warnings($increment(warnings))="Error occurred while fetching the database device for region: "_regionName_" error is: "_ret
 	. . . . set deviceInfo="error"
 	. . . . set regionData("dbFile","flags","mountpoint")="error"
@@ -95,9 +112,9 @@ getRegionStruct(regionName,regionData,warnings)
 	set journalFilename=$zsearch($translate(record("sgmnt_data.jnl_file_name"),$char(0),""))
 	; extract the device mountpoint
 	do:journalFilename'=""
-	. set ret=$$runShell^%ydbguiUtils("df "_journalFilename,.deviceInfo) 
+	. set ret=$$runShell^%ydbguiUtils("df "_journalFilename,.deviceInfo)
 	. if ret'=0 do
-	. . ;error handler 
+	. . ;error handler
 	. . set warnings($increment(warnings))="Error occurred while fetching the journal device for region: "_regionName_" error is: "_ret
 	. . set regionData("journal","flags","file")="error"
 	. . set regionData("journal","flags","mountpoint")="error"
@@ -114,19 +131,17 @@ getRegionStruct(regionName,regionData,warnings)
 	set:regionData("journal","flags","state")=2 regionData("journal","flags","state")=$select(+$get(record("node_local.jnl_file.u.inode"),0):3,1:2) ;status 2: on, but inactive, status 3: on and active
 	set regionData("journal","flags","inode")=$get(record("node_local.jnl_file.u.inode"),0)
 	set regionData("replication","flags","status")=record("sgmnt_data.repl_state") ;0: closed/inactive 1: open/active 2: wasOn (was on but now not active)
-	; 
+	;
+	; Using dataCnt makes an object returned to the GUI an array, which lets us control the order in which the data is presented. ;
+	;
 	; fill the dbFile/data section
 	set dataCnt=0
 	set regionData("dbFile","data",$increment(dataCnt),"FILE_NAME")=segmentFilename
-	;
-	; Using dataCnt makes an object returned to the GUI an array, which lets us control the order in which the data is presented. ;
-	set regionData("dbFile","data",$increment(dataCnt),"currentSize")=(record("sgmnt_data.trans_hist.total_blks")*record("sgmnt_data.blk_size"))
-	set regionData("dbFile","data",$increment(dataCnt),"extensionLeft")=(record("sgmnt_data.trans_hist.free_blocks")*record("sgmnt_data.blk_size"))
-	set regionData("dbFile","data",$increment(dataCnt),"maximumSize")=(regionData("dbFile","data",dataCnt-2,"currentSize")+regionData("dbFile","data",dataCnt-1,"extensionLeft"))
-	set regionData("dbFile","usage","totalBlocks")=record("sgmnt_data.trans_hist.total_blks")+record("sgmnt_data.trans_hist.free_blocks")
-	set regionData("dbFile","usage","usedBlocks")=record("sgmnt_data.trans_hist.total_blks")
+	set regionData("dbFile","usage","totalBlocks")=record("sgmnt_data.trans_hist.total_blks")
+	set regionData("dbFile","usage","usedBlocks")=record("sgmnt_data.trans_hist.total_blks")-record("sgmnt_data.trans_hist.free_blocks")
 	set regionData("dbFile","usage","freeBlocks")=record("sgmnt_data.trans_hist.free_blocks")
-	set regionData("dbFile","usage","usedPercent")=$justify(record("sgmnt_data.trans_hist.free_blocks")/regionData("dbFile","usage","totalBlocks")*100.0,1,1)
+	set regionData("dbFile","usage","usedPercent")=100-$justify(record("sgmnt_data.trans_hist.free_blocks")/regionData("dbFile","usage","totalBlocks")*100.0,1,1)
+	set regionData("dbFile","data",$increment(dataCnt),"AUTO_DB")=$select(gdeData("region","AUTODB")=0:"false",1:"true")
 	set regionData("dbFile","data",$increment(dataCnt),"ACCESS_METHOD")=$select(record("sgmnt_data.acc_meth")=1:"BG",1:"MM") ;1:BG 2:MM
 	set:record("sgmnt_data.acc_meth")=1 regionData("dbFile","data",$increment(dataCnt),"GLOBAL_BUFFER_COUNT")=record("sgmnt_data.n_bts")
 	set regionData("dbFile","data",$increment(dataCnt),"LOCK_SPACE")=record("sgmnt_data.lock_space_size")
@@ -135,14 +150,22 @@ getRegionStruct(regionName,regionData,warnings)
 	set regionData("dbFile","data",$increment(dataCnt),"EXTENSION_COUNT")=record("sgmnt_data.extension_size")
 	set regionData("dbFile","data",$increment(dataCnt),"TRANSACTION_NUMBER")=record("sgmnt_data.trans_hist.curr_tn")
 	set regionData("dbFile","data",$increment(dataCnt),"LAST_BACKUP")=record("sgmnt_data.last_com_backup")
-	set regionData("dbFile","data",$increment(dataCnt),"ALLOCATION")=buffer("region","ALLOCATION")
+	set regionData("dbFile","data",$increment(dataCnt),"ALLOCATION")=gdeData("segments","ALLOCATION")
 	set regionData("dbFile","data",$increment(dataCnt),"BLOCK_SIZE")=record("sgmnt_data.blk_size")
+	set regionData("dbFile","data",$increment(dataCnt),"ENCRYPTION_FLAG")=$select(record("sgmnt_data.is_encrypted"):"true",1:"false")
+	set:record("sgmnt_data.acc_meth")=1 regionData("dbFile","data",$increment(dataCnt),"MUTEX_SLOTS")=record("sgmnt_data.mutex_spin_parms.mutex_que_entry_space_size")
 	;
 	; fill the dbAccess/data section
 	set dataCnt=0
 	set regionData("dbAccess","data",$increment(dataCnt),"RECORD_SIZE")=record("sgmnt_data.max_rec_size")
 	set regionData("dbAccess","data",$increment(dataCnt),"KEY_SIZE")=record("sgmnt_data.max_key_size")
-	set regionData("dbAccess","data",$increment(dataCnt),"AUTO_DB")=$select(buffer("region","AUTODB")=0:"false",1:"true")
+	set regionData("dbAccess","data",$increment(dataCnt),"COLLATION_DEFAULT")=record("sgmnt_data.def_coll")
+	;set regionData("dbAccess","data",$increment(dataCnt),"INST_FREEZE_ON_ERROR")=record("jnlpool_ctl_struct.instfreeze_environ_init")
+	set regionData("dbAccess","data",$increment(dataCnt),"LOCK_CRIT_SEPARATE")=$select(record("sgmnt_data.lock_crit_with_db"):"true",1:"false")
+	set regionData("dbAccess","data",$increment(dataCnt),"NULL_SUBSCRIPTS")=$select(record("sgmnt_data.null_subs")=0:"Not allowed",record("sgmnt_data.null_subs")=1:"Allowed",1:"Allow existing")
+	;set regionData("dbAccess","data",$increment(dataCnt),"QDBRUNDOWN")=record("sgmnt_data.?")
+	;set regionData("dbAccess","data",$increment(dataCnt),"STATS")=record("sgmnt_data.?")
+	set regionData("dbAccess","data",$increment(dataCnt),"STDNULLCOLL")=$select(record("sgmnt_data.std_null_coll"):"true",1:"false")
 	;
 	; fill the journal/data section
 	set dataCnt=0
@@ -151,7 +174,11 @@ getRegionStruct(regionName,regionData,warnings)
 	set regionData("journal","data",$increment(dataCnt),"EPOCH_INTERVAL")=record("sgmnt_data.epoch_interval")
 	set regionData("journal","data",$increment(dataCnt),"EPOCH_TAPER")=$select(record("sgmnt_data.epoch_taper"):"true",1:"false")
 	set regionData("journal","data",$increment(dataCnt),"SYNC_IO")=$select(record("sgmnt_data.jnl_sync_io"):"true",1:"false")
+	set regionData("journal","data",$increment(dataCnt),"AUTO_SWITCH_LIMIT")=record("sgmnt_data.autoswitchlimit")
+	set regionData("journal","data",$increment(dataCnt),"ALIGNSIZE")=record("sgmnt_data.alignsize")
 	set regionData("journal","data",$increment(dataCnt),"BUFFER_SIZE")=record("sgmnt_data.jnl_buffer_size")
+	set regionData("journal","data",$increment(dataCnt),"YIELD_LIMIT")=record("sgmnt_data.yield_lmt")
+	;
 	;
 	; Statistical data
 	set dataCnt=0
@@ -191,13 +218,13 @@ getRegionStruct(regionName,regionData,warnings)
 	;
 	; Now process the maps
 	set cnt=0
-	set map="" for  set map=$order(buffer("map",map)) quit:map=""  do
-	. if $get(buffer("map",map,"region"))=regionName do
-	. . set name="" for  set name=$order(buffer("names",name)) quit:name=""  do
-	. . . if $extract(name,1,$length(name)-1)=$get(buffer("map",map,"from"))!(name=$get(buffer("map",map,"from"))) do
+	set map="" for  set map=$order(gdeData("map",map)) quit:map=""  do
+	. if $get(gdeData("map",map,"region"))=regionName do
+	. . set name="" for  set name=$order(gdeData("names",name)) quit:name=""  do
+	. . . if $extract(name,1,$length(name)-1)=$get(gdeData("map",map,"from"))!(name=$get(gdeData("map",map,"from"))) do
 	. . . . set cnt=cnt+1
-	. . . . set newNames(name,cnt,"from")=$get(buffer("map",map,"from"))
-	. . . . set newNames(name,cnt,"to")=$get(buffer("map",map,"to"))
+	. . . . set newNames(name,cnt,"from")=$get(gdeData("map",map,"from"))
+	. . . . set newNames(name,cnt,"to")=$get(gdeData("map",map,"to"))
 	;
 	set (cnt,name)=""
 	for  set name=$order(newNames(name)) quit:name=""  do
@@ -221,7 +248,7 @@ getRegionStruct(regionName,regionData,warnings)
 	. set regionData("locks","slotsBytesInUse")="error"
 	. set regionData("locks","estimatedFreeLockSpace")="error"
 	;
-getRegionStructQuit	
+getRegionStructQuit
 	quit
 	;
 	;
@@ -270,7 +297,7 @@ getLocksData:(regionName)
 	;
 	kill lockData
 	;
-	set ret=$$runShell^%ydbguiUtils("lke show -all -wait -region="_regionName,.lockBuffer) 
+	set ret=$$runShell^%ydbguiUtils("lke show -all -wait -region="_regionName,.lockBuffer)
 	quit:ret'=0 ret
 	;
 	if $find($get(lockBuffer(1)),"%YDB-I-LOCKSPACEINFO") do  goto getLocksDataQuit
@@ -297,7 +324,7 @@ getLocksDataQuit
 	quit *lockData
 	;
 	;
-parseLockSpaceInfo:(string)	
+parseLockSpaceInfo:(string)
 	set lockData("processesOnQueue")=$extract($piece($piece(string,":",4),";"),2,100)
 	set lockData("slotsInUse")=$extract($piece($piece(string,":",5),";"),2,100)
 	set lockData("slotsBytesInUse")=$extract($piece($piece(string,":",6),";"),2,100)

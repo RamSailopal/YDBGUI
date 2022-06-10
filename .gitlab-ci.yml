@@ -21,10 +21,13 @@ stages:
   - build
   - test
 
+services:
+  - docker:dind
+
 sast:
   stage: test
 include:
-- template: Security/SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
 
 commit-verify:
   image: ubuntu:20.04
@@ -36,3 +39,10 @@ commit-verify:
     - wget https://gitlab.com/YottaDB/DB/YDB/-/raw/master/ci/commit_verify.sh
     - chmod +x commit_verify.sh
     - ./commit_verify.sh tools/ci/needs_copyright.sh https://gitlab.com/YottaDB/UI/YDBGUI/
+
+ydb-gui-test:
+  image: docker:latest
+  stage: test
+  script:
+    - docker build --pull -t yottadb/yottadbgui:latest -f Dockerfile_test .
+    - docker run yottadb/yottadbgui:latest

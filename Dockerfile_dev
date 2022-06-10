@@ -32,7 +32,7 @@ COPY package.json /YDBGUI/package.json
 # Run npm install to install the test libraries
 RUN npm install
 
-COPY docker-configuration/docker-test.sh /YDBGUI/docker-test.sh
+COPY docker-configuration/docker-startup.sh /YDBGUI/docker-startup.sh
 COPY docker-configuration/dev /YDBGUI/dev
 COPY routines /YDBGUI/routines
 COPY wwwroot  /YDBGUI/wwwroot
@@ -47,14 +47,14 @@ RUN cd /YDBGUI/objects && \
 
 EXPOSE 8089
 
-ENTRYPOINT ["/YDBGUI/docker-test.sh"]
+ENTRYPOINT ["/YDBGUI/docker-startup.sh"]
 
 # to build the image
-# docker image build -f Dockerfile_test --progress=plain -t ydbguitest .
+# docker image build -f Dockerfile_dev --progress=plain -t ydbguidev .
 
 # to run the machine
-# docker run -d --name=ydbguitest -p 8089:8089  ydbguitest
+# docker run -d --name=ydbguidev -p 8089:8089  ydbguidev
 
 # to enter development mode
-# in Linux: docker run -d --name=ydbguitest -p 8089:8089 -v $PWD/wwwroot:/YDBGUI/wwwroot:rw -v $PWD/routines:/YDBGUI/routines:rw ydbguitest
-# in windows: docker run -d --name=ydbguitest -p 8089:8089 -v C:\Users\stefa\WebstormProjects\YDBGUI2/wwwroot:/YDBGUI/wwwroot:rw -v C:\Users\stefa\WebstormProjects\YDBGUI2/routines:/YDBGUI/routines:rw ydbguitest
+# in Linux: docker run -d --name=ydbguidev -p 8089:8089 -v $PWD/wwwroot:/YDBGUI/wwwroot:rw -v $PWD/routines:/YDBGUI/routines:rw ydbguidev
+# in windows: docker run -d --name=ydbguidev -p 8089:8089 -v C:\Users\stefa\WebstormProjects\YDBGUI2/wwwroot:/YDBGUI/wwwroot:rw -v C:\Users\stefa\WebstormProjects\YDBGUI2/routines:/YDBGUI/routines:rw ydbguidev

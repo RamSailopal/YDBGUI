@@ -42,9 +42,8 @@ fi
 # Determines whether a file should need a copyright by its name
 # Returns 0 if it needs a copyright and 1 otherwise.
 skiplist="COPYING
-    README.md
-    LICENSE
     .gitignore
+    wwwroot/ydbguiVersion.json
     wwwroot/libs/bootstrap-icons.1.8.0/bootstrap-icons.css
     wwwroot/libs/bootstrap.4.6.1/default.min.css
     wwwroot/libs/bootstrap.4.6.1/bootstrap.min.js
