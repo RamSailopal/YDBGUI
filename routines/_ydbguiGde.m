@@ -548,6 +548,7 @@ setup
 	; Prepare special $etrap to issue error in case VIEW "YLCT" call to set local collation fails below
 	; Need to use this instead of the gde $etrap (set a few lines later below) as that expects some initialization
 	; to have happened whereas we are not yet there since setting local collation is a prerequisite for that init. ;
+	new $etrap
 	set $etrap="w !,$p($zs,"","",3,999) s $ecode="""" d message^GDE(150503603,""""_$zparse(""$ydb_gbldir"","""",""*.gld"")_"""") quit"
 	; since GDE creates null subscripts, we don't want user level setting of gtm_lvnullsubs to affect us in any way
 	set gdeEntryState("nullsubs")=$view("LVNULLSUBS")
