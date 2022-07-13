@@ -18,7 +18,7 @@
                             <span class="ydb-fore3 bold">Mountpoint:</span>
                         </div>
                         <div class="col-3">
-                            <span id="lblDeviceInfoMountpoint"></span>
+                            <span class="inconsolata" id="lblDeviceInfoMountpoint"></span>
                         </div>
                         <div class="col-3">
                             <span class="ydb-fore3 bold">File system:</span>
@@ -33,13 +33,13 @@
                             <span class="ydb-fore3 bold">Block size:</span>
                         </div>
                         <div class="col-3">
-                            <span id="lblDeviceInfoBlockSize"></span>
+                            <span class="inconsolata" id="lblDeviceInfoBlockSize"></span> bytes
                         </div>
                         <div class="col-3">
                             <span class="ydb-fore3 bold">File system ID:</span>
                         </div>
                         <div class="col-3">
-                            <span id="lblDeviceInfoId"></span>
+                            <span class="inconsolata" id="lblDeviceInfoId"></span>
                         </div>
                     </div>
                     <br>
@@ -53,35 +53,98 @@
                         </div>
                     </div>
                     <div class="row-12" style="display: flex;">
-                        <div class="col-5">
+                        <div class="col-4">
                             Total space:<br>
-                            Space used:<br>
-                            Space available:<br><br>
-                            Percent used:<br><br>
-                            Total inodes:<br>
-                            Free inodes:<br>
                         </div>
-                        <div class="col-7">
-                            <span id="lblDeviceInfoTotalBlocks"></span>
-                            <br>
-                            <span id="lblDeviceInfoBlocksUsed"></span>
-                            <br>
-                            <span id="lblDeviceInfoBlockAvailable"></span>
-                            <br><br>
-                            <div class="progress" style="vertical-align: middle; position: inherit; height: 25px;">
-                                <div class="progress-bar ydb-status-green" role="progressbar"
-                                     id="rngDeviceInfoPercentUsed"
-                                     style="width: 0; color: white; font-size: 15px;"
-                                     aria-valuemin="0" aria-valuemax="100">
-                                </div>
-                            </div>
-                            <br>
-                            <span id="lblDeviceInfoINodesTotal"></span>
-                            <br>
-                            <span id="lblDeviceInfoINodesFree"></span>
-                            <br>
+                        <div class="col-2" style="text-align: right;">
+                            <span class="inconsolata" id="lblDeviceInfoTotalBlocks"></span>
+                        </div>
+                        <div class="col-2">
+                            <span>blocks</span>
+                        </div>
+                        <div class="col-3" style="text-align: right">
+                            <span class="inconsolata" id="lblDeviceInfoTotalBytes"></span>
+                        </div>
+                        <div class="col-1" style="text-align: right">
+                            <span id="lblDeviceInfoTotalBytesUnit"></span>
                         </div>
                     </div>
+
+                    <div class="row-12" style="display: flex;">
+                        <div class="col-4">
+                            Space used:<br>
+                        </div>
+                        <div class="col-2" style="text-align: right;">
+                            <span class="inconsolata" id="lblDeviceInfoBlocksUsed"></span>
+                        </div>
+                        <div class="col-2">
+                            <span>blocks</span>
+                        </div>
+                        <div class="col-3" style="text-align: right">
+                            <span class="inconsolata" id="lblDeviceInfoBytesUsed"></span>
+                        </div>
+                        <div class="col-1" style="text-align: right">
+                            <span id="lblDeviceInfoBytesUsedUnit"></span>
+                        </div>
+                    </div>
+
+                    <div class="row-12" style="display: flex;">
+                        <div class="col-4">
+                            Space available:<br>
+                        </div>
+                        <div class="col-2" style="text-align: right;">
+                            <span class="inconsolata" id="lblDeviceInfoBlockAvailable"></span>
+                        </div>
+                        <div class="col-2">
+                            <span>blocks</span>
+                        </div>
+                        <div class="col-3" style="text-align: right">
+                            <span class="inconsolata" id="lblDeviceInfoBytesAvailable"></span>
+                        </div>
+                        <div class="col-1" style="text-align: right">
+                            <span id="lblDeviceInfoBytesAvailableUnit"></span>
+                        </div>
+                    </div>
+
+                    <div class="row-12" style="display: flex;  padding: 10px 0;">
+                        <div class="col-4">
+                            Percent used:<br>
+                        </div>
+                        <div class="col-8">
+                            <div class="progress" style="vertical-align: middle; position: inherit; height: 25px;">
+                                <div aria-valuemax="100" aria-valuemin="0"
+                                     class="progress-bar ydb-status-green"
+                                     id="rngDeviceInfoPercentUsed"
+                                     role="progressbar" style="width: 0; color: white; font-size: 15px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-12" style="display: flex;">
+                        <div class="col-4">
+                            Total inodes:<br>
+                        </div>
+                        <div class="col-2" style="text-align: right;">
+                            <span class="inconsolata" id="lblDeviceInfoINodesTotal"></span>
+                        </div>
+                        <div class="col-2">
+                            blocks
+                        </div>
+                    </div>
+
+                    <div class="row-12" style="display: flex;">
+                        <div class="col-4">
+                            Free inodes:<br>
+                        </div>
+                        <div class="col-2" style="text-align: right;">
+                            <span class="inconsolata" id="lblDeviceInfoINodesFree"></span>
+                        </div>
+                        <div class="col-2">
+                            blocks
+                        </div>
+                    </div>
+
                     <br>
                 </div>
             </div>

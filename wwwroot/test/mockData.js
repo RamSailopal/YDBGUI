@@ -431,6 +431,11 @@ const testLoadData = () => {
             mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 12000 14% /';
             break;
         }
+        case 294: {
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 10000};
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 1200000 35% /';
+            break;
+        }
 
         // Region view: journal
         case 300: {
@@ -610,6 +615,19 @@ const testLoadData = () => {
             ];
             break
         }
+        case 430:
+        case 431: {
+            setTimeout(() => {
+                const dataArray = [
+                    'DEFAULT',
+                    'YDBAIM',
+                    'YDBOCTO'
+                ];
+
+                app.ui.regionSelect.show(dataArray, app.ui.regionView.show);
+            }, 350);
+            break
+        }
         case 490:
         case 491:
         case 492:
@@ -672,11 +690,8 @@ const testLoadData = () => {
         case 401:
         case 402:
         case 403: {
-            app.ui.regionDelete.show('DEFAULT');
-            break
-        }
-        case 404: {
-            app.ui.regionDelete.show('YDBOCTO');
+            app.ui.regionView.currentRegion = 'DEFAULT';
+            setTimeout(() => app.ui.regionDelete.show(), 250);
             break
         }
         case 440:
@@ -691,7 +706,8 @@ const testLoadData = () => {
         case 450:
         case 451:
         case 452: {
-            setTimeout(() => app.ui.regionJournalSwitch.show('DEFAULT'), 50);
+            app.ui.regionView.currentRegion = 'DEFAULT';
+            setTimeout(() => app.ui.regionJournalSwitch.show(), 250);
             break
         }
         case 555:
@@ -704,16 +720,18 @@ const testLoadData = () => {
         case 572:
         case 573:
         case 585: {
+            app.ui.regionView.currentRegion = 'DEFAULT';
             setTimeout(() => {
-                app.ui.regionEdit.show('DEFAULT');
+                app.ui.regionEdit.show();
             }, 250);
             break
         }
         case 557:
         case 558:
         case 562: {
+            app.ui.regionView.currentRegion = 'YDBAIM';
             setTimeout(() => {
-                app.ui.regionEdit.show('YDBAIM');
+                app.ui.regionEdit.show();
             }, 250);
             break
         }
@@ -722,8 +740,9 @@ const testLoadData = () => {
         case 588:
         case 589:
         case 590: {
+            app.ui.regionView.currentRegion = 'YDBOCTO';
             setTimeout(() => {
-                app.ui.regionEdit.show('YDBOCTO');
+                app.ui.regionEdit.show();
             }, 250);
             break
         }
@@ -759,7 +778,19 @@ const testLoadData = () => {
         case 635:
         case 636:
         case 637:
-        case 638: {
+        case 638:
+        case 640:
+        case 641:
+        case 642:
+        case 643:
+        case 644:
+        case 645:
+        case 646:
+        case 647:
+        case 648:
+        case 649:
+        case 650:
+        case 651: {
             setTimeout(() => {
                 app.ui.locksManager.show();
             }, 250);

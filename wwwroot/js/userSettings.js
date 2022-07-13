@@ -43,7 +43,7 @@ app.userSettings = {
             {
                 min: 0,
                 max: 70,
-                class: 'ydb-status-green',
+                class: 'ydb-status-green-readable',
                 flash: false
             },
             {

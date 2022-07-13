@@ -1,6 +1,6 @@
 <!-- Extend dialog -->
 <div class="modal fade" id="modalExtend" tabindex="-1" role="dialog" style="top: 16px; z-index: 2000">
-    <div class="modal-dialog modal-width-600" role="document">
+    <div class="modal-dialog modal-width-600" role="document" style="max-width: 754px;">
         <div class="modal-content">
             <div class="modal-header">
                 <label class="modal-title" id="lblRegionExtendModalHeader"></label>
@@ -10,28 +10,57 @@
             </div>
 
             <div class="modal-body">
-                <div class="row form-fields">
-                    <div class="col-5 bold">
-                        Current size:
-                    </div>
-                    <div class="col-7">
-                        <span id="lblRegionExtendCurrentSize"></span>
-                    </div>
-                </div>
-                <div class="row form-fields">
-                    <div class="col-5 bold">
-                        Available space:
-                    </div>
-                    <div class="col-7">
-                        <span id="lblRegionExtendAvailableSpace"></span>
-                    </div>
-                </div>
-                <div class="row form-fields" style="padding-bottom: 10px;">
-                    <div class="col-5 bold">
-                        Block size:
-                    </div>
-                    <div class="col-7">
-                        <span id="lblRegionExtendBlockSize"></span>
+                <div class="card">
+                    <div class="card-body stats-card-body shadow ydb-back6">
+                        <div class="row form-fields">
+                            <div class="col-3 bold">
+                                Current size:
+                            </div>
+                            <div class="col-3 inconsolata" style="text-align: right; padding-right: 0;">
+                                <span id="lblRegionExtendCurrentSize"></span>
+                            </div>
+                            <div class="col-2" style="text-align: right;">
+                                <span>blocks</span>
+                            </div>
+                            <div class="col-3 inconsolata" style="text-align: right;">
+                                <span id="lblRegionExtendCurrentSizeBytes"></span>
+                            </div>
+                            <div class="col-1" style="text-align: right;">
+                                <span id="lblRegionExtendCurrentSizeBytesUnit"></span>
+                            </div>
+                        </div>
+
+                        <div class="row form-fields">
+                            <div class="col-3 bold">
+                                Free space:
+                            </div>
+                            <div class="col-3 inconsolata" style="text-align: right; padding-right: 0;">
+                                <span id="lblRegionExtendAvailableSpace"></span>
+                            </div>
+                            <div class="col-2" style="text-align: right;">
+                                <span>blocks</span>
+                            </div>
+                            <div class="col-3 inconsolata" style="text-align: right;">
+                                <span id="lblRegionExtendAvailableSpaceBytes"></span>
+                            </div>
+                            <div class="col-1" style="text-align: right;">
+                                <span id="lblRegionExtendAvailableSpaceBytesUnit"></span>
+                            </div>
+                        </div>
+
+                        <div class="row form-fields" style="padding-bottom: 10px;">
+                            <div class="col-4 bold">
+                                Block size:
+                            </div>
+                            <div class="col-4">
+                            </div>
+                            <div class="col-3 inconsolata" style="text-align: right;">
+                                <span id="lblRegionExtendBlockSize"></span>
+                            </div>
+                            <div class="col-1" style="text-align: right;">
+                                <span>B</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -58,14 +87,14 @@
                         </div>
                     </div>
                     <div id="divRegionExtendTypeBlocks" style="display: block;" class="col-5">
-                        <input type="number" class="form-control form-control-sm" id="numRegionExtendBlocks"
+                        <input class="form-control form-control-sm inconsolata" id="numRegionExtendBlocks" type="number"
                                placeholder="Enter the extension in blocks" min="0" max="224000000" step="1000" value="1">
                     </div>
                     <div id="divRegionExtendTypeBlocks2" style="display: block;" class="col-2">
                         <span>blocks</span>
                     </div>
                     <div id="divRegionExtendTypeBytes" style="display: none;" class="col-5">
-                        <input type="number" class="form-control form-control-sm" id="numRegionExtendBytes"
+                        <input class="form-control form-control-sm inconsolata" id="numRegionExtendBytes" type="number"
                                placeholder="Enter the extension in bytes" min="0" step="10" value="1">
                     </div>
                     <div id="divRegionExtendTypeBytes2" style="display: none;" class="col-2">
@@ -95,6 +124,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="row" style="padding-top: 10px; font-size: 10px;">
                             <div class="col-4">
                                 <i class="bi bi-square-fill" style="color: var(--ydb-orange)"></i> Current size
@@ -112,24 +142,44 @@
                                 <hr>
                             </div>
                         </div>
+
                         <div class="row form-fields">
-                            <div class="col-4 bold">
+                            <div class="col-3 bold">
                                 New size:&nbsp;
                                 <span data-toggle="popover" data-trigger="hover" title="New size" data-content="
                                     This specifies the number of database blocks/bytes by which to extend the region. YottaDB automatically adds any bitmap blocks needed for the extension.">
                                     <i class="bi-info-circle-fill" style="font-size: 12px;"></i>
                                 </span>
                             </div>
-                            <div class="col-6">
+                            <div class="col-3 inconsolata" style="text-align: right; padding-right: 0;">
                                 <span id="lblRegionExtendGrandSize"></span>
                             </div>
+                            <div class="col-2" style="text-align: right;">
+                                <span>blocks</span>
+                            </div>
+                            <div class="col-3 inconsolata" style="text-align: right;">
+                                <span id="lblRegionExtendGrandSizeBytes"></span>
+                            </div>
+                            <div class="col-1" style="text-align: right;">
+                                <span id="lblRegionExtendGrandSizeBytesUnit"></span>
+                            </div>
                         </div>
+
                         <div class="row form-fields" style="padding-bottom: 10px;">
-                            <div class="col-4 bold">
+                            <div class="col-3 bold">
                                 Available space:
                             </div>
-                            <div class="col-6">
+                            <div class="col-3 inconsolata" style="text-align: right; padding-right: 0;">
                                 <span id="lblRegionExtendGrandAvailableSize"></span>
+                            </div>
+                            <div class="col-2" style="text-align: right;">
+                                <span>blocks</span>
+                            </div>
+                            <div class="col-3 inconsolata" style="text-align: right;">
+                                <span id="lblRegionExtendGrandAvailableSizeBytes"></span>
+                            </div>
+                            <div class="col-1" style="text-align: right;">
+                                <span id="lblRegionExtendGrandAvailableSizeBytesUnit"></span>
                             </div>
                         </div>
                     </div>

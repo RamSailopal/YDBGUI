@@ -383,7 +383,7 @@ describe("SERVER: Edit Region", async () => {
         expect(isObject).to.be.true;
 
         // and verify that autodb is false
-        const autoDb = res.data.dbFile.data[3].AUTO_DB;
+        const autoDb = res.data.dbFile.data[1].AUTO_DB;
         expect(autoDb).to.be.true;
 
         expect(res.data.dbFile.data[0].FILE_NAME).to.have.string('test.dat')
@@ -426,7 +426,7 @@ describe("SERVER: Edit Region", async () => {
         expect(isObject).to.be.true;
 
         // and verify that autodb is false
-        const autoDb = res.data.dbFile.data[3].AUTO_DB;
+        const autoDb = res.data.dbFile.data[1].AUTO_DB;
         expect(autoDb).to.be.true;
 
         expect(res.data.dbFile.data[0].FILE_NAME).to.have.string('test.dat')

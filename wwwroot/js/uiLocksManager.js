@@ -278,6 +278,7 @@ app.ui.locksManager.populateProcessTree = locksData => {
                 });
             }
 
+            // populate tree
             pidEntries.push({
                 id: 'pid-' + pid + '-ns-' + lock.namespace,
                 text: '<strong class="locks-manager-font-inconsolata">' + lock.namespace + '</strong>',

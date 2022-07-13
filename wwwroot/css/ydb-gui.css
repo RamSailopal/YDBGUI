@@ -499,6 +499,11 @@ input[type=range]::-ms-thumb {
     color: white !important;
 }
 
+.ydb-status-green-readable {
+    background: var(--ydb-status-green) !important;
+    color: var(--ydb-purple) !important;
+}
+
 .ydb-status-amber {
     background: var(--ydb-status-amber) !important;
     color: var(--ydb-purple) !important;
@@ -713,4 +718,8 @@ input[type=range]::-ms-thumb {
 .jstree-clicked {
     background: #eee !important;
     font-weight: bold;
+}
+
+.inconsolata {
+    font-family: 'Inconsolata', sans-serif;
 }

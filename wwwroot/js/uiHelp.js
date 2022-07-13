@@ -104,7 +104,8 @@ app.ui.help.init = () => {
             caption: 'Block size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#bl-ock-size-size',
             format: 'thousands',
-            unit: 'bytes'
+            unit: 'bytes',
+            advancedMode: true,
         },
         ENCRYPTION_FLAG: { // "sgmnt_data.is_encrypted" - This is an advanced feature; defer for later when we implement an Advanced button
             caption: 'Encryption',
@@ -114,7 +115,7 @@ app.ui.help.init = () => {
             class: 'ydb-status-gray-no-border'
         },
         MUTEX_SLOTS: { // "sgmnt_data.mutex_spin_parms.mutex_que_entry_space_size" - defer for when we implement Advanced button
-            caption: 'Mutex slot',
+            caption: 'Mutex slots',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#m-utex-slots-integer',
             format: 'thousands',
             unit: 'slots',
@@ -193,7 +194,8 @@ app.ui.help.init = () => {
         BEFORE: { // "sgmnt_data.jnl_before_image" - 1 is before_image
             caption: 'Before image',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#before-image-journaling',
-            booleanYesNo: true
+            booleanYesNo: true,
+            advancedMode: true,
         },
         EPOCH_INTERVAL: { // "sgmnt_data.epoch_interval"
             caption: 'Epoch interval',
@@ -249,6 +251,7 @@ app.ui.help.init = () => {
             caption: 'Buffer size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#bu-ffer-size-blocks',
             format: 'thousands',
+            advancedMode: true,
             unit: 'journal blocks'
         },
         YIELD_LIMIT: { // "sgmnt_data.yield_lmt" - defer to Advanced
@@ -300,22 +303,22 @@ app.ui.help.init = () => {
             class: 'align-right'
         },
         'sgmnt_data.gvstats_rec.n_data': {
-            caption: '$DATA ',
+            caption: '$DATA() ',
             format: 'thousands',
             class: 'align-right'
         },
         'sgmnt_data.gvstats_rec.n_order': {
-            caption: '$ORDER',
+            caption: '$ORDER()',
             format: 'thousands',
             class: 'align-right'
         },
         'sgmnt_data.gvstats_rec.n_zprev': {
-            caption: '$ZPREVIOUS',
+            caption: '$ORDER(,-1)',
             format: 'thousands',
             class: 'align-right'
         },
         'sgmnt_data.gvstats_rec.n_query': {
-            caption: '$QUERY',
+            caption: '$QUERY()',
             format: 'thousands',
             class: 'align-right'
         },

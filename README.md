@@ -25,7 +25,7 @@ YottaDB GUI
 ## Pre-requisites
 
 * YottaDB Installation
-* The Linux utilities `df`, `stat`, `rm`, `cp`, `fuser`
+* The Linux utilities `df`, `stat`, `rm`, `cp`, `fuser`, `grep`
 
 ## Installation
 Install is done using cmake in a build directory on the top directory, and then
@@ -78,6 +78,9 @@ $ydb_dist/yottadb -r stop^%ydbgui
 
 ## Using the Dockerfile
 Instructions for using the Dockerfile are embedded as comments there.
+
+## Executing the Unit Tests
+Instructions for executing Unit Tests and re-generate the test list are to be found [here](docs/testing.md) 
 
 ## REST Api
 The web server exposes a collection of REST endpoints for you to use to embed the YDBGUI functionality in your application.

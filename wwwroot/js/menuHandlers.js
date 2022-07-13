@@ -58,7 +58,7 @@ app.ui.menu.processRefresh = () => {
         if (region.dbFile.flags.fileExist === false) status.dbFile.push(regionName);
 
         // check if at least one database have a journal
-        if (region.journal !== undefined && region.journal.flags.state > 0) status.journal.push(regionName);
+        if (region.journal !== undefined && region.journal.flags !== undefined && region.journal.flags.state > 0) status.journal.push(regionName);
 
         // check if db can be extended
         if (region.dbFile.flags.fileExist) status.extendDbFile.push(regionName);

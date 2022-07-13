@@ -49,6 +49,8 @@ app.ui.addHandlers = () => {
     // region names
     app.ui.regionNames.add.init();
 
+    // region delete
+    app.ui.regionDelete.init()
     // region select
     app.ui.regionSelect.init();
 
@@ -209,7 +211,11 @@ app.ui.wait.hide = () => {
 app.ui.formatBytes = (a, b = 2) => {
     if (0 === a) return "0 Bytes";
     const c = 0 > b ? 0 : b, d = Math.floor(Math.log(a) / Math.log(1024));
-    return parseFloat((a / Math.pow(1024, d)).toFixed(c)) + " " + ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"][d]
+    let value = parseFloat((a / Math.pow(1024, d)).toFixed(c)).toString().split('.');
+    if (value[1] === undefined) value.push('00');
+    else if (value[1].length === 1) value[1] += '0';
+
+    return value.join('.') + " " + ["bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"][d]
 };
 
 app.ui.formatThousands = x => {

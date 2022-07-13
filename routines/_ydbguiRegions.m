@@ -22,8 +22,9 @@
 ; warnings				array byRef
 ; ****************************************************************
 getRegionStruct(regionName,regionData,warnings)
-	new gdeData,res,segmentFilename,journalFilename,fhead,cnt,deviceInfo
+	new gdeData,res,segmentFilename,journalFilename,fhead,cnt,deviceInfo,users
 	new fheadOk,dataCnt,map,newNames,name,regionMap,mapCnt,lsof,lockBuffer,record,devInfo
+	new gdeSegmentData,gdeRegionData,gdeJournalData
 	;
 	set fheadOk=0,segmentFilename=""
 	;
@@ -43,40 +44,21 @@ getRegionStruct(regionName,regionData,warnings)
 	. set regionData("dbFile","data",1,"FILE_NAME")=""
 	else  do
 	. ; Process segment flags
-	. set segmentFilename=$zsearch(-1)
-	. set segmentFilename=$zsearch(gdeData("segments","FILE_NAME"))
+	. set segmentFilename=$zsearch(gdeData("segments","FILE_NAME"),-1)
 	. if segmentFilename="" do
 	. . ; no file found on file system, fill data from GDE for the GUI to create file
 	. . set dataCnt=0
 	. . set regionData("dbFile","flags","fileExist")="false"
 	. . set regionData("dbFile","flags","fileBad")="true"
-	. . set regionData("dbFile","data",$increment(dataCnt),"FILE_NAME")=gdeData("segments","FILE_NAME")
-	. . set regionData("dbFile","data",$increment(dataCnt),"ALLOCATION")=gdeData("segments","ALLOCATION")
-	. . set regionData("dbFile","data",$increment(dataCnt),"BLOCK_SIZE")=gdeData("segments","BLOCK_SIZE")
-	. . set regionData("dbFile","data",$increment(dataCnt),"AUTO_DB")=$select(gdeData("region","AUTODB")=0:"false",1:"true")
-	. . set ret=$$runShell^%ydbguiUtils("df "_$zparse(gdeData("segments","FILE_NAME"),"DIRECTORY"),.deviceInfo)
-	. . if ret'=0 do
-	. . . ;error handler for device
-	. . . set warnings($increment(warnings))="Error occurred while fetching the database device for region: "_regionName_" error is: "_ret
-	. . . set deviceInfo="error"
-	. . . set regionData("dbFile","flags","mountpoint")="error"
-	. . . set regionData("dbFile","flags","device")="error"
-	. . else  do
-	. . . set deviceInfo=$$strRemoveExtraSpaces^%ydbguiUtils(deviceInfo(2))
-	. . . set regionData("dbFile","flags","mountpoint")=$piece(deviceInfo," ",6)
-	. . . set regionData("dbFile","flags","device")=deviceInfo
-	. . . ; get extra info
-	. . . kill deviceInfo
-	. . . set ret=$$runShell^%ydbguiUtils("stat -fc %s_%i_%c_%d "_$zparse(gdeData("segments","FILE_NAME"),"DIRECTORY"),.deviceInfo)
-	. . . if ret'=0 do
-	. . . . ;error handler for device
-	. . . . set warnings($increment(warnings))="Error occurred while fetching the database device for region: "_regionName_" error is: "_ret
-	. . . else  do
-	. . . . set *devInfo=$$SPLIT^%MPIECE(deviceInfo(1),"_")
-	. . . . set regionData("dbFile","flags","fsBlockSize")=devInfo(1)
-	. . . . set regionData("dbFile","flags","deviceId")=devInfo(2)
-	. . . . set regionData("dbFile","flags","iNodesTotal")=devInfo(3)
-	. . . . set regionData("dbFile","flags","iNodesFree")=devInfo(4)
+	. . ; get GDE segment data
+	. . set *gdeSegmentData=$$populateGdeSegmentData(.gdeData)
+	. . merge regionData("dbFile","data")=gdeSegmentData
+	. . ; get GDE region
+	. . set *gdeRegionData=$$populateGdeRegionData(.gdeData)
+	. . merge regionData("dbAccess","data")=gdeRegionData
+	. . ; get GDE journal
+	. . set *gdeJournalData=$$populateGdeJournalData(.gdeData)
+	. . merge regionData("journal","data")=gdeJournalData
 	. ;
 	. else  do
 	. . set regionData("dbFile","flags","file")=segmentFilename
@@ -123,25 +105,26 @@ getRegionStruct(regionName,regionData,warnings)
 	. . . . . set regionData("dbFile","flags","iNodesTotal")=devInfo(3)
 	. . . . . set regionData("dbFile","flags","iNodesFree")=devInfo(4)
 	. . . ; compute the # of users, if possible
-	. . . set ret=$$dbnopen(segmentFilename),regionData("dbFile","flags","shmenHealthy")="true"
-	. . . if ret>-1 set regionData("dbFile","flags","sessions")=ret quit
+	. . . kill users
+	. . . set ret=$$dbnopen(segmentFilename,.users),regionData("dbFile","flags","shmenHealthy")="true"
+	. . . if ret>-1 do  quit
+	. . . . set regionData("dbFile","flags","sessions")=ret
+	. . . . merge regionData("dbFile","flags","processes")=users
 	. . . if ret=-999999 do  quit
 	. . . . ; shmem error, try to open the region and check if it got fixed
 	. . . . set ret=$$tryOpenRegion(regionName)
 	. . . . if ret=0 set regionData("dbFile","flags","sessions")="n/a",regionData("dbFile","flags","shmenHealthy")="false"
-	. . . . else  set ret=$$dbnopen(segmentFilename) if ret=999999 set regionData("dbFile","flags","shmenHealthy")="false" quit
+	. . . . else  kill users set ret=$$dbnopen(segmentFilename,.users) if ret=999999 set regionData("dbFile","flags","shmenHealthy")="false" quit
 	. . . ;
 	. . . if ret=-130 set regionData("dbFile","flags","fileBad")="true" quit
 	. . . ; process extra errors
 	. . . set warnings($increment(warnings))="Error occurred while fetching the users for region: "_regionName_" error is: "_ret
 	. . . set regionData("dbFile","flags","sessions")="n/a"
-	. ;
 	;
-	goto:regionData("dbFile","flags","fileExist")="false" getRegionStructQuit
+	goto:regionData("dbFile","flags","fileExist")="false" getRegionNames
 	;
 	; Process journal flags
-	set journalFilename=$zsearch(-1)
-	set journalFilename=$zsearch($extract(record("sgmnt_data.jnl_file_name"),1,record("sgmnt_data.jnl_file_len")))
+	set journalFilename=$zsearch($extract(record("sgmnt_data.jnl_file_name"),1,record("sgmnt_data.jnl_file_len")),-1)
 	set regionData("journal","flags","gdeFilename")=gdeData("region","FILE_NAME")
 	; extract the device mountpoint
 	do:journalFilename'=""
@@ -235,41 +218,61 @@ getRegionStruct(regionName,regionData,warnings)
 	;
 	; Statistical data
 	set dataCnt=0
-	set regionData("stats","logicalOperations","caption")="Logical Database operations"
-	set regionData("stats","logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_set")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_set"))
-	set regionData("stats","logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_kill")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_kill"))
-	set regionData("stats","logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_get")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_get"))
-	set regionData("stats","logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_data")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_data"))
-	set regionData("stats","logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_order")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_order"))
-	set regionData("stats","logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_zprev")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_zprev"))
-	set regionData("stats","logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_query")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_query"))
+	set regionData("stats","1-logicalOperations","caption")="Logical Database operations"
+	set regionData("stats","1-logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_set")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_set"))
+	set regionData("stats","1-logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_kill")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_kill"))
+	set regionData("stats","1-logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_get")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_get"))
+	set regionData("stats","1-logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_data")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_data"))
+	set regionData("stats","1-logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_order")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_order"))
+	set regionData("stats","1-logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_zprev")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_zprev"))
+	set regionData("stats","1-logicalOperations","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_query")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_query"))
 	;
 	set dataCnt=0
-	set regionData("stats","locks","caption")="M Lock Operations"
-	set regionData("stats","locks","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_lock_success")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_lock_success"))
-	set regionData("stats","locks","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_lock_fail")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_lock_fail"))
+	set regionData("stats","2-locks","caption")="M Lock Operations"
+	set regionData("stats","2-locks","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_lock_success")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_lock_success"))
+	set regionData("stats","2-locks","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_lock_fail")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_lock_fail"))
 	;
 	set dataCnt=0
-	set regionData("stats","transactions","caption")="Transactions"
-	set regionData("stats","transactions","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_nontp_retries_0")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_nontp_retries_0"))
-	set regionData("stats","transactions","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_nontp_retries_1")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_nontp_retries_1"))
-	set regionData("stats","transactions","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_nontp_retries_2")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_nontp_retries_2"))
-	set regionData("stats","transactions","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_nontp_retries_3")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_nontp_retries_3"))
+	set regionData("stats","3-transactions","caption")="Transactions"
+	set regionData("stats","3-transactions","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_nontp_retries_0")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_nontp_retries_0"))
+	set regionData("stats","3-transactions","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_nontp_retries_1")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_nontp_retries_1"))
+	set regionData("stats","3-transactions","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_nontp_retries_2")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_nontp_retries_2"))
+	set regionData("stats","3-transactions","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_nontp_retries_3")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_nontp_retries_3"))
 	;
 	set dataCnt=0
-	set regionData("stats","journal","caption")="Journal information"
-	set regionData("stats","journal","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_jfile_bytes")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_jfile_bytes"))
-	set regionData("stats","journal","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_jnl_flush")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_jnl_flush"))
-	set:+record("sgmnt_data.jnl_sync_io")=0 regionData("stats","journal","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_jnl_fsync")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_jnl_fsync"))
-	set regionData("stats","journal","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_jrec_epoch_regular")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_jrec_epoch_regular"))
+	set regionData("stats","4-journal","caption")="Journal information"
+	set regionData("stats","4-journal","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_jfile_bytes")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_jfile_bytes"))
+	set regionData("stats","4-journal","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_jnl_flush")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_jnl_flush"))
+	set:+record("sgmnt_data.jnl_sync_io")=0 regionData("stats","4-journal","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_jnl_fsync")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_jnl_fsync"))
+	set regionData("stats","4-journal","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_jrec_epoch_regular")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_jrec_epoch_regular"))
 	;
 	set dataCnt=0
-	set regionData("stats","csa","caption")="Critical Section Aquisition"
-	set regionData("stats","csa","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_crit_success")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_crit_success"))
-	set regionData("stats","csa","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_crit_fail")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_crit_failed"))
-	set regionData("stats","csa","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_crit_in_epch")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_crits_in_epch"))
+	set regionData("stats","5-csa","caption")="Critical Section Aquisition"
+	set regionData("stats","5-csa","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_crit_success")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_crit_success"))
+	set regionData("stats","5-csa","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_crit_fail")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_crit_failed"))
+	set regionData("stats","5-csa","data",$increment(dataCnt),"sgmnt_data.gvstats_rec.n_crit_in_epch")=$$FUNC^%HD(record("sgmnt_data.gvstats_rec.n_crits_in_epch"))
 	;
-	; Now process the maps
+	; locks
+	set *lockBuffer=$$getLocksData^%ydbguiLocks(regionName)
+	if $data(lockBuffer) merge regionData("locks")=lockBuffer
+	else  do
+	. set warnings($increment(warnings))="Error occurred while fetching the locks for region: "_regionName_" error is: "_ret
+	. set regionData("locks","processesOnQueue")="N/A"
+	. set regionData("locks","slotsInUse")="N/A"
+	. set regionData("locks","slotsBytesInUse")="N/A"
+	. set regionData("locks","estimatedFreeLockSpace")="N/A"
+	;
+	; Now process the names
+	;
+getRegionNames
+	; is this a default region ?
+	if gdeData("names","*")=regionName do  goto namesFinalize
+	. set regionMap(1,"name")="*"
+	. set regionMap(1,"ranges",1,"from")=""
+	. set regionMap(1,"ranges",1,"to")=""
+	. set regionMap(1,"type")="*"
+	;
+	; Regular region
 	set cnt=0
 	set map="" for  set map=$order(gdeData("map",map)) quit:map=""  do
 	. if $get(gdeData("map",map,"region"))=regionName do
@@ -289,17 +292,8 @@ getRegionStruct(regionName,regionData,warnings)
 	. . set regionMap(cnt,"ranges",mapCnt,"to")=newNames(name,mapCnt,"to")
 	. . set regionMap(cnt,"type")=$extract(newNames(name,mapCnt,"from"),1,1)
 	;
+namesFinalize
 	merge regionData("names")=regionMap
-	;
-	; locks
-	set *lockBuffer=$$getLocksData^%ydbguiLocks(regionName)
-	if $data(lockBuffer) merge regionData("locks")=lockBuffer
-	else  do
-	. set warnings($increment(warnings))="Error occurred while fetching the locks for region: "_regionName_" error is: "_ret
-	. set regionData("locks","processesOnQueue")="N/A"
-	. set regionData("locks","slotsInUse")="N/A"
-	. set regionData("locks","slotsBytesInUse")="N/A"
-	. set regionData("locks","estimatedFreeLockSpace")="N/A"
 	;
 getRegionStructQuit
 	quit
@@ -555,7 +549,7 @@ edit(body)
 	. . . set gdeNames=gdeNames_"ADD -name "_body("names",ix,"value")_" -REGION="_body("regionName")_NL
 	. . if $data(body("names",ix,"deleted")),body("names",ix,"deleted")="true" do
 	. . . set gdeNames=gdeNames_"DELETE -name "_body("names",ix,"value")_NL
-	;	
+	;
 	; GDE
 	; GDE is used for: initialAllocation, autoDb and journal filename
 	set ix="" for  set ix=$order(body("segmentData",ix)) quit:ix=""  do
@@ -599,9 +593,9 @@ edit(body)
 	if cmdMupip'="" do  goto:$get(res("result"))="ERROR" editQuit
 	. set *tempRes=$$executeMupip(cmdMupip)
 	. merge res=tempRes
-	;	
+	;
 	; Execute GDE if needed
-	if body("updateGde")="true"!(body("journalUpdateGde")="true") do 
+	if body("updateGde")="true"!(body("journalUpdateGde")="true") do
 	. if cmdGdeJournal'="" set *tempRres=$$executeGde(cmdGdeJournal)
 	. if cmdGde'="" set *tempRes=$$executeGde(cmdGde)
 	. merge res=tempRes
@@ -663,9 +657,9 @@ executeGde(command)
 	. if verifyStatus=1 merge res("warnings")=verifyStatus zkill res("warnings")
 	. if verifyStatus=0 merge res("error","dump")=verifyStatus zkill res("error","dump")
 	;
-	if $get(res("result"))="" set res("result")="OK"	
-	;	
-executeGdeQuit	
+	if $get(res("result"))="" set res("result")="OK"
+	;
+executeGdeQuit
 	quit *res
 	;
 	;
@@ -802,8 +796,8 @@ buildJournalCommandEdit:(body,mupipFlag) ; Builds a command to update the journa
 ; - -130 file does not exist or is not a database file
 ; - other: other error return codes from processes in PIPE devices
 ; ****************************************************************
-dbnopen:(dbfile)	; Report number of processes accessing a YottaDB database file
-	new i,io,line,nproc,shmid
+dbnopen(dbfile,users)	; Report number of processes accessing a YottaDB database file
+	new i,io,line,nproc,shmid,shellResult,ret
 	;
 	set io=$io
 	open "mupip":(shell="/bin/sh":command="$ydb_dist/mupip ftok "_dbfile:readonly)::"pipe"
@@ -818,6 +812,12 @@ dbnopen:(dbfile)	; Report number of processes accessing a YottaDB database file
 	use io close "ipcs"
 	;
 	set nproc=$zpiece(line,"nattch=",2)
+	;
+	if nproc>0 do
+	. set ret=$$runShell^%ydbguiUtils("grep ' "_shmid_"' /proc/*/maps",.shellResult) do:ret=0!(ret=2)
+	. . set ret="" for  set ret=$o(shellResult(ret)) quit:ret=""  do
+	. . . set users(ret)=$piece(shellResult(ret),"/",3)
+	;
 	quit $select(nproc:nproc,1:-999999)
 	;
 	;
@@ -834,7 +834,6 @@ getNames:(regionName)
 	;
 	; get the names
 	do getRegion^%ydbguiGde(regionName,.gdeData)
-	;quit *gdeData
 	;
 	set cnt=0
 	set map="" for  set map=$order(gdeData("map",map)) quit:map=""  do
@@ -901,3 +900,88 @@ tryOpenRegion(regionName)
 	;
 tryOpenRegionQuit
 	quit ret
+	;
+	;
+	;
+	;
+	;
+	;
+; ****************************************************************
+; populateGdeSegmentData(gdeData)
+; ;
+; PARAMS:
+; gdeData			array
+; RETURNS:
+; array by ref
+; ****************************************************************
+populateGdeSegmentData(gdeData)
+	new ret,dataCnt
+	;
+	set dataCnt=0
+	set ret($increment(dataCnt),"FILE_NAME")=gdeData("segments","FILE_NAME")
+	set ret($increment(dataCnt),"AUTO_DB")=$select(gdeData("region","AUTODB")=0:"false",1:"true")
+	set ret($increment(dataCnt),"ACCESS_METHOD")=gdeData("segments","ACCESS_METHOD")
+	set:gdeData("segments","ACCESS_METHOD")="BG" ret($increment(dataCnt),"GLOBAL_BUFFER_COUNT")=gdeData("segments","GLOBAL_BUFFER_COUNT")
+	set ret($increment(dataCnt),"LOCK_SPACE")=gdeData("segments","LOCK_SPACE")
+	set:gdeData("segments","ACCESS_METHOD")="BG" ret($increment(dataCnt),"ASYNCIO")=$select(gdeData("segments","ASYNCIO")=0:"false",1:"true")
+	set ret($increment(dataCnt),"DEFER_ALLOCATE")=$select(gdeData("segments","DEFER_ALLOCATE")=0:"false",1:"true")
+	set ret($increment(dataCnt),"EXTENSION_COUNT")=gdeData("segments","EXTENSION_COUNT")
+	set ret($increment(dataCnt),"ALLOCATION")=gdeData("segments","ALLOCATION")
+	set ret($increment(dataCnt),"BLOCK_SIZE")=gdeData("segments","BLOCK_SIZE")
+	set ret($increment(dataCnt),"ENCRYPTION_FLAG")=gdeData("segments","ENCRYPTION_FLAG")
+	set ret($increment(dataCnt),"FILE_NAME")=gdeData("segments","FILE_NAME")
+	set:gdeData("segments","ACCESS_METHOD")="BG" ret($increment(dataCnt),"MUTEX_SLOTS")=gdeData("segments","MUTEX_SLOTS")
+	;
+	quit *ret
+	;
+	;
+; ****************************************************************
+; populateGdeRegionData(gdeData)
+; ;
+; PARAMS:
+; gdeData			array
+; RETURNS:
+; array by ref
+; ****************************************************************
+populateGdeRegionData(gdeData)
+	new ret,dataCnt
+	;
+	set dataCnt=0
+	set ret($increment(dataCnt),"RECORD_SIZE")=gdeData("region","RECORD_SIZE")
+	set ret($increment(dataCnt),"KEY_SIZE")=gdeData("region","KEY_SIZE")
+	set ret($increment(dataCnt),"COLLATION_DEFAULT")=gdeData("region","COLLATION_DEFAULT")
+	set ret($increment(dataCnt),"INST_FREEZE_ON_ERROR")=$select(gdeData("region","INST_FREEZE_ON_ERROR")=0:"false",1:"true")
+	set ret($increment(dataCnt),"LOCK_CRIT_SEPARATE")=$select(gdeData("region","LOCK_CRIT_SEPARATE")=0:"false",1:"true")
+	set ret($increment(dataCnt),"NULL_SUBSCRIPTS")=$select(gdeData("region","NULL_SUBSCRIPTS")=0:"Never",gdeData("region","NULL_SUBSCRIPTS")=0=1:"Always",1:"true")
+	set ret($increment(dataCnt),"QDBRUNDOWN")=$select(gdeData("region","QDBRUNDOWN")=0:"false",1:"true")
+	set ret($increment(dataCnt),"STATS")=$select(gdeData("region","STATS")=0:"false",1:"true")
+	;
+	quit *ret
+	;
+	;
+; ****************************************************************
+; populateGdeJournalData(gdeData)
+; ;
+; PARAMS:
+; gdeData			array
+; RETURNS:
+; array by ref
+; ****************************************************************
+populateGdeJournalData(gdeData)
+	new ret,dataCnt
+	;
+	set dataCnt=0
+	set ret($increment(dataCnt),"JFILE_NAME")=gdeData("region","FILE_NAME")
+	set ret($increment(dataCnt),"BEFORE")=$select(gdeData("region","BEFORE_IMAGE")=0:"false",1:"true")
+	set ret($increment(dataCnt),"EPOCH_INTERVAL")=gdeData("region","EPOCH_INTERVAL")
+	set ret($increment(dataCnt),"EPOCH_TAPER")=$select(gdeData("region","EPOCHTAPER")=0:"false",1:"true")
+	set ret($increment(dataCnt),"SYNC_IO")=$select(gdeData("region","SYNC_IO")=0:"false",1:"true")
+	set ret($increment(dataCnt),"AUTO_SWITCH_LIMIT")=gdeData("region","AUTOSWITCHLIMIT")
+	set ret($increment(dataCnt),"ALIGNSIZE")=gdeData("region","ALIGNSIZE")
+	set ret($increment(dataCnt),"BUFFER_SIZE")=gdeData("region","BUFFER_SIZE")
+	set ret($increment(dataCnt),"YIELD_LIMIT")=gdeData("region","YIELD_LIMIT")
+	set ret($increment(dataCnt),"JEXTENSION_SIZE")=gdeData("region","EXTENSION")
+	set ret($increment(dataCnt),"JALLOCATION")=gdeData("region","ALLOCATION")
+	;
+	quit *ret
+	;

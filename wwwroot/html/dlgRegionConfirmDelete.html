@@ -1,0 +1,38 @@
+<!-- region delete confirm -->
+<div aria-hidden="true" aria-labelledby="modalLabel" class="modal  fade" id="modalRegionConfirmDelete" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document" style="max-width: 650px;">
+        <div class="modal-content">
+            <div class="modal-header center">
+                <h6 class="modal-title">Region delete</h6>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-9>">
+                        <h6 style="padding-left: 10px;">You have chosen to delete the region: <span id="spanRegionDeleteConfirmHeader"></span></h6>
+                        <br>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 12px;">
+                    <div class="col-8">
+                        <label for="txtRegionDeleteConfirmDelete"> Please, type the name of the region below to proceed:</label>
+                    </div>
+                    <div class="col-4">
+                        <input class="form-control form-control-sm is-invalid" id="txtRegionDeleteConfirmDelete"
+                               maxlength="16" placeholder=""
+                               style="display: inherit; width: inherit; font-weight: bold; text-transform: uppercase"
+                               type="text">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer center">
+                <button class="btn btn-outline-info disabled" disabled id="btnRegionConfirmDeleteOk" tabindex="10" type="button">Delete
+                </button>
+                <button class="btn btn-outline-secondary" data-dismiss="modal" id="btnRegionConfirmDeleteCancel" tabindex="-1" type="button">Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

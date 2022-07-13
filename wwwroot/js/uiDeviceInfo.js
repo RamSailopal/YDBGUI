@@ -24,13 +24,27 @@ app.ui.deviceInfo.show = (index) => {
     const device = app.system.devices[index];
     const rngDeviceInfoPercentUsed = $('#rngDeviceInfoPercentUsed');
 
+    const divideFactor = device.fsBlockSize / 1024;
+
     $('#lblDeviceInfoMountpoint').text(device.mountPoint);
     $('#lblDeviceInfoFileSystem').text(device.type);
-    $('#lblDeviceInfoBlockSize').text(device.fsBlockSize + ' bytes');
+    $('#lblDeviceInfoBlockSize').text(app.ui.formatThousands(device.fsBlockSize));
     $('#lblDeviceInfoId').text(device.deviceId);
-    $('#lblDeviceInfoBlockAvailable').text(app.ui.formatThousands(device.freeBlocks) + ' blocks ( ' + app.ui.formatBytes(device.freeBlocks * 1024) + ' )');
-    $('#lblDeviceInfoBlocksUsed').text(app.ui.formatThousands(device.usedBlocks) + ' blocks ( ' + app.ui.formatBytes(device.usedBlocks * 1024) + ' )');
-    $('#lblDeviceInfoTotalBlocks').text(app.ui.formatThousands(device.totalBlocks) + ' blocks ( ' + app.ui.formatBytes(device.totalBlocks * 1024) + ' )');
+
+    const bytesTotal = app.ui.formatBytes(device.totalBlocks * 1024).split(' ');
+    $('#lblDeviceInfoTotalBlocks').text(app.ui.formatThousands(device.totalBlocks / divideFactor));
+    $('#lblDeviceInfoTotalBytes').text(bytesTotal[0]);
+    $('#lblDeviceInfoTotalBytesUnit').text(' ' + bytesTotal[1]);
+
+    const bytesUsed = app.ui.formatBytes(device.usedBlocks * 1024).split(' ');
+    $('#lblDeviceInfoBlocksUsed').text(app.ui.formatThousands(device.usedBlocks / divideFactor));
+    $('#lblDeviceInfoBytesUsed').text(bytesUsed[0]);
+    $('#lblDeviceInfoBytesUsedUnit').text(' ' + bytesUsed[1]);
+
+    const bytesAvail = app.ui.formatBytes(device.freeBlocks * 1024).split(' ');
+    $('#lblDeviceInfoBlockAvailable').text(app.ui.formatThousands(device.freeBlocks / divideFactor));
+    $('#lblDeviceInfoBytesAvailable').text(bytesAvail[0]);
+    $('#lblDeviceInfoBytesAvailableUnit').text(' ' + bytesAvail[1]);
 
     $('#lblDeviceInfoINodesTotal').text(app.ui.formatThousands(device.iNodesTotal));
     $('#lblDeviceInfoINodesFree').text(app.ui.formatThousands(device.iNodesFree));

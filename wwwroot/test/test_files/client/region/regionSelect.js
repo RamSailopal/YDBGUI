@@ -16,25 +16,55 @@ const libs = require('../../../libs');
 const {expect} = require("chai");
 
 describe("CLIENT: Region Select", async () => {
-    /*
-    it("Test # 390: Verify that selecting a region it will pop up the correct dialog filled with the correct region", async () => {
-        await page.goto(`http://localhost:${MDevPort}//index.html?test=390`, {
+    it("Test # 430: Display dialog, scroll down twice, submit: verify that the correct dialog is open", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=430`, {
             waitUntil: "domcontentloaded"
         });
 
         // wait for dialog to be set by the async call
-        await libs.delay(500);
+        await libs.delay(1000);
 
-        // make sure msgbox is visible
-        const isVisible = await libs.getCssDisplay('#txtMsgboxText') !== 'none';
+        await page.keyboard.press('ArrowDown');
+        await page.keyboard.press('ArrowDown');
+        await page.keyboard.press('Enter');
+
+        await libs.delay(1000);
+        // make sure dialog is visible
+        const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
         expect(isVisible).to.be.true;
 
-        // and text is correct
-        const modal = await page.$('#txtMsgboxText');
-        const text = await page.evaluate(el => el.textContent, modal);
-        expect(text).to.have.string('The .gld file doesn\'t exists')
+        // check if text is correct
+        const cell = await page.$('#lblRegionViewTitle');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('YDBOCTO');
+
+
     });
 
-     */
+    it("Test # 430: Display dialog, scroll down twice and then up, submit: verify that the correct dialog is open", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=430`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dialog to be set by the async call
+        await libs.delay(1000);
+
+        await page.keyboard.press('ArrowDown');
+        await page.keyboard.press('ArrowDown');
+        await page.keyboard.press('ArrowUp');
+        await page.keyboard.press('Enter');
+
+        await libs.delay(1000);
+        // make sure dialog is visible
+        const isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // check if text is correct
+        const cell = await page.$('#lblRegionViewTitle');
+        const text = await page.evaluate(el => el.textContent, cell);
+        expect(text).to.have.string('YDBAIM');
+
+
+    });
 });
 

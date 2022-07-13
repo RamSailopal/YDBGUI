@@ -375,8 +375,7 @@ app.ui.regionShared.fileClicked = async id => {
         if (splittedId[1] === 'Bg' || splittedId[1] === 'Mm') {
             const region = app.ui.regionEdit.inProgress;
             if (region.dbFile.flags.fileExist === true) {
-                await app.ui.msgbox.show('You are allowed to change the database file name or path ONLY when the file doesn\'t exist.<br><br>' +
-                    'If you wish to change the database file / path on a running instance, please contact YottaDB support', 'WARNING', true);
+                await app.ui.msgbox.show('This is advanced functionality that is not currently supported', 'WARNING', true);
 
                 return
             }
@@ -548,8 +547,14 @@ app.ui.regionShared.getTableRef = id => {
 };
 
 app.ui.regionShared.redrawNames = ($namesTable) => {
-    const names = app.ui.regionShared.manifest.names;
+    let names = app.ui.regionShared.manifest.names;
     const isEditMode = $namesTable.parent().attr('id').indexOf('Edit') > -1;
+
+    if ($('#chkRegionEditNamesSystemNames').is(':checked') === false) {
+        names = names.filter(el => {
+            return el.value.charAt(0) !== '%'
+        })
+    }
 
     names.sort((a, b) => {
         if (a.value < b.value) return -1;

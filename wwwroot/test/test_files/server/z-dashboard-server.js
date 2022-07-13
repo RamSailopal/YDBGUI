@@ -230,6 +230,10 @@ describe("SERVER: Endpoints verification", async () => {
         isNode = res.data.regions.DEFAULT.locks.slotsInUse !== undefined;
         expect(isNode).to.be.true;
 
+        // names
+        isNode = res.data.regions.DEFAULT.names[0].name === '*';
+        expect(isNode).to.be.true;
+
         // replication
         isNode = res.data.regions.DEFAULT.replication !== undefined;
         expect(isNode).to.be.true;
@@ -328,6 +332,113 @@ describe("SERVER: Endpoints verification", async () => {
         expect(isObject).to.be.true;
         expect(res.error.errors[0].mcode === ' s a=1/0').to.be.true;
     });
+
+    it("Test # 1024: Rename a db file and verify that segment fields get populated anyway (with GDE data)", async () => {
+
+        // move the db file
+        execSync('mv  /data/r1.35_x86_64/g/yottadb.dat /data/r1.35_x86_64/g/yottadb.old').toString();
+
+        // execute the call
+        const res = await libs._REST('regions/DEFAULT').catch(() => {});
+
+        // Check if it is an object
+        const isObject = typeof res === 'object';
+        expect(isObject).to.be.true;
+
+        // Check the result
+        let isNode = res.result !== undefined;
+        expect(isNode).to.be.true;
+        expect(res.result).to.have.string('OK');
+
+        // Check the data node
+        isNode = res.data !== undefined;
+        expect(isNode).to.be.true;
+
+        // DB FILE: data
+        isNode = res.data.dbFile.data !== undefined;
+        expect(isNode).to.be.true;
+
+        isArray = Array.isArray(res.data.dbFile.data);
+        expect(isArray).to.be.true;
+
+        length = res.data.dbFile.data.length === 13;
+        expect(length).to.be.true;
+
+        // restore the db file
+        execSync('mv  /data/r1.35_x86_64/g/yottadb.old /data/r1.35_x86_64/g/yottadb.dat').toString();
+    });
+
+    it("Test # 1025: Rename a db file and verify that region fields get populated anyway (with GDE data)", async () => {
+
+        // move the db file
+        execSync('mv  /data/r1.35_x86_64/g/yottadb.dat /data/r1.35_x86_64/g/yottadb.old').toString();
+
+        // execute the call
+        const res = await libs._REST('regions/DEFAULT').catch(() => {});
+
+        // Check if it is an object
+        const isObject = typeof res === 'object';
+        expect(isObject).to.be.true;
+
+        // Check the result
+        let isNode = res.result !== undefined;
+        expect(isNode).to.be.true;
+
+        expect(res.result).to.have.string('OK');
+
+        // Check the data node
+        isNode = res.data !== undefined;
+        expect(isNode).to.be.true;
+
+        // DB FILE: data
+        isNode = res.data.dbAccess.data !== undefined;
+        expect(isNode).to.be.true;
+
+        isArray = Array.isArray(res.data.dbAccess.data);
+        expect(isArray).to.be.true;
+
+        length = res.data.dbAccess.data.length === 8;
+        expect(length).to.be.true;
+
+        // restore the db file
+        execSync('mv  /data/r1.35_x86_64/g/yottadb.old /data/r1.35_x86_64/g/yottadb.dat').toString();
+    });
+
+    it("Test # 1026: Rename a db file and verify that journal fields get populated anyway (with GDE data)", async () => {
+
+        // move the db file
+        execSync('mv  /data/r1.35_x86_64/g/yottadb.dat /data/r1.35_x86_64/g/yottadb.old').toString();
+
+        // execute the call
+        const res = await libs._REST('regions/DEFAULT').catch(() => {});
+
+        // Check if it is an object
+        const isObject = typeof res === 'object';
+        expect(isObject).to.be.true;
+
+        // Check the result
+        let isNode = res.result !== undefined;
+        expect(isNode).to.be.true;
+
+        expect(res.result).to.have.string('OK');
+
+        // Check the data node
+        isNode = res.data !== undefined;
+        expect(isNode).to.be.true;
+
+        // DB FILE: data
+        isNode = res.data.journal.data !== undefined;
+        expect(isNode).to.be.true;
+
+        isArray = Array.isArray(res.data.journal.data);
+        expect(isArray).to.be.true;
+
+        length = res.data.journal.data.length === 11;
+        expect(length).to.be.true;
+
+        // restore the db file
+        execSync('mv  /data/r1.35_x86_64/g/yottadb.old /data/r1.35_x86_64/g/yottadb.dat').toString();
+    });
 });
 
 describe("SERVER: GLD ERRORS", async () => {
@@ -387,6 +498,20 @@ describe("SERVER: REGION", async () => {
         expect(isObject).to.be.true;
 
         expect(sessions !== res.data.regions.DEFAULT.dbFile.flags.sessions).to.be.true;
+    });
+
+    it("Test # 1122: | 1122 | Verify that processIds of sessions are returned as array", async () => {
+        // access a global in DEFAULT to have a new user
+        exec('. /opt/yottadb/current/ydb_env_set && yottadb -run %XCMD \'s ^test=0 h 2\'');
+
+        await libs.delay(100);
+
+        // execute the call
+        res = await libs._REST('regions/DEFAULT').catch(() => {});
+        isObject = typeof res === 'object';
+        expect(isObject).to.be.true;
+
+        expect(res.data.dbFile.flags.processes.length > 0).to.be.true;
     });
 });
 

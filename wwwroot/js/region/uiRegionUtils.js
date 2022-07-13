@@ -15,6 +15,8 @@
 // **************************************
 app.ui.regionSelect.init = () => {
     $('#btnRegionSelectOk').on('click', () => app.ui.regionSelect.okPressed());
+
+    $('#modalRegionSelect').on('keydown', (e) => app.ui.regionSelect.processCursorKeys(e.which))
 };
 
 app.ui.regionSelect.onOkPressed = null;
@@ -38,7 +40,7 @@ app.ui.regionSelect.show = (regions, onOkPressed) => {
 
         row += region;
         row += '</div><div class="col-9" style="font-size: 14px; font-weight: normal">';
-        row += filename;
+        row += '<span class="inconsolata">' + filename + '</span>';
         row += '</div></div></a>';
 
         divRegionSelectList.append(row);
@@ -55,14 +57,73 @@ app.ui.regionSelect.okPressed = () => {
     const selElement = $('#divRegionSelectList').find('.active').attr('id');
 
     $('#modalRegionSelect').modal('hide');
-    app.ui.regionSelect.onOkPressed(selElement.split('_')[1])
+    app.ui.regionView.currentRegion = selElement.split('_')[1];
+    app.ui.regionSelect.onOkPressed()
+};
+
+app.ui.regionSelect.processCursorKeys = charCode => {
+    if (charCode === 13) {
+        app.ui.regionSelect.okPressed();
+        return;
+    }
+
+    const list = $('#divRegionSelectList').children();
+    const totalLength = list.length;
+    let nextIx = 0;
+
+    let ix = 0;
+    list.each(function () {
+        ix++;
+
+        if ($(this).hasClass('active')) {
+            if (charCode === 40) {
+                // going down
+                if (ix === totalLength) return;
+
+                $(this).removeClass('active');
+                nextIx = ix + 1;
+
+            } else if (charCode === 38) {
+                // going up
+                if (ix === 1) return;
+
+                $(this).removeClass('active');
+                nextIx = ix - 1;
+            }
+        }
+    });
+
+    if (nextIx > 0) {
+        let ix = 0;
+        list.each(function () {
+            ix++;
+
+            if (ix === nextIx) {
+                $(this).addClass('active');
+            }
+        })
+    }
 };
 
 // **************************************
 // Region Delete
 // **************************************
-app.ui.regionDelete.show = (region) => {
-    const checkbox = '<div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="chkRegionDeleteFiles" checked>' +
+app.ui.regionDelete.regionName = '';
+app.ui.regionDelete.withDelete = false;
+
+app.ui.regionDelete.init = () => {
+    $('#btnRegionConfirmDeleteOk').on('click', () => app.ui.regionDelete.submitDelete());
+
+    $('#txtRegionDeleteConfirmDelete')
+        .on('change', () => app.ui.regionDelete.validateConfirm())
+        .on('keyup', () => app.ui.regionDelete.validateConfirm());
+};
+
+app.ui.regionDelete.show = () => {
+    const region = app.ui.regionView.currentRegion;
+    const fileExist = app.system.regions[region].dbFile.flags.fileExist;
+
+    const checkbox = '<div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="chkRegionDeleteFiles"' + (fileExist ? ' checked' : ' disabled') + '>' +
         '<label class="custom-control-label" for="chkRegionDeleteFiles">Delete also all the files</label></div>';
 
 
@@ -73,41 +134,79 @@ app.ui.regionDelete.show = (region) => {
     })
 };
 
-app.ui.regionDelete.confirmAgain = (region, withDelete) => {
-    const deleteText = withDelete === true ? '<br><br>This will delete also all the database and journal files.' : '';
+app.ui.regionDelete.validateConfirm = () => {
+    const txtRegionDeleteConfirmDelete = $('#txtRegionDeleteConfirmDelete');
+    const btnRegionConfirmDeleteOk = $('#btnRegionConfirmDeleteOk');
+    if (txtRegionDeleteConfirmDelete.val().toUpperCase() === app.ui.regionDelete.regionName.toUpperCase()) {
+        txtRegionDeleteConfirmDelete
+            .addClass('is-valid')
+            .removeClass('is-invalid');
 
-    app.ui.inputbox.show('THIS OPERATION CAN NOT BE UNDONE !!!' + deleteText + '<br><br>Is this what you really want to do ?', 'WARNING', async ret => {
-        if (ret === 'YES') {
-            try {
-                const res = await app.REST._regionDelete(region, withDelete);
+        btnRegionConfirmDeleteOk
+            .removeClass('disabled')
+            .attr('disabled', false)
 
-                $('#modalExtend').modal('hide');
+    } else {
+        txtRegionDeleteConfirmDelete
+            .removeClass('is-valid')
+            .addClass('is-invalid');
 
-                if (res.result === 'OK') {
-                    app.ui.msgbox.show('The database has been deleted', 'SUCCESS');
-
-                    app.ui.dashboard.refresh();
-
-                } else {
-                    let messageText = 'The following error occurred while deleting the region: ' + res.error.description;
-
-                    if (Array.isArray(res.error.dump)) {
-                        messageText += '<br> Details:';
-
-                        res.error.dump.forEach(dumpLine => {
-                            messageText += '<br>' + dumpLine
-                        })
-                    }
-                    app.ui.msgbox.show(messageText, 'FATAL')
-                }
-
-            } catch (err) {
-                app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
-
-            }
-        }
-    })
+        btnRegionConfirmDeleteOk
+            .addClass('disabled')
+            .attr('disabled', true)
+    }
 };
+
+app.ui.regionDelete.confirmAgain = (region, withDelete) => {
+    app.ui.regionDelete.regionName = region;
+    app.ui.regionDelete.withDelete = withDelete;
+    const deleteText = region + '  ' + (withDelete === true ? '<br>This will delete also the database and all the journal files.' : '');
+
+    $('#spanRegionDeleteConfirmHeader').html(deleteText);
+
+    const txtRegionDeleteConfirmDelete = $('#txtRegionDeleteConfirmDelete');
+    txtRegionDeleteConfirmDelete.val('');
+
+    $('#btnRegionConfirmDeleteOk')
+        .addClass('disabled')
+        .attr('disabled', true);
+
+    $('#modalRegionConfirmDelete')
+        .modal({show: true, backdrop: 'static', keyboard: true})
+        .on('shown.bs.modal', () => {
+            txtRegionDeleteConfirmDelete.focus()
+        })
+};
+
+app.ui.regionDelete.submitDelete = async () => {
+    try {
+        const res = await app.REST._regionDelete(app.ui.regionDelete.regionName, app.ui.regionDelete.withDelete);
+
+        $('#modalRegionConfirmDelete').modal('hide');
+
+        if (res.result === 'OK') {
+            app.ui.msgbox.show('The database has been deleted', 'SUCCESS');
+
+            app.ui.dashboard.refresh();
+
+        } else {
+            let messageText = 'The following error occurred while deleting the region: ' + res.error.description;
+
+            if (Array.isArray(res.error.dump)) {
+                messageText += '<br> Details:';
+
+                res.error.dump.forEach(dumpLine => {
+                    messageText += '<br>' + dumpLine
+                })
+            }
+            app.ui.msgbox.show(messageText, 'FATAL')
+        }
+
+    } catch (err) {
+        app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
+    }
+};
+
 
 // **************************************
 // Region Extend
@@ -127,10 +226,10 @@ app.ui.regionExtend.init = () => {
     });
 };
 
-app.ui.regionExtend.show = regionName => {
-    app.ui.regionExtend.regionName = regionName;
+app.ui.regionExtend.show = () => {
+    app.ui.regionExtend.regionName = app.ui.regionView.currentRegion;
 
-    const region = app.system.regions[regionName];
+    const region = app.system.regions[app.ui.regionExtend.regionName];
 
     const blockSize = app.ui.getKeyValue(region.dbFile.data, 'BLOCK_SIZE');
     const availableSpace = region.dbFile.flags.device.split(' ')[3] * 1024; // Piece [3] is the free space * 1024 (disk sector size)
@@ -145,10 +244,19 @@ app.ui.regionExtend.show = regionName => {
     numRegionExtendByes.on('keyup', () => app.ui.regionExtend.refreshProgress(region));
 
     // populate dialog
-    $('#lblRegionExtendModalHeader').text('Extend region: ' + regionName);
-    $('#lblRegionExtendCurrentSize').text(app.ui.formatThousands(region.dbFile.usage.totalBlocks) + ' blocks ( ' + app.ui.formatBytes(region.dbFile.usage.totalBlocks * blockSize) + ' )');
-    $('#lblRegionExtendAvailableSpace').text(app.ui.formatThousands(availableSpace / blockSize) + ' blocks ( ' + app.ui.formatBytes(availableSpace) + ' )');
-    $('#lblRegionExtendBlockSize').text(app.ui.formatBytes(blockSize));
+    $('#lblRegionExtendModalHeader').text('Extend region: ' + app.ui.regionExtend.regionName);
+
+    const currentSizeBytes = app.ui.formatBytes(region.dbFile.usage.totalBlocks * blockSize).split(' ');
+    $('#lblRegionExtendCurrentSize').text(app.ui.formatThousands(region.dbFile.usage.totalBlocks));
+    $('#lblRegionExtendCurrentSizeBytes').text(currentSizeBytes[0]);
+    $('#lblRegionExtendCurrentSizeBytesUnit').text(currentSizeBytes[1]);
+
+    const availableSpaceBytes = app.ui.formatBytes(availableSpace).split(' ');
+    $('#lblRegionExtendAvailableSpace').text(app.ui.formatThousands(availableSpace / blockSize));
+    $('#lblRegionExtendAvailableSpaceBytes').text(availableSpaceBytes[0]);
+    $('#lblRegionExtendAvailableSpaceBytesUnit').text(availableSpaceBytes[1]);
+
+    $('#lblRegionExtendBlockSize').text(app.ui.formatThousands(blockSize));
 
     const extensionCount = app.ui.getKeyValue(region.dbFile.data, 'EXTENSION_COUNT');
     numRegionExtendBlocks.val(extensionCount > 0 ? extensionCount : 1000);
@@ -246,10 +354,16 @@ app.ui.regionExtend.refreshProgress = async region => {
 
     // update grand totals
     const grandTotalBlocks = (totalBlocks + parseInt(numRegionExtendBlocks.val())).toString();
-    $('#lblRegionExtendGrandSize').text(app.ui.formatThousands(grandTotalBlocks) + ' blocks ( ' + app.ui.formatBytes(grandTotalBlocks * blockSize) + ' )');
+    const grandTotalBytes = app.ui.formatBytes(grandTotalBlocks * blockSize).split(' ');
+    $('#lblRegionExtendGrandSize').text(app.ui.formatThousands(grandTotalBlocks));
+    $('#lblRegionExtendGrandSizeBytes').text(grandTotalBytes[0]);
+    $('#lblRegionExtendGrandSizeBytesUnit').text(grandTotalBytes[1]);
 
     const grandFreeSpace = (availableBlocks - parseInt(numRegionExtendBlocks.val())).toString();
-    $('#lblRegionExtendGrandAvailableSize').text(app.ui.formatThousands(grandFreeSpace) + ' blocks ( ' + app.ui.formatBytes(grandFreeSpace * blockSize) + ' )');
+    const grandFreeSpaceBytes = app.ui.formatBytes(grandFreeSpace * blockSize).split(' ');
+    $('#lblRegionExtendGrandAvailableSize').text(app.ui.formatThousands(grandFreeSpace));
+    $('#lblRegionExtendGrandAvailableSizeBytes').text(grandFreeSpaceBytes[0]);
+    $('#lblRegionExtendGrandAvailableSizeBytesUnit').text(grandFreeSpaceBytes[1]);
 };
 
 app.ui.regionExtend.okPressed = () => {
@@ -290,10 +404,10 @@ app.ui.regionCreateDbFile.init = () => {
     });
 };
 
-app.ui.regionCreateDbFile.show = regionName => {
-    app.ui.regionCreateDbFile.regionName = regionName;
+app.ui.regionCreateDbFile.show = () => {
+    app.ui.regionCreateDbFile.regionName = app.ui.regionView.currentRegion;
 
-    const region = app.system.regions[regionName];
+    const region = app.system.regions[app.ui.regionCreateDbFile.regionName];
 
     if (region.dbFile.flags.device === undefined) {
         app.ui.msgbox.show('The database path has not been set.', 'FATAL');
@@ -306,14 +420,24 @@ app.ui.regionCreateDbFile.show = regionName => {
     const allocation = app.ui.getKeyValue(region.dbFile.data, 'ALLOCATION');
 
     // fill labels
-    $('#lblRegionCreateDbFileHeader').text('Create database file: ' + regionName);
+    $('#lblRegionCreateDbFileHeader').text('Create database file: ' + app.ui.regionCreateDbFile.regionName);
 
-    $('#lblRegionCreateDbAllocation').text(app.ui.formatThousands(allocation) + ' blocks ( ' + app.ui.formatBytes(blockSize * allocation) + ' )');
-    $('#lblRegionCreateDbAvailableSpace').text(app.ui.formatThousands(availableSpace / blockSize) + ' blocks ( ' + app.ui.formatBytes(availableSpace) + ' )');
+    const allocationBytes = app.ui.formatBytes(blockSize * allocation).split(' ');
+    $('#lblRegionCreateDbAllocation').text(app.ui.formatThousands(allocation));
+    $('#lblRegionCreateDbAllocationBytes').text(allocationBytes[0]);
+    $('#lblRegionCreateDbAllocationBytesUnit').text(allocationBytes[1]);
+
+    const availableBytes = app.ui.formatBytes(availableSpace).split(' ');
+    $('#lblRegionCreateDbAvailableSpace').text(app.ui.formatThousands(availableSpace / blockSize));
+    $('#lblRegionCreateDbAvailableSpaceBytes').text(availableBytes[0]);
+    $('#lblRegionCreateDbAvailableSpaceBytesUnit').text(availableBytes[1]);
 
     // update grand total
     const newSpaceBlocks = (availableSpace / blockSize) - allocation;
-    $('#lblRegionCreateDbNewAvailableSpace').text(app.ui.formatThousands(newSpaceBlocks) + ' blocks ( ' + app.ui.formatBytes(newSpaceBlocks * blockSize) + ' )');
+    const newSpaceBytes = app.ui.formatBytes(newSpaceBlocks * blockSize).split(' ');
+    $('#lblRegionCreateDbNewAvailableSpace').text(app.ui.formatThousands(newSpaceBlocks));
+    $('#lblRegionCreateDbNewAvailableSpaceBytes').text(newSpaceBytes[0]);
+    $('#lblRegionCreateDbNewAvailableSpaceBytesUnit').text(newSpaceBytes[1]);
 
     $('#modalRegionCreateDbFile').modal({show: true, backdrop: 'static', keyboard: true});
     $('.modal-backdrop').css('z-index', 1060)
@@ -347,8 +471,9 @@ app.ui.regionCreateDbFile.okPressed = () => {
 // **************************************
 // Journal switch
 // **************************************
-app.ui.regionJournalSwitch.show = (regionName) => {
-    const region = app.system.regions[regionName];
+app.ui.regionJournalSwitch.show = () => {
+
+    const region = app.system.regions[app.ui.regionView.currentRegion];
     let mode = region.journal.flags.state === 1 ? 'on' : 'off';
     const repairJournal = $('#btnRegionViewJournalSwitch').text() === 'Recreate...';
     let message = '';
@@ -361,10 +486,10 @@ app.ui.regionJournalSwitch.show = (regionName) => {
         message = 'This will turn the journaling ' + mode.toUpperCase()
     }
 
-    app.ui.inputbox.show(message + ' in the region: ' + regionName + '<br><br>Are you sure ?', mode === 'on' ? 'Warning' : 'WARNING', async ret => {
+    app.ui.inputbox.show(message + ' in the region: ' + app.ui.regionView.currentRegion + '<br><br>Are you sure ?', mode === 'on' ? 'Warning' : 'WARNING', async ret => {
             if (ret === 'YES') {
                 try {
-                    const res = await app.REST._JournalSwitch(regionName, mode);
+                    const res = await app.REST._JournalSwitch(app.ui.regionView.currentRegion, mode);
 
                     $('#modalExtend').modal('hide');
 

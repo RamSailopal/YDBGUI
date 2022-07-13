@@ -23,11 +23,14 @@
                         <a class="nav-link ydb-purple-fore" id="navRegionViewLocks" data-toggle="tab"
                            href="#tabRegionViewRegionLocks"
                            role="tab" aria-selected="false">Locks</a>
-                        <div style="width: 430px; text-align: right;">
+                        <div style="width: 458px; text-align: right;">
                             <span id="divRegionViewAdvancedParameters" style="padding-right: 15px; display: inline;"><input id="chkRegionViewAdvancedMode" type="checkbox"><label
                                     for="chkRegionViewAdvancedMode" style="padding-left: 5px;"> Show Advanced Parameters</label></span>
                             <button type="button" class="btn btn-outline-info sides-padding-10" id="btnRegionViewRefresh">
                                 Refresh
+                            </button>
+                            <button class="btn btn-outline-info sides-padding-10" id="btnRegionViewEdit" type="button">
+                                <i class="bi-pencil-square"></i>
                             </button>
                         </div>
                     </div>
@@ -49,27 +52,39 @@
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <div class="rounded-lg p-3 shadow text-center ydb-back6"
+                                            <div class="rounded-lg p-3 shadow text-center ydb-back6" id="divRegionViewUsedSpace"
                                                  style="display: flex;">
+                                                <span id="pillRegionViewRegionUsedSpaceWithFile">
                                                 <span class="ydb-fore3 bold dash-stats-header">Used space:</span>
-                                                <a tabindex="-1" data-toggle="popover" data-trigger="hover"
-                                                   title="" id="puRegionViewDbUsage">
-                                                    <div class="progress"
-                                                         style="width: 116px; background: white; margin-top: 5px; color: var(--ydb-purple)!important;">
-                                                        <div class="progress-bar ydb-status-green gauge-color"
-                                                             role="progressbar"
-                                                             style="width: 0%; color: var(--ydb-purple)!important;" id="rngRegionViewRegionUsedSpace"
-                                                             aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                                    <a data-toggle="popover" data-trigger="hover" id="puRegionViewDbUsage"
+                                                       tabindex="-1" title="">
+                                                        <div class="progress hand"
+                                                             style="width: 116px; background: white; margin-top: 5px; color: var(--ydb-purple)!important;">
+                                                            <div aria-valuemax="100"
+                                                                 aria-valuemin="0"
+                                                                 aria-valuenow="25" class="progress-bar ydb-status-green"
+                                                                 id="rngRegionViewRegionUsedSpace" role="progressbar" style="width: 0%; ">
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </a>
+                                                    </a>
+                                                </span>
+                                                <span id="pillRegionViewRegionUsedSpaceNoFile" style="display:none;">
+                                                <span class="ydb-fore3 bold dash-stats-header">Used space:</span>
+                                                    <span class="badge badge-pill badge-stats"
+                                                          style="background: gray!important">
+                                                        n/a
+                                                    </span>
+                                                </span>
                                             </div>
                                         </div>
                                         <div class="col-4">
                                             <div class="rounded-lg p-3 shadow text-center ydb-back6">
-                                                <span class="ydb-fore3 bold dash-stats-header">User sessions:</span>
+                                                <span class="ydb-fore3 bold dash-stats-header"># of processes:</span>
+                                                <a data-toggle="popover" data-trigger="hover" id="puRegionViewSessionsPids"
+                                                   tabindex="-1" title="">
                                                 <span class="badge badge-pill ydb-status-green badge-stats"
                                                       id="pillRegionViewRegionSessions"></span>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -111,7 +126,7 @@
                                         <span style="width:20px;"></span>
                                         <button type="button" class="btn btn-outline-info btn-block  btn-sm"
                                                 id="btnRegionViewRegionExtendDbFile">Extend
-                                            database...
+                                            database file...
                                         </button>
                                     </div>
                                 </div>

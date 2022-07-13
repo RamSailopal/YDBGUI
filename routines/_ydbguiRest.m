@@ -37,8 +37,7 @@ getDashboard(resJson,params)
 	set res("data","systemInfo","gld")=$zgbldir
 	set res("data","systemInfo","chset")=$zchset
 	; Encryption library
-	set res("data","systemInfo","encryptionLibrary")=$select($zsearch("$ydb_dist/plugin/libgtmcrypt.so")="":"false",1:"true")
-	;
+	set res("data","systemInfo","encryptionLibrary")=$select($zsearch("$ydb_dist/plugin/libgtmcrypt.so",-1)="":"false",1:"true")
 	;
 	; get env vars
 	set file="/proc/self/environ"
@@ -50,10 +49,10 @@ getDashboard(resJson,params)
 	. set res("data","systemInfo","envVars",cnt,"value")=$piece(envVars(cnt),"=",2,99)
 	;
 	; get plugins information
-	set res=$zsearch(-1)
+	set res=$zsearch("",-1)
 	for  set file=$zsearch("$ydb_dist/plugin/o/*.so") quit:file=""  do
 	. set files($increment(files),"name")=$zparse(file,"name")
-	. set files($order(files(""),-1),"description")="Library file: "_file
+	. set files($order(files(""),-1),"description")="Library file: <br>"_file
 	. set files($order(files(""),-1),"version")="n/a"
 	. set files($order(files(""),-1),"vendor")="n/a"
 	;
@@ -61,15 +60,14 @@ getDashboard(resJson,params)
 	zkill res("data","systemInfo","plugins")
 	;
 	; check gld file existance
-	set res=$zsearch(-1)
-	set res("data","gld","exist")=$select($zsearch($zgbldir)="":"false",1:"true")
+	set res("data","gld","exist")=$select($zsearch($zgbldir,-1)="":"false",1:"true")
 	if res("data","gld","exist")="false" goto getDashboardQuit
 	;
 	; enumerate regions
 	do enumRegions^%ydbguiGde(.regions)
 	;
 	; reorganize the array so that numbering is correct
-	s region="" for  set region=$order(regions(region)) quit:region=""  do
+	set region="" for  set region=$order(regions(region)) quit:region=""  do
 	. kill regionData
 	. do getRegionStruct^%ydbguiRegions(region,.regionData,.warnings)
 	. merge regionsData(region)=regionData
@@ -256,11 +254,7 @@ extendRegion(arguments,body,resJson)
 	. set res("result")="ERR"
 	. set res("error","description")="The shell returned the following error: "_ret
 	;
-	if $find($get(shellData(2)),"Extension successful") do
-	. set res("result")="OK"
-	else  do
-	. set res("result")="ERR"
-	. set res("error","description")=$select($get(shellData(1))="":"unknown",1:shellData(1))
+	set res("result")="OK"
 	;
 extendRegionQuit
 	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
@@ -309,7 +303,7 @@ journalSwitch(arguments,body,resJson)
 	;
 	if ret'=0 do  goto journalSwitchQuit
 	. set res("result")="ERR"
-	. set res("error","description")="The shell returned the following error: "_ret
+	. set res("error","description")=$select(ret=10:"The journal file couldn't be found",1:"The shell returned the following error: "_ret)
 	;
 	if $find($get(shellData(1)),"%YDB-I-JNLSTATE")!($find($get(shellData(4)),"%YDB-I-JNLSTATE"))!($find($get(shellData(1)),"%YDB-I-JNLCREATE"))!($find($get(shellData(1)),"%YDB-I-FILERENAME"))!($find($get(shellData(1)),"%YDB-I-JNLFNF")) do
 	. set res("result")="OK"
@@ -495,8 +489,7 @@ validatePath(arguments,bodyJson,resJson)
 	. set result("error","description")="The body parameter: 'path' is missing or empty"
 	;
 	; check if file exists first
-	set ret=$zsearch(-1)
-	set ret=$zsearch(body("path"))
+	set ret=$zsearch(body("path"),-1)
 	if ret'="" do  goto validatePathQuit
 	. ; error
 	. set res("result")="ERROR"
@@ -510,8 +503,7 @@ validatePath(arguments,bodyJson,resJson)
 	. set res("result")="ERROR"
 	. set res("error","description")="Couldn't access the path..."
 	;
-	set ret=$zsearch(-1)
-	set res("data","validation")=$zsearch(dir)
+	set res("data","validation")=$zsearch(dir,-1)
 	set res("data","fileExist")=$zsearch(body("path"))
 	;
 	; get the device info to extract the block size of the device needed for ASYNCIO validation
@@ -707,3 +699,6 @@ terminateProcessQuit
 	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
 	;
 	quit ""
+	;
+	;
+	;

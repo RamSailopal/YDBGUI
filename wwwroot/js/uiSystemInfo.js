@@ -25,7 +25,7 @@ app.ui.systemInfo.init = () => {
 // show()
 //*********************************************
 app.ui.systemInfo.show = () => {
-    $('#lblSystemInfoRoutines').text(app.system.systemInfo.zroutines);
+    $('#lblSystemInfoRoutines').html(app.system.systemInfo.zroutines.replace(/ /g, '<br>'));
     $('#lblSystemInfoGlobalDirectory').text(app.system.systemInfo.gld);
     $('#lblSystemInfoMode').text(app.system.systemInfo.chset);
     $('#lblSystemInfoEncryption').text(app.system.systemInfo.encryptionLibrary === true ? 'Installed' : 'Not installed');
@@ -38,8 +38,11 @@ app.ui.systemInfo.show = () => {
         app.system.systemInfo.plugins.forEach(plugin => {
             let row = '<tr>';
 
+            const descriptionSplitted = plugin.description.split("<br>");
+            let description = descriptionSplitted[0] + '<br><span class="inconsolata">' + descriptionSplitted[1] + '</span>';
+
             row += '<td>' + plugin.name + '</td>';
-            row += '<td>' + plugin.description + '</td>';
+            row += '<td>' + description + '</td>';
             row += '<td>' + plugin.version + '</td>';
             row += '<td>' + plugin.vendor + '</td></tr>';
             tblSystemInfoPlugins.append(row)
@@ -75,11 +78,18 @@ app.ui.systemInfo.populateEnvVarsTable = () => {
 
     tblEnvVars.empty();
 
+    envVars.sort((a, b) => {
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0
+    });
+
+
     envVars.forEach(envVar => {
         let row = '<tr>';
 
-        row += '<td>' + envVar.name + '</td>';
-        row += '<td>' + envVar.value + '</td>';
+        row += '<td class="inconsolata">' + envVar.name + '</td>';
+        row += '<td class="inconsolata">' + envVar.value + '</td>';
 
         row += '</tr>';
 

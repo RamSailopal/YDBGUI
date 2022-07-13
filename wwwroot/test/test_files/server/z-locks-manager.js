@@ -147,14 +147,14 @@ describe("SERVER: Get All Locks", async () => {
 
     it("Test # 1425: Set Lock: test, 1 waiter, verify", async () => {
         // creates a new lock on ^test and wait 3 seconds
-        exec('. /opt/yottadb/current/ydb_env_set && yottadb -run %XCMD \'l +test h 2  h\'');
+        exec('. /opt/yottadb/current/ydb_env_set && yottadb -run %XCMD \'l +test("test space double") h 2  h\'');
         await libs.delay(100);
 
         // creates a waiter on the same lock
-        exec('. /opt/yottadb/current/ydb_env_set && yottadb -run %XCMD \'l +test h 1  h\'');
+        exec('. /opt/yottadb/current/ydb_env_set && yottadb -run %XCMD \'l +test("test space double") h 1  h\'');
 
         // creates a waiter on the same lock
-        exec('. /opt/yottadb/current/ydb_env_set && yottadb -run %XCMD \'l +test h 1  h\'');
+        exec('. /opt/yottadb/current/ydb_env_set && yottadb -run %XCMD \'l +test("test space double") h 1  h\'');
 
         await libs.delay(100);
 

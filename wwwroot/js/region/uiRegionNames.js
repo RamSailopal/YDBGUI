@@ -16,7 +16,7 @@
 app.ui.regionNames.add.init = () => {
     const txtNameAddName = $('#txtNameAddName');
     txtNameAddName.on('change', () => app.ui.regionNames.txtChanged());
-    txtNameAddName.on('keyup', e => app.ui.regionNames.txtKeyUp(e));
+    txtNameAddName.on('keydown', e => app.ui.regionNames.txtKeyDown(e));
 
     $('#btnNameAddOk').on('click', () => app.ui.regionNames.okPressed());
     $('#btnNameAddManyOk').on('click', () => app.ui.regionNames.okManyPressed());
@@ -50,7 +50,9 @@ app.ui.regionNames.txtChanged = () => {
     app.ui.regionNames.validateOkButton(true)
 };
 
-app.ui.regionNames.txtKeyUp = e => {
+app.ui.regionNames.txtKeyDown = e => {
+    if (e.which === 13) return false;
+
     app.ui.regionNames.validateOkButton();
 };
 

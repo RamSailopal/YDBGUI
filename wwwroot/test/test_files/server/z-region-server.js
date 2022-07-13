@@ -398,7 +398,7 @@ describe("SERVER: Create Region", async () => {
         expect(res.result === 'OK').to.be.true;
 
         // and have the correct properties
-        let val = res.data.dbFile.data[3].AUTO_DB;
+        let val = res.data.dbFile.data[1].AUTO_DB;
         expect(val).to.be.true;
     });
 
@@ -1018,7 +1018,7 @@ describe("SERVER: Create Region", async () => {
         expect(val).to.be.true;
     });
 
-    it("Test # 1325: Create random region with all journal field different, store them on template, create a new region and verify\n", async () => {
+    it("Test # 1325: Create random region with all journal field different, store them on template, create a new region and verify", async () => {
         // generate a random region name
         regionToBeDeleted = libs.randomRegionName();
 
@@ -1136,6 +1136,145 @@ describe("SERVER: Create Region", async () => {
         expect(val).to.be.true;
 
         val = res.data.journal.data[7].BUFFER_SIZE === 2313;
+        expect(val).to.be.true;
+    });
+
+
+    it("Test # 1326: Add region with fields from Region and Journal changed", async () => {
+        // generate a random region name
+        regionToBeDeleted = libs.randomRegionName();
+
+        let body = {
+            dbAccess: {
+                journal: [
+                    {
+                        id: 'journalEnabled',
+                        value: 1
+                    },
+                    {
+                        id: 'beforeImage',
+                        value: 0
+                    },
+                    {
+                        id: 'allocation',
+                        value: 2049
+                    },
+                    {
+                        id: 'autoSwitchLimit',
+                        value: 8386561
+                    },
+                    {
+                        id: 'bufferSize',
+                        value: 2313
+                    },
+                    {
+                        id: 'extension',
+                        value: 2049
+                    },
+                    {
+                        id: 'epochTaper',
+                        value: 0
+                    },
+                ],
+                region: []
+            },
+            journalEnabled: true,
+            journalFilename: '/data/r1.35_x86_64/g/' + regionToBeDeleted + '.mjl',
+            names: [
+                {value: regionToBeDeleted}
+            ],
+            postProcessing: {
+                createDbFile: true,
+                switchJournalOn: false
+            },
+            regionName: regionToBeDeleted,
+            segmentData: [
+                {
+                    id: 'globalBufferCount',
+                    value: 1001
+                },
+                {
+                    id: 'lockSpace',
+                    value: 113152
+                },
+                {
+                    id: 'deferAllocate',
+                    value: 0
+                },
+                {
+                    id: 'extensionCount',
+                    value: 100001
+                },
+                {
+                    id: 'initialAllocation',
+                    value: 4999
+                },
+                {
+                    id: 'blockSize',
+                    value: 4608
+                },
+                {
+                    id: 'mutexSlots',
+                    value: 1025
+                },
+                {
+                    id: 'reservedBytes',
+                    value: 1
+                },
+            ],
+            segmentFilename: '/data/r1.35_x86_64/g/' + regionToBeDeleted + '.dat',
+            segmentTypeBg: true,
+            templates: {
+                updateTemplateDb: false,
+                updateTemplateJournal: true
+            }
+        };
+
+        // execute the call
+        let res = await libs._RESTpost('regions/add', body).catch(() => {});
+
+        // and check the result to be OK
+        expect(res.result === 'OK').to.be.true;
+
+        // and verify that the region exists
+        res = await libs._REST('regions/' + regionToBeDeleted);
+
+        // and have the correct journal properties
+        let val = res.data.journal.flags.state === 1;
+        expect(val).to.be.true;
+
+        val = res.data.journal.data[1].BEFORE === false;
+        expect(val).to.be.true;
+
+        val = res.data.journal.data[3].EPOCH_TAPER === false;
+        expect(val).to.be.true;
+
+        val = res.data.journal.data[5].AUTO_SWITCH_LIMIT === 8386557;
+        expect(val).to.be.true;
+
+        val = res.data.journal.data[7].BUFFER_SIZE === 2313;
+        expect(val).to.be.true;
+
+        // and have the correct segment properties
+        val = res.data.dbFile.data[3].GLOBAL_BUFFER_COUNT === 1001;
+        expect(val).to.be.true;
+
+        val = res.data.dbFile.data[4].LOCK_SPACE === 113152;
+        expect(val).to.be.true;
+
+        val = res.data.dbFile.data[6].DEFER_ALLOCATE === false;
+        expect(val).to.be.true;
+
+        val = res.data.dbFile.data[7].EXTENSION_COUNT === 100001;
+        expect(val).to.be.true;
+
+        val = res.data.dbFile.data[10].ALLOCATION === 4999;
+        expect(val).to.be.true;
+
+        val = res.data.dbFile.data[11].BLOCK_SIZE === 4608;
+        expect(val).to.be.true;
+
+        val = res.data.dbFile.data[13].MUTEX_SLOTS === 1025;
         expect(val).to.be.true;
     });
 });

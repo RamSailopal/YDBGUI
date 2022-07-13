@@ -41,7 +41,7 @@ getLocksData(regionName)
 	;
 	set (lockCnt,waiterCnt)=0
 	for cnt=cnt+1:1 quit:$find($get(lockBuffer(cnt)),"%YDB-I-LOCKSPACEINFO")!($get(lockBuffer(cnt))="")  do
-	. if $extract(lockBuffer(cnt),1)=" " do  quit
+	. if $find(lockBuffer(cnt),"Request")'=0 do  quit
 	. . ;waiter found
 	. . set waiterCnt=waiterCnt+1
 	. . set lockData("locks",lockCnt,"waiters",waiterCnt,"pid")=$piece($piece(lockBuffer(cnt),"=",2)," ",2)
@@ -124,11 +124,11 @@ getAll()
 	; Finalize the processes by organizing the regions as array
 	set region="" for  set region=$order(tmpRegions(region)) quit:region=""  do
 	. merge res("regions",$increment(regionCnt))=tmpRegions(region)
-	;	
+	;
 	; Then the pids
 	set pid="" for  set pid=$order(tmpPids(pid)) quit:pid=""  do
 	. merge res("pids",$increment(pidCnt),"pid")=pid
-	;	
+	;
 	; And finally fetching the pid's properties
 	set pidCnt=0 for  set pidCnt=$order(res("pids",pidCnt)) quit:pidCnt=""  do
 	. set pid=res("pids",pidCnt,"pid")
@@ -139,7 +139,7 @@ getAll()
 	. . set res("pids",pidCnt,"userId")=$get(pidData(1))
 	. . set res("pids",pidCnt,"processName")=$get(pidData(11))
 	. . set res("pids",pidCnt,"time")=$get(pidData(10))
-	;	
+	;
 	kill res("tmp")
 	set res("result")="OK"
 	;
@@ -158,9 +158,10 @@ getAllQuit
 ; Array with REST response
 ; ****************************************************************
 clear(namespace)
-	new res,shellResult,ret,cnt
+	new res,shellResult,ret,cnt,cmd
 	;
-	set ret=$$runShell^%ydbguiUtils("$ydb_dist/lke clear -nointeractive -lock="""_namespace_"""",.shellResult)
+	set cmd="clear -nointeractive -lock="_$zwrite(namespace)
+	set ret=$$runIntShell^%ydbguiUtils("$ydb_dist/lke",cmd,.shellResult)
 	if ret=1 do  goto clearQuit
 	. set res("result")="ERROR"
 	. set res("error","description")="Operation not successful"
@@ -177,5 +178,5 @@ clear(namespace)
 	. set res("error","description")="Action couldn't be completed."
 	. merge res("error","dump")=shellResult
 	;
-clearQuit	
+clearQuit
 	quit *res

@@ -42,7 +42,7 @@ runIntShell(command,sendCmd,return)
 	set device="runshellcommmandpipe"_$job
 	;
 	open device:(shell="/bin/sh":command=command)::"pipe"
-	use device 
+	use device
 	for  quit:$zeof=1  read string:.015 set return($increment(counter))=string quit:'$test
 	write sendCmd,!
 	for  quit:$zeof=1  read string:.015 set return($increment(counter))=string quit:'$test

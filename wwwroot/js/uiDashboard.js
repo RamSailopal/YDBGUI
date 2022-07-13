@@ -176,7 +176,7 @@ app.ui.dashboard.refresh = async () => {
             '</button>' +
             '</td>' +
             '<td>' + region + '</td>' +
-            '<td id="txtDashboardRegionTableFilename' + ix + '">' + filename + '</td>';
+            '<td id="txtDashboardRegionTableFilename' + ix + '" class="inconsolata">' + filename + '</td>';
 
         // Database status
         if (reg.dbFile.flags.fileExist) {
@@ -216,7 +216,6 @@ app.ui.dashboard.refresh = async () => {
                                 title: 'ISSUES',
                                 caption: 'The database is frozen by user: ' + reg.dbFile.flags.freeze
                             }
-
                         } else {
 
                             result.database.caption = 'Healthy';
@@ -371,7 +370,10 @@ app.ui.dashboard.refresh = async () => {
             each: [],
             overall: null
         },
-        journaling: null,
+        journaling: {
+            each: [],
+            overall: null
+        },
         popup: {
             database: '',
             journaling: ''
@@ -404,7 +406,7 @@ app.ui.dashboard.refresh = async () => {
 
         // Database
         if ((reg.dbFile.flags.fileExist === false) || reg.dbFile.flags.fileBad) {
-            status.database.each.push(STATUS_CRITICAL)
+            status.database.each.push(STATUS_CRITICAL);
             status.popup.database += '<strong>' + region + ':&nbsp;</strong>' + reg.popup.database.popup.caption + '<br>'
         } else {
 
@@ -415,14 +417,15 @@ app.ui.dashboard.refresh = async () => {
 
             // Journal
             if (reg.replication !== undefined && reg.replication.flags.status === REPL_STATUS_WASON) {
-                status.journaling = STATUS_CRITICAL;
+                status.journaling.each.push(STATUS_CRITICAL);
+                status.journaling.overall = STATUS_CRITICAL;
 
             } else if (reg.journal.flags.state === 1 && status.journaling === null) {
-                status.journaling = STATUS_ISSUES
+                status.journaling.each.push(STATUS_ISSUES);
 
             } else if (reg.popup.journaling.popup.visible) {
-                status.popup.journaling += '<strong>' + region + ':&nbsp;</strong>' + reg.popup.journaling.popup.caption + '<br>'
-                status.journaling = STATUS_ISSUES
+                status.popup.journaling += '<strong>' + region + ':&nbsp;</strong>' + reg.popup.journaling.popup.caption + '<br>';
+                status.journaling.each.push(STATUS_ISSUES);
             }
         }
     });
@@ -430,9 +433,12 @@ app.ui.dashboard.refresh = async () => {
     if (status.database.each.length === 0) status.database.overall = STATUS_HEALTHY;
     else status.database.overall = (status.database.each.length === status.regionCount);
 
+    if (status.journaling.each.length === 0) status.journaling.overall = STATUS_HEALTHY;
+    else status.journaling.overall = status.journaling.overall === STATUS_CRITICAL ? STATUS_CRITICAL : (status.journaling.each.length === status.regionCount ? STATUS_ISSUES : false);
+
     // Update screen
     app.ui.dashboard.setGlobalStatus(lblDashStatusDatabases, status.database.overall);
-    app.ui.dashboard.setGlobalStatus(lblDashStatusJournals, status.journaling);
+    app.ui.dashboard.setGlobalStatus(lblDashStatusJournals, status.journaling.overall);
     app.ui.dashboard.setGlobalStatus(lblDashStatusReplication, status.replication);
 
     // Popups
@@ -441,22 +447,32 @@ app.ui.dashboard.refresh = async () => {
 
     if (status.popup.database === '') {
         lblDashStatusDatabasesPopup.attr('role', '');
+        lblDashStatusDatabasesPopup.attr('data-content', '');
         lblDashStatusDatabasesPopup.attr('data-toggle', '');
+
+        lblDashStatusDatabases.removeClass('hand');
 
     } else {
         lblDashStatusDatabasesPopup.attr('role', 'button');
         lblDashStatusDatabasesPopup.attr('data-content', status.popup.database);
         lblDashStatusDatabasesPopup.attr('data-toggle', 'popover');
+
+        lblDashStatusDatabases.addClass('hand');
     }
 
     if (status.popup.journaling === '') {
         lblDashStatusJournalsPopup.attr('role', '');
+        lblDashStatusJournalsPopup.attr('data-content', '');
         lblDashStatusJournalsPopup.attr('data-toggle', 'popover');
+
+        lblDashStatusJournals.removeClass('hand');
 
     } else {
         lblDashStatusJournalsPopup.attr('role', 'button');
         lblDashStatusJournalsPopup.attr('data-content', status.popup.journaling);
         lblDashStatusJournalsPopup.attr('data-toggle', 'popover');
+
+        lblDashStatusJournals.addClass('hand');
     }
 
     // **********************
@@ -477,12 +493,12 @@ app.ui.dashboard.refresh = async () => {
             '<div class="col-1">' +
             '<button class="btn btn-outline-info btn-sm dash-plus-button" type="button" id="btnDashStorageView' + ix + '"><i class="bi-zoom-in"></i></button>' +
             '</div>' +
-            '<div class="col-3">' +
+            '<div class="col-4">' +
             '<span id="lblDashStorageList' + ix + '" style="font-size: 12px"></span></div>' +
-            '<div class="col-6">' +
+            '<div class="col-5">' +
             '<a tabindex="-1" role="button" data-toggle="popover" data-trigger="hover" title="Device info" id="hlpDashStorageUsage' + ix + '">' +
             '<div class="progress">' +
-            '<div class="progress-bar ydb-status-green" role="progressbar" id="pgsDashStorageUsage' + ix + '" style="width: 23%; color: white; font-size: 15px;"></div>' +
+            '<div class="progress-bar ydb-status-green hand" role="progressbar" id="pgsDashStorageUsage' + ix + '" style="width: 23%; color: white; font-size: 15px;"></div>' +
             '</div></a></div></div></div>';
 
         $('#divDashStorageDevice0').append(chunk);
@@ -491,7 +507,7 @@ app.ui.dashboard.refresh = async () => {
         // usedBy list
         let usedByString = '';
         device.usedBy.forEach(usedByElement => {
-            usedByString += '<strong>' + usedByElement.region + ':</strong> ' + usedByElement.file + '<BR>'
+            usedByString += '<strong>' + usedByElement.region + ':</strong> <span class="inconsolata">' + usedByElement.file + '</span><BR>'
         });
         $('#lblDashStorageList' + ix).html(usedByString);
 
@@ -511,9 +527,10 @@ app.ui.dashboard.refresh = async () => {
 
         // range help
         let help = '<strong>Mount point: </strong>' + device.mountPoint + '<br>';
-        help += '<strong>Total blocks: </strong>' + app.ui.formatThousands(device.totalBlocks) + ' ( ' + app.ui.formatBytes(device.totalBlocks * 1024) + ' )<br>';
-        help += '<strong>Used blocks: </strong>' + app.ui.formatThousands(device.usedBlocks) + ' ( ' + app.ui.formatBytes(device.usedBlocks * 1024) + ' )<br>';
-        help += '<strong>Free blocks: </strong>' + app.ui.formatThousands(device.freeBlocks) + ' ( ' + app.ui.formatBytes(device.freeBlocks * 1024) + ' )';
+        const divideFactor = device.fsBlockSize / 1024;
+        help += '<strong>Total blocks: </strong>' + app.ui.formatThousands(device.totalBlocks / divideFactor) + ' (' + app.ui.formatBytes(device.totalBlocks * 1024) + ')<br>';
+        help += '<strong>Used blocks: </strong>' + app.ui.formatThousands(device.usedBlocks / divideFactor) + ' (' + app.ui.formatBytes(device.usedBlocks * 1024) + ')<br>';
+        help += '<strong>Free blocks: </strong>' + app.ui.formatThousands(device.freeBlocks / divideFactor) + ' (' + app.ui.formatBytes(device.freeBlocks * 1024) + ')';
 
         let title = '';
         switch (rangeStyle.class) {

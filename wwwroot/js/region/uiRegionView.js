@@ -14,6 +14,11 @@ app.ui.regionView.init = () => {
     $('#btnRegionViewRefresh').on('click', () => app.ui.regionView.refreshBtn());
     $('#chkRegionViewAdvancedMode').on('click', () => app.ui.regionView.refresh());
 
+    $('#btnRegionViewEdit').on('click', () => app.ui.regionView.newAction('edit'));
+
+    $('#btnRegionViewRegionExtendDbFile').on('click', () => app.ui.regionExtend.show());
+    $('#btnRegionViewRegionCreateDbFile').on('click', () => app.ui.regionCreateDbFile.show());
+
     $('#modalRegionView').on('hide.bs.modal', () => {
         if (app.ui.regionView.isFresh) {
             app.ui.dashboard.refresh()
@@ -38,11 +43,12 @@ app.ui.regionView.isFresh = false;
 app.ui.regionView.currentRegion = '';
 
 app.ui.regionView.show = regionName => {
-    $('#btnRegionViewRegionExtendDbFile').on('click', () => app.ui.regionExtend.show(regionName));
-    $('#btnRegionViewRegionCreateDbFile').on('click', () => app.ui.regionCreateDbFile.show(regionName));
+    if (regionName === undefined) regionName = app.ui.regionView.currentRegion;
+    app.ui.regionView.currentRegion = regionName;
 
     //clear the checkbox
     $('#chkRegionViewAdvancedMode').prop('checked', false);
+
     // and ensure it is visible
     $('#divRegionViewAdvancedParameters').css('display', 'inline');
 
@@ -50,8 +56,6 @@ app.ui.regionView.show = regionName => {
     // DISPLAY DIALOG
     // ************************************
     $('#navRegionViewRegion').tab('show');
-
-    app.ui.regionView.currentRegion = regionName;
 
     app.ui.regionView.refresh();
     app.ui.regionView.isFresh = false;
@@ -125,7 +129,7 @@ app.ui.regionView.refresh = () => {
     } else {
         result.database.caption = app.ui.getKeyValue(region.dbFile.data, 'AUTO_DB') ? 'No database file' : 'Critical';
         result.database.class = app.ui.getKeyValue(region.dbFile.data, 'AUTO_DB') ? 'ydb-status-amber' : 'ydb-status-red';
-        result.database.alert = 'The database file is missing.';
+        result.database.alert = 'The database file is missing. These values will apply when you create the database.';
     }
 
     $('#pillRegionViewRegionStatus')
@@ -134,11 +138,9 @@ app.ui.regionView.refresh = () => {
         .addClass(result.database.class);
 
     const divRegionViewRegionAlert = $('#divRegionViewRegionAlert');
-    const tblRegionViewRegionRegion = $('#tblRegionViewRegionRegion');
 
     if (result.database.alert === '') {
         divRegionViewRegionAlert.css('display', 'none');
-        tblRegionViewRegionRegion.css('height', '260px')
 
     } else {
         $('#lblRegionViewRegionAlert')
@@ -154,6 +156,10 @@ app.ui.regionView.refresh = () => {
     const blockSize = app.ui.getKeyValue(region.dbFile.data, 'BLOCK_SIZE');
     const rngRegionViewRegionUsedSpace = $('#rngRegionViewRegionUsedSpace');
     if (region.dbFile.flags.fileExist && region.dbFile.flags.fileBad === false) {
+        $('#pillRegionViewRegionUsedSpaceWithFile').css('display', 'flex');
+        $('#pillRegionViewRegionUsedSpaceNoFile').css('display', 'none');
+        $('#divRegionViewUsedSpace').css('display', 'flex');
+
         rngRegionViewRegionUsedSpace
             .css('width', region.dbFile.usage.usedPercent + '%')
             .text(region.dbFile.usage.usedPercent + ' %');
@@ -163,7 +169,7 @@ app.ui.regionView.refresh = () => {
 
         // Use ranges only if extension is 0
         if (extension > 0) {
-            rangeStyle.class = 'ydb-status-green';
+            rangeStyle.class = region.dbFile.usage.usedPercent < 35 ? 'ydb-status-green-readable' : 'ydb-status-green';
             rangeStyle.flash = false
         } else {
             app.userSettings.dashboard.regionRanges.forEach(el => {
@@ -174,18 +180,21 @@ app.ui.regionView.refresh = () => {
             });
         }
         rngRegionViewRegionUsedSpace
-            .removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray')
+            .removeClass('ydb-status-red ydb-status-green ydb-status-green-readable ydb-status-amber ydb-status-gray')
             .addClass(rangeStyle.class);
 
         // and related popup
-        const devicePopup = '<strong>Total blocks:</strong> ' + app.ui.formatThousands(region.dbFile.usage.totalBlocks) + ' ( ' + app.ui.formatBytes(region.dbFile.usage.totalBlocks * blockSize) + ' )<br>' +
-            '<strong>Free blocks: </strong>' + app.ui.formatThousands(region.dbFile.usage.freeBlocks) + ' ( ' + app.ui.formatBytes(region.dbFile.usage.freeBlocks * blockSize) + ' )<br>' +
-            '<strong>Used blocks: </strong>' + app.ui.formatThousands(region.dbFile.usage.usedBlocks) + ' ( ' + app.ui.formatBytes(region.dbFile.usage.usedBlocks * blockSize) + ' )';
+        const devicePopup = '<strong>Total blocks:</strong> ' + app.ui.formatThousands(region.dbFile.usage.totalBlocks) + ' (' + app.ui.formatBytes(region.dbFile.usage.totalBlocks * blockSize) + ')<br>' +
+            '<strong>Free blocks: </strong>' + app.ui.formatThousands(region.dbFile.usage.freeBlocks) + ' (' + app.ui.formatBytes(region.dbFile.usage.freeBlocks * blockSize) + ')<br>' +
+            '<strong>Used blocks: </strong>' + app.ui.formatThousands(region.dbFile.usage.usedBlocks) + ' (' + app.ui.formatBytes(region.dbFile.usage.usedBlocks * blockSize) + ')';
 
         $('#puRegionViewDbUsage')
             .attr('data-content', devicePopup)
-        //.attr('title','Device usage');
     } else {
+        $('#pillRegionViewRegionUsedSpaceWithFile').css('display', 'none');
+        $('#pillRegionViewRegionUsedSpaceNoFile').css('display', 'block');
+        $('#divRegionViewUsedSpace').css('display', 'block');
+
         rngRegionViewRegionUsedSpace
             .css('width', '100%')
             .css('border-color', 'white!important')
@@ -195,56 +204,82 @@ app.ui.regionView.refresh = () => {
 
     }
 
-
     // User Sessions
     const pillRegionViewRegionSessions = $('#pillRegionViewRegionSessions');
-    if (region.dbFile.flags.fileExist && region.dbFile.flags.fileBad === false) {
-        pillRegionViewRegionSessions.text(region.dbFile.flags.sessions);
+    const puRegionViewSessionsPids = $('#puRegionViewSessionsPids');
 
+    if (region.dbFile.flags.fileExist && region.dbFile.flags.fileBad === false) {
+        pillRegionViewRegionSessions
+            .text(region.dbFile.flags.sessions)
+            .addClass('ydb-status-green')
+
+        if (region.dbFile.flags.sessions === 0) {
+            puRegionViewSessionsPids
+                .attr('data-toggle', '')
+                .attr('data-content', '')
+                .removeClass('hand')
+
+        } else {
+            let usersPopup = '';
+            if (Array.isArray(region.dbFile.flags.processes)) {
+                region.dbFile.flags.processes.forEach(user => {
+                    usersPopup += 'PID: ' + user + '<br>'
+                })
+            }
+            puRegionViewSessionsPids
+                .attr('data-content', usersPopup)
+                .attr('data-toggle', 'popover')
+                .addClass('hand')
+        }
     } else {
-        pillRegionViewRegionSessions.text('n/a');
+        pillRegionViewRegionSessions
+            .text('n/a')
+            .removeClass('ydb-status-green')
+            .css('background', 'gray')
+            .removeClass('hand')
     }
+
+    // re-generate the pop ups
+    $('[data-toggle="popover"]').popover({
+        html: true, container: 'body', template: '' +
+            '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header ydb-popover-header"></h3><div class="popover-body"></div></div>'
+    });
 
     // Database file table
     const divRegionViewRegionTables = $('#divRegionViewRegionTables');
-    if ((region.dbFile.flags.fileExist === false && app.ui.getKeyValue(region.dbFile.data, 'FILE_NAME') === '') || (region.dbFile.flags.fileExist === true && region.dbFile.flags.fileBad === true)) {
-        divRegionViewRegionTables.css('display', 'none');
+    divRegionViewRegionTables.css('display', 'block');
+
+    const tblRegionViewRegionRegion = $('#tblRegionViewRegionRegion > tbody');
+    const divRegionViewTableLeftContainer = $('#divRegionViewTableLeftContainer');
+
+    if (divRegionViewRegionAlert.css('display') === 'block') {
+        divRegionViewTableLeftContainer.css('height', 206)
 
     } else {
-        divRegionViewRegionTables.css('display', 'block');
+        divRegionViewTableLeftContainer.css('height', 260)
+    }
 
-        const tblRegionViewRegionRegion = $('#tblRegionViewRegionRegion > tbody');
-        const divRegionViewTableLeftContainer = $('#divRegionViewTableLeftContainer');
+    tblRegionViewRegionRegion.empty();
 
-        if (divRegionViewRegionAlert.css('display') === 'block') {
-            divRegionViewTableLeftContainer.css('height', 206)
-
-        } else {
-            divRegionViewTableLeftContainer.css('height', 260)
+    region.dbFile.data.forEach(el => {
+        let rowData = '';
+        for (const key in el) {
+            rowData += app.ui.regionView.renderRow(key, el[key])
         }
+        tblRegionViewRegionRegion.append(rowData)
+    });
 
-        tblRegionViewRegionRegion.empty();
+    const tblRegionViewRegionSegment = $('#tblRegionViewRegionSegment > tbody');
+    $(tblRegionViewRegionSegment).empty();
 
-        region.dbFile.data.forEach(el => {
+    if (region.dbAccess !== undefined && region.dbAccess.data !== undefined && Array.isArray(region.dbAccess.data)) {
+        region.dbAccess.data.forEach(el => {
             let rowData = '';
             for (const key in el) {
                 rowData += app.ui.regionView.renderRow(key, el[key])
             }
-            tblRegionViewRegionRegion.append(rowData)
+            tblRegionViewRegionSegment.append(rowData)
         });
-
-        const tblRegionViewRegionSegment = $('#tblRegionViewRegionSegment > tbody');
-        $(tblRegionViewRegionSegment).empty();
-
-        if (region.dbAccess !== undefined && region.dbAccess.data !== undefined && Array.isArray(region.dbAccess.data)) {
-            region.dbAccess.data.forEach(el => {
-                let rowData = '';
-                for (const key in el) {
-                    rowData += app.ui.regionView.renderRow(key, el[key])
-                }
-                tblRegionViewRegionSegment.append(rowData)
-            });
-        }
     }
 
     // button create db
@@ -298,11 +333,7 @@ app.ui.regionView.refresh = () => {
     btnRegionViewJournalSwitch.on('click', () => app.ui.regionJournalSwitch.show(regionName));
 
     navRegionViewJournal.removeClass('disabled');
-    if (region.dbFile.flags.fileExist === false || (region.dbFile.flags.fileExist && region.dbFile.flags.fileBad)) {
-        navRegionViewJournal.addClass('disabled');
-        btnRegionViewJournalSwitch.css('display', 'none');
-
-    } else {
+    if (region.dbFile.flags.fileExist === true) {
         // Journal status pill
         const replStatus = region.replication !== undefined;
 
@@ -362,62 +393,69 @@ app.ui.regionView.refresh = () => {
                 }
             }
         }
+    } else {
+        journalFileMissing = true;
+        region.journal.flags = {state: 0};
 
-        $('#lblRegionViewJournalStatus')
-            .html(result.journaling.caption)
+        result.journaling.class = 'ydb-status-amber';
+        result.journaling.caption = 'Db file in error';
+        result.journaling.alert = 'The database file is missing. These values will apply when problem is fixed.'
+    }
+
+    $('#lblRegionViewJournalStatus')
+        .html(result.journaling.caption)
+        .removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray')
+        .addClass(result.journaling.class);
+
+    if (journalFileMissing === false) {
+        btnRegionViewJournalSwitch.text((region.journal.flags.state === 1 ? 'Turn ON...' : 'Turn OFF...'));
+    }
+    btnRegionViewJournalSwitch.css('display', region.journal.flags.state === 0 ? 'none' : 'inline');
+
+    const divRegionViewJournalAlert = $('#divRegionViewJournalAlert');
+    if (result.journaling.alert === '') {
+        divRegionViewJournalAlert.css('display', 'none');
+
+    } else {
+        $('#lblRegionViewJournalAlert')
+            .html(result.journaling.alert)
             .removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray')
             .addClass(result.journaling.class);
+        divRegionViewJournalAlert.css('display', 'block');
+    }
 
-        if (journalFileMissing === false) {
-            btnRegionViewJournalSwitch.text((region.journal.flags.state === 1 ? 'Turn ON...' : 'Turn OFF...'));
-        }
-        btnRegionViewJournalSwitch.css('display', region.journal.flags.state === 0 ? 'none' : 'inline');
+    // Journal type pill
+    const lblRegionViewJournalType = $('#lblRegionViewJournalType');
+    lblRegionViewJournalType.removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray');
+    if (region.journal.flags.state !== JOURNAL_STATE_DISABLED) {
+        lblRegionViewJournalType.text(app.ui.getKeyValue(region.journal.data, 'BEFORE') === true ? 'Before Image' : 'No before image')
+            .addClass(region.journal.flags.state === 1 ? 'ydb-status-gray' : 'ydb-status-green');
 
-        const divRegionViewJournalAlert = $('#divRegionViewJournalAlert');
-        if (result.journaling.alert === '') {
-            divRegionViewJournalAlert.css('display', 'none');
+    } else {
+        lblRegionViewJournalType.text('N/A')
+            .addClass('ydb-status-gray');
+    }
 
-        } else {
-            $('#lblRegionViewJournalAlert')
-                .html(result.journaling.alert)
-                .removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray')
-                .addClass(result.journaling.class);
-            divRegionViewJournalAlert.css('display', 'block');
-        }
+    // table
+    const divRegionViewJournalTable = $('#divRegionViewJournalTable');
 
-        // Journal type pill
-        const lblRegionViewJournalType = $('#lblRegionViewJournalType');
-        lblRegionViewJournalType.removeClass('ydb-status-red ydb-status-green ydb-status-amber ydb-status-gray');
-        if (region.journal.flags.state !== JOURNAL_STATE_DISABLED) {
-            lblRegionViewJournalType.text(app.ui.getKeyValue(region.journal.data, 'BEFORE') === true ? 'Before Image' : 'No before image')
-                .addClass(region.journal.flags.state === 1 ? 'ydb-status-gray' : 'ydb-status-green');
+    if (region.journal.flags.state !== JOURNAL_STATE_DISABLED || region.dbFile.flags.fileExist === false) {
+        divRegionViewJournalTable.css('display', 'block');
 
-        } else {
-            lblRegionViewJournalType.text('N/A')
-                .addClass('ydb-status-gray');
-        }
+        const tblRegionViewJournalParams = $('#tblRegionViewJournalParams > tbody');
+        tblRegionViewJournalParams.empty();
 
-        // table
-        const divRegionViewJournalTable = $('#divRegionViewJournalTable');
+        region.journal.data.forEach(el => {
+            let rowData = '';
+            for (const key in el) {
+                rowData += app.ui.regionView.renderRow(key, el[key])
+            }
+            tblRegionViewJournalParams.append(rowData)
+        });
 
-        if (region.journal.flags.state !== JOURNAL_STATE_DISABLED) {
-            divRegionViewJournalTable.css('display', 'block');
+    } else {
+        divRegionViewJournalTable.css('display', 'none');
 
-            const tblRegionViewJournalParams = $('#tblRegionViewJournalParams > tbody');
-            tblRegionViewJournalParams.empty();
-
-            region.journal.data.forEach(el => {
-                let rowData = '';
-                for (const key in el) {
-                    rowData += app.ui.regionView.renderRow(key, el[key])
-                }
-                tblRegionViewJournalParams.append(rowData)
-            });
-
-        } else {
-            divRegionViewJournalTable.css('display', 'none');
-
-        }
     }
 
     // ************************************
@@ -425,15 +463,11 @@ app.ui.regionView.refresh = () => {
     // ************************************
     const navRegionViewNames = $('#navRegionViewNames');
     navRegionViewNames.removeClass('disabled');
-    if (region.dbFile.flags.fileExist === false || (region.dbFile.flags.fileExist && region.dbFile.flags.fileBad)) {
-        navRegionViewNames.addClass('disabled');
+    //clear the checkbox
+    $('#chkRegionViewNamesSystemNames').prop('checked', false);
 
-    } else {
-        //clear the checkbox
-        $('#chkRegionViewNamesSystemNames').prop('checked', false);
+    app.ui.regionView.populateNamesTable();
 
-        app.ui.regionView.populateNamesTable();
-    }
     // ************************************
     // STATS
     // ************************************
@@ -539,6 +573,35 @@ app.ui.regionView.refreshBtn = async () => {
 
         app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
     }
+};
+
+app.ui.regionView.newAction = action => {
+    let actionFunction = null;
+
+    switch (action) {
+        case 'edit': {
+            actionFunction = app.ui.regionEdit.show;
+            break
+        }
+        case 'add': {
+            actionFunction = app.ui.regionAdd.name.show;
+            break
+        }
+        case 'delete': {
+
+            actionFunction = app.ui.regionDelete.show;
+            break
+        }
+        default:
+            return
+    }
+
+    // close the current dialog
+    $('#modalRegionView').modal('hide');
+
+    // and execute the selected action
+    actionFunction();
+
 };
 
 // ************************************
@@ -656,9 +719,7 @@ app.ui.regionView.renderRow = (key, value) => {
         helpLink.end +
         '</td>' +
         valueCell +
-        helpLink.start +
         value +
-        helpLink.end +
         '</td>' +
         '</tr>'
 };

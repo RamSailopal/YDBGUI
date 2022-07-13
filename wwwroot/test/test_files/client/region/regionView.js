@@ -827,6 +827,29 @@ describe("CLIENT: Region View: Database tab", async () => {
         expect(pillColor).to.have.string('rgb(234, 184, 59)')
     });
 
+    it("Test # 294: With extension > 0, verify that Db Usage background is always green, but fore changes at 35%", async () => {
+        await page.goto(`http://localhost:${MDevPort}//index.html?test=294`, {
+            waitUntil: "domcontentloaded"
+        });
+
+        // wait for dashboard to be set by the async call
+        await libs.delay(500);
+
+        let btnClick = await page.$("#btnDashRegionView0");
+        await btnClick.click();
+
+        // wait for dialog to be set by the async call
+        await libs.delay(500);
+
+        // make sure dialog is visible
+        let isVisible = await libs.getCssDisplay('#modalRegionView') !== 'none';
+        expect(isVisible).to.be.true;
+
+        // and alert has the GREEN color
+        const pillColor = await libs.getCssBackground('#rngRegionViewRegionUsedSpace');
+        expect(pillColor).to.have.string('rgb(100, 165, 85)')
+    });
+
 });
 
 describe("CLIENT: Region View: Journal tab", async () => {
@@ -1490,7 +1513,6 @@ describe("CLIENT: Region View: Names tab", async () => {
         isVisible = await libs.getCssDisplay('#divRegionViewAdvancedParameters') !== 'none';
         expect(isVisible).to.be.true;
     });
-
 });
 
 describe("CLIENT: Region View: Stats tab", async () => {

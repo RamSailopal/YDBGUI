@@ -40,7 +40,7 @@ describe("CLIENT: Switch Journal dialog", async () => {
         });
 
         // wait for dialog to be set by the async call
-        await libs.delay(700);
+        await libs.delay(1500);
 
         // make sure the extend dialog is visible
         isVisible = await libs.getCssDisplay('#modalInputbox') !== 'none';
@@ -50,7 +50,7 @@ describe("CLIENT: Switch Journal dialog", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(700);
+        await libs.delay(1500);
 
         // make sure inputbox is invisible
         isVisible = await libs.getCssDisplay('#modalInputbox') === 'none';
@@ -64,7 +64,7 @@ describe("CLIENT: Switch Journal dialog", async () => {
         });
 
         // wait for dialog to be set by the async call
-        await libs.delay(700);
+        await libs.delay(1500);
 
         // make sure the extend dialog is visible
         isVisible = await libs.getCssDisplay('#modalInputbox') !== 'none';
@@ -74,7 +74,7 @@ describe("CLIENT: Switch Journal dialog", async () => {
         await btnClick.click();
 
         // wait for dialog to be set by the async call
-        await libs.delay(700);
+        await libs.delay(1500);
 
         // make sure inputbox is invisible
         isVisible = await libs.getCssDisplay('#modalInputbox') === 'none';

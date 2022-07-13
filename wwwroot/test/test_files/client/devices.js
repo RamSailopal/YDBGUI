@@ -47,17 +47,17 @@ describe("CLIENT: Devices", async () => {
         // lblDeviceInfoTotalBlocks text is populated
         cell = await page.$('#lblDeviceInfoTotalBlocks');
         text = await page.evaluate(el => el.textContent, cell);
-        expect(text).to.have.string('263,174,212');
+        expect(text).to.have.string('65,793,553');
 
         // lblDeviceInfoBlocksUsed text is populated
         cell = await page.$('#lblDeviceInfoBlocksUsed');
         text = await page.evaluate(el => el.textContent, cell);
-        expect(text).to.have.string('15,591,036');
+        expect(text).to.have.string('3,897,759');
 
         // lblDeviceInfoBlockAvailable text is populated
         cell = await page.$('#lblDeviceInfoBlockAvailable');
         text = await page.evaluate(el => el.textContent, cell);
-        expect(text).to.have.string('234,145,020');
+        expect(text).to.have.string('58,536,255');
     });
 
     it("Test # 191: Gauge when disk space is <70%", async () => {

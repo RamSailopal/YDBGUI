@@ -77,15 +77,15 @@ describe("CLIENT: Create Database", async () => {
         // and text is correct
         let modal = await page.$('#lblRegionCreateDbAllocation');
         let text = await page.evaluate(el => el.textContent, modal);
-        expect(text).to.have.string('2,048 blocks');
+        expect(text).to.have.string('2,048');
 
         modal = await page.$('#lblRegionCreateDbAvailableSpace');
         text = await page.evaluate(el => el.textContent, modal);
-        expect(text).to.have.string('blocks');
+        expect(text).to.have.string('58,536,255');
 
         modal = await page.$('#lblRegionCreateDbNewAvailableSpace');
         text = await page.evaluate(el => el.textContent, modal);
-        expect(text).to.have.string('blocks')
+        expect(text).to.have.string('58,534,207')
     });
 
     it("Test # 442: Submit the form and expect a dialog", async () => {

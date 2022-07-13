@@ -45,11 +45,10 @@ skiplist="COPYING
     .gitignore
     wwwroot/ydbguiVersion.json
     wwwroot/libs/bootstrap-icons.1.8.0/bootstrap-icons.css
-    wwwroot/libs/bootstrap.4.6.1/default.min.css
-    wwwroot/libs/bootstrap.4.6.1/bootstrap.min.js
+    wwwroot/libs/bootstrap.4.6.2/default.min.css
+    wwwroot/libs/bootstrap.4.6.2/bootstrap.bundle.min.js
     wwwroot/css/bootstrap-icons.css
     wwwroot/libs/jquery.3.5.1/jquery.3.5.1.min.js
-    wwwroot/libs/popper.1.16.1/popper.min.js
     wwwroot/libs/jstree-3.3.12/jstree.min.js
     wwwroot/libs/jstree-3.3.12/themes/default/style.min.css
     package.json"

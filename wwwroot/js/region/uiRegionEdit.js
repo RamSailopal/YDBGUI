@@ -43,9 +43,10 @@ app.ui.regionEdit.init = () => {
 app.ui.regionEdit.inProgress = null;
 app.ui.regionEdit.journalOriginalStatus = null;
 
-app.ui.regionEdit.show = async (regionName) => {
-    const region = app.system.regions[regionName];
-    region['name'] = regionName;
+app.ui.regionEdit.show = async () => {
+    const region = app.system.regions[app.ui.regionView.currentRegion];
+    region['name'] = app.ui.regionView.currentRegion;
+    regionName = app.ui.regionView.currentRegion;
 
     if (region.dbFile.flags.fileExist === false) {
         app.ui.msgbox.show('The database file doesn\'t exists.<br><br>In the current release we do not support the ability to alter the GDE.<br>This feature will be available in the near future.', "INFO")
@@ -114,6 +115,8 @@ app.ui.regionEdit.show = async (regionName) => {
     $('#iRegionEditSegmentType')
         .addClass(MSG_EXCL_ACCESS.icon)
         .css('color', MSG_EXCL_ACCESS.color);
+
+    $('#chkRegionEditNamesSystemNames').prop('checked', true);
 
     // Populate all tables
     app.ui.regionShared.renderTable($('#tblRegionEditBg > tbody'), true);
