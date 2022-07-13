@@ -95,7 +95,7 @@ app.ui.help.init = () => {
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/dbmgmt.html#backup',
         },
         ALLOCATION: { // This comes from GDE
-            caption: 'Allocation',
+            caption: 'Initial allocation',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#gde-command-summary',
             format: 'thousands',
             unit: 'blocks'
@@ -115,7 +115,7 @@ app.ui.help.init = () => {
         },
         MUTEX_SLOTS: { // "sgmnt_data.mutex_spin_parms.mutex_que_entry_space_size" - defer for when we implement Advanced button
             caption: 'Mutex slot',
-            helpLink: '',
+            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#m-utex-slots-integer',
             format: 'thousands',
             unit: 'slots',
             inBgOnly: true,
@@ -164,7 +164,7 @@ app.ui.help.init = () => {
             class: 'ydb-status-gray-no-border'
         },
         QDBRUNDOWN: { // sgmnt_data.mumps_can_bypass - defer to Advanced
-            caption: 'Rundown',
+            caption: 'QDB Rundown',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-q-dbrundown',
             booleanYesNo: true,
             advancedMode: true,
@@ -224,6 +224,22 @@ app.ui.help.init = () => {
         ALIGNSIZE: { // "sgmnt_data.alignsize" - defer to Advanced
             caption: 'Align size',
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#ali-gnsize-blocks',
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border',
+            unit: 'journal blocks',
+            format: 'thousands'
+        },
+        JEXTENSION_SIZE: { // "sgmnt_data.extension_size" - defer to Advanced
+            caption: 'Extension',
+            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#ex-tension-blocks',
+            advancedMode: true,
+            class: 'ydb-status-gray-no-border',
+            unit: 'journal blocks',
+            format: 'thousands'
+        },
+        JALLOCATION: { // sgmnt_data.jnl_alq
+            caption: 'Initial allocation',
+            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#all-ocation-blocks',
             advancedMode: true,
             class: 'ydb-status-gray-no-border',
             unit: 'journal blocks',

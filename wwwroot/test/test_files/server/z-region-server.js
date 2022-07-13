@@ -517,7 +517,7 @@ describe("SERVER: Create Region", async () => {
         val = res.data.dbAccess.data[1].KEY_SIZE === 567;
         expect(val).to.be.true;
 
-        val = res.data.dbAccess.data[4].LOCK_CRIT_SEPARATE === false;
+        val = res.data.dbAccess.data[4].LOCK_CRIT_SEPARATE === true;
         expect(val).to.be.true;
     });
 

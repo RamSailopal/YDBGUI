@@ -31,4 +31,5 @@ URLMAP ;
 	;;POST api/regions/parseNamespace parseNamespace^%ydbguiRest
 	;;POST api/regions/validatePath validatePath^%ydbguiRest
 	;;POST api/regions/add addRegion^%ydbguiRest
+	;;POST api/regions/{region}/edit editRegion^%ydbguiRest
 	;;zzzzz

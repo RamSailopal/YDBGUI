@@ -433,23 +433,23 @@ describe("SERVER: JOURNAL", async () => {
     it("Test # 1142: Disable journaling in YDBAIM", async () => {
 
         // switch journaling off
-        execSync('. /opt/yottadb/current/ydb_env_set && mupip set -journal=disable -region "DEFAULT"', {stdio: 'ignore'});
+        execSync('. /opt/yottadb/current/ydb_env_set && mupip set -journal=disable -region "YDBAIM"');
 
         // execute the call
         res = await libs._REST('dashboard/getAll').catch(() => {});
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
-        expect(res.data.regions.DEFAULT.journal.flags.state === 0).to.be.true;
+        expect(res.data.regions.YDBAIM.journal.flags.state === 0).to.be.true;
 
         // switch journaling on again
-        execSync('. /opt/yottadb/current/ydb_env_set && mupip set -journal=enable,on -region "DEFAULT"', {stdio: 'ignore'});
+        execSync('. /opt/yottadb/current/ydb_env_set && mupip set -journal=enable,on -region "YDBAIM"', {stdio: 'ignore'});
     });
 
     it("Test # 1143: Journal file is missing", async () => {
 
         // get region information
-        let res = await libs._REST('regions/DEFAULT').catch(() => {});
+        let res = await libs._REST('regions/YDBAIM').catch(() => {});
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
@@ -459,30 +459,29 @@ describe("SERVER: JOURNAL", async () => {
         execSync('rm ' + jFilename, {stdio: 'ignore'});
 
         // execute the call
-        res = await libs._REST('regions/DEFAULT').catch(() => {});
+        res = await libs._REST('regions/YDBAIM').catch(() => {});
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
-
         expect(res.data.journal.flags.file === undefined).to.be.true;
 
     });
 });
 
 describe("SERVER: REPLICATION", async () => {
-    it("Test # 1160: Turn replication on on DEFAULT as verify the response", async () => {
+    it("Test # 1160: Turn replication on on YDBAIM as verify the response", async () => {
 
         // switch replication on
-        execSync('. /opt/yottadb/current/ydb_env_set && mupip set -replication=on -region "DEFAULT"', {stdio: 'ignore'});
+        execSync('. /opt/yottadb/current/ydb_env_set && mupip set -replication=on -region "YDBAIM"', {stdio: 'ignore'});
 
         // execute the call
         res = await libs._REST('dashboard/getAll').catch(() => {});
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
 
-        expect(res.data.regions.DEFAULT.replication.flags.status === 1).to.be.true;
+        expect(res.data.regions.YDBAIM.replication.flags.status === 1).to.be.true;
 
         // switch replication off again
-        execSync('. /opt/yottadb/current/ydb_env_set && mupip set -replication=off -region "DEFAULT"', {stdio: 'ignore'});
+        execSync('. /opt/yottadb/current/ydb_env_set && mupip set -replication=off -region "YDBAIM"', {stdio: 'ignore'});
     });
 });
 

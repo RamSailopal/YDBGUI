@@ -207,7 +207,7 @@ deleteRegion(resJson,arguments)
 	; perform the delete
 	set *res=$$delete^%ydbguiRegions(regionName,deleteFiles)
 	;
-deleteRegionQuit	
+deleteRegionQuit
 	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
 	if $data(jsonErr) do  quit
 	. ; FATAL, can not convert json
@@ -495,6 +495,7 @@ validatePath(arguments,bodyJson,resJson)
 	. set result("error","description")="The body parameter: 'path' is missing or empty"
 	;
 	; check if file exists first
+	set ret=$zsearch(-1)
 	set ret=$zsearch(body("path"))
 	if ret'="" do  goto validatePathQuit
 	. ; error
@@ -509,11 +510,12 @@ validatePath(arguments,bodyJson,resJson)
 	. set res("result")="ERROR"
 	. set res("error","description")="Couldn't access the path..."
 	;
+	set ret=$zsearch(-1)
 	set res("data","validation")=$zsearch(dir)
 	set res("data","fileExist")=$zsearch(body("path"))
 	;
 	; get the device info to extract the block size of the device needed for ASYNCIO validation
-	if res("data","validation")'="" do 
+	if res("data","validation")'="" do
 	. set ret=$$runShell^%ydbguiUtils("stat -fc %s "_dir,.deviceInfo)
 	. set res("data","deviceBlockSize")=$get(deviceInfo(1),0)
 	else  set res("data","deviceBlockSize")=0
@@ -559,6 +561,33 @@ addRegion(arguments,bodyJson,resJson)
 	;
 	;
 ; ****************************************************************
+; editRegion(arguments,body,resJson)
+;
+; PARAMS:
+; arguments			array byRef
+; body				array byRef
+; resJson			array byRef
+; ****************************************************************
+editRegion(arguments,bodyJson,resJson)
+	new res,body,jsonErr
+	; decode the body
+	do decode^%webjson($name(bodyJson),$name(body),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the body to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	; Perform the edit
+	set *res=$$edit^%ydbguiRegions(.body)
+	;
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""
+	;
+	;
+; ****************************************************************
 ; error(resJson,arguments)
 ;
 ; Related URL: 	GET api/test/error/
@@ -591,7 +620,7 @@ errorPost(arguments,bodyJson,resJson)
 	;
 ; ****************************************************************
 ; tryCreateFile(filename)
-; 
+;
 ; Related URL: POST api/regions/add
 ;
 ; PARAMS:
@@ -616,5 +645,3 @@ tryCreateFile:(dir)
 	;
 tryCreateFileQuit
 	quit ret
-	;
-	;

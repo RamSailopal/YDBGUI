@@ -121,6 +121,7 @@ let app = {
         regionSelect: {},
         regionDelete: {},
         regionExtend: {},
+        regionEdit: {},
         regionJournalSwitch: {},
         regionFilename: {},
 

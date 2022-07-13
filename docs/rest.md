@@ -28,6 +28,7 @@
 | POST | [api/regions/parseNamespace](#post-apiregionsparsenamespace) |  | Verify a namespace
 | POST | [api/regions/validatePath](#post-apiregionsvalidatepath) |  | Validate a filepath
 | POST | [api/regions/add](#post-apiregionsadd) |  | Creates a region
+| POST | [api/regions/{region}/edit](#post-apiregionsregionedit) |  | Edits a region
 | GET | [api/test/error](#get-apitesterror) |  | Triggers an M error and returns the error description in the status 500 response
 | POST | [api/test/error](#post-apitesterror) |  | Triggers an M error and returns the error description in the status 500 response
 | DELETE | [api/test/error](#delete-apitesterror) |  | Triggers an M error and returns the error description in the status 500 response
@@ -422,6 +423,77 @@ ERROR
 res = {
     result: 'ERR',
     error : {description: ''} // The error description
+}
+````
+
+
+---
+
+### `POST` api/regions/{region}/edit
+
+Edits a region to the system. 
+
+Parameters: 
+
+`none`
+
+Body: 
+````js
+res = {
+    changeAccessMethod: false,              
+    changeJournal: true,                     
+    journalFilename: '',
+    journalUpdateGde: true,
+    journalUpdateMupip: false,
+    dbAccess: {
+        region: [],
+        journal: []
+    },
+    newAccessMethod: '',
+    names: [],
+    newJournalEnabled: true,
+    regionName: '',
+    segmentData: [],
+    segmentFilename: '',
+    updateGde: false
+}
+````
+Returns:
+
+SUCCESS
+
+````js
+res = {
+    result: 'OK'
+}
+````
+
+ERROR
+
+````js
+res = {
+    result: 'ERR',
+    error : {
+        description: '',    // The error description
+        dump: []            // Array of string with the dump of the shell response
+    } 
+}
+````
+
+WITH WARNINGS
+
+````js
+res = {
+    result: 'WARNING',
+    data : {
+        warnings: [
+            {
+                description: '',        // The warning(s) description(s)
+                dump: []                // Array of string with the dump of the shell response
+            }
+            
+        ]
+    } 
 }
 ````
 

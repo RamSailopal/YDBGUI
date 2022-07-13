@@ -1,0 +1,39 @@
+<!-- Region Edit Overview dialog -->
+<div aria-hidden="true" aria-labelledby="modalLabel" class="modal fade" id="modalRegionEditOverview" role="dialog"
+     style="z-index: 2000" tabindex="-1">
+    <div class="modal-dialog modal-width-700" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="modal-title" id="modalLabel">Region edit: changes overview</label>
+                <button aria-label="Close" class="close" data-dismiss="modal" tabindex="-1" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body modal-scrollable">
+                <div style="margin: 0 auto; height: 300px; overflow-y: auto">
+                    <table class="table table-sm table-hover ydb-fore2" id="tblRegionEditOverview">
+                        <thead>
+                        <tr style="font-size: 13px; font-weight: 600;">
+                            <th class="v-align-middle" scope="col" style="width: 100px;">Param</th>
+                            <th class="v-align-middle" scope="col" style="width: 78px; text-align: right;">Was</th>
+                            <th class="v-align-middle" scope="col" style="width: 78px; text-align: right;">Will be</th>
+                            <th class="v-align-middle" scope="col" style="width: 78px; text-align: center;">Update Now</th>
+                            <th class="v-align-middle" scope="col" style="width: 78px; text-align: center;">Update on next database</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer center">
+                <button class="btn btn-outline-info" id="btnRegionEditOverviewOk" tabindex="10" type="button">
+                    Save
+                </button>
+                <button class="btn btn-outline-secondary" data-dismiss="modal" tabindex="-1" type="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

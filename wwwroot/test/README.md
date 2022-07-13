@@ -311,6 +311,40 @@ The Server testing is not using the interface at all and is fully focused on the
 | 542 | Add a name, select it, click delete name and verify that it gets deleted
 | 543 | Add multiple names and ensure they got sorted
 
+## Region Edit
+
+#### Region tab
+
+| Number | Description |
+| :---:| ---      |
+| 555 | Edit DEFAULT and verify that BG is checked
+| 556 | Edit DEFAULT and switch to MM: Edit button should be enabled
+| 557 | Edit YDBAIM and verify that MM is checked
+| 558 | Edit YDBAIM and switch to BG: Edit button should be enabled
+| 559 | Click Advanced parameters and verify that left table is properly populated
+| 560 | Click Advanced parameters and verify that right table is properly populated
+| 561 | Edit DEFAULT and click on the filename button. Verify that the message box appears
+| 562 | Edit YDBAIM and click on the filename button. Verify that the message box appears
+
+#### Journal tab
+
+| Number | Description |
+| :---:| ---      |
+| 570 | Edit DEFAULT and verify that journal is ON
+| 571 | Edit DEFAULT and switch the journal off. Verify that the table gets hidden
+| 572 | Edit DEFAULT and switch the journal off. Verify that the Edit button is enabled
+| 573 | Edit DEFAULT and click on the filename button. Verify that the Filename dialog appears
+
+#### Names tab tab
+
+| Number | Description |
+| :---:| ---      |
+| 585 | Edit DEFAULT, add a name TEST and verify that appears in the list as GREEN color
+| 586 | Edit YDBOCTO, add a name %a and verify that appears in the list as first and in GREEN color
+| 587 | Edit YDBOCTO, add a name %b, select it and verify that delete button caption is: Delete...
+| 588 | Edit YDBOCTO, select the first entry and delete it. Verify that text has the RED color
+| 589 | Edit YDBOCTO, select the first entry and delete it. Verify that delete button caption is: Undelete...
+| 590 | Edit YDBOCTO, select the first entry and delete it. Click the Undelete... button and verify that text is in Purple color
 
 # **SERVER**
 
@@ -443,6 +477,29 @@ The Server testing is not using the interface at all and is fully focused on the
 | 1323 | Create random region with all journal fields different and verify them all
 | 1324 | Create random region with all segment field different, store them on template, create a new region and verify
 | 1325 | Create random region with all journal field different, store them on template, create a new region and verify
+
+#### Edit Region
+
+| Number | Description |
+| :---:| ---      |
+| 1340  | Edit YDBOCTO, add one name and delete another, submit and verify
+| 1341  | Edit DEFAULT, change BG to MM, submit and verify
+| 1342  | Edit DEFAULT, change MM back to BG, submit and verify
+| 1343  | Edit DEFAULT, switch journal OFF, submit and verify
+| 1344  | Edit DEFAULT, switch journal back ON, submit and verify
+| 1345  | Edit DEFAULT, change AutoDB to true and verify
+| 1346  | Edit YDBAIM, change AutoDB to false and verify
+| 1347  | Edit YDBAIM, change AutoDB back to true, change filename, submit and verify
+| 1348  | Edit DEFAULT, change all Segment related fields, submit and verify
+| 1349  | Edit DEFAULT, change all Segment and Region related fields, submit and verify
+| 1350  | Edit DEFAULT, change all Journaling and Region related fields, submit and verify
+| 1351  | Edit DEFAULT, change all Journaling, Region and Segment related fields, submit and verify
+| 1352  | Edit YDBOCTO, add one name and delete another, change region and journaling and verify
+| 1353  | Edit YDBAIM, add one name and delete another, switch journaling on and verify
+| 1354  | Edit YDBAIM, add one name and delete another, switch journaling off and verify
+| 1355  | Edit DEFAULT, change the journal filename on MUPIP, update and verify
+| 1356  | Edit DEFAULT, change the journal filename on GDE, update and verify
+| 1357  | Edit DEFAULT, change the journal filename on both MUPIP and GDE, update and verify
 
 #### Delete Region
 

@@ -26,6 +26,20 @@ app.REST._addRegion = (payload) => {
 };
 
 // ********************************
+// Edit region
+// ********************************
+app.REST._editRegion = (payload) => {
+    return new Promise(function (resolve, reject) {
+        app.REST.execute('post', 'regions/' + payload.regionName + '/edit', payload, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
 // Validate path
 // ********************************
 app.REST._validatePath = (path) => {
@@ -146,7 +160,7 @@ app.REST._regionExtend = (region, blocks) => {
 // ********************************
 app.REST._JournalSwitch = (region, mode) => {
     return new Promise(function (resolve, reject) {
-        if ( mode !== 'on' && mode !== 'off' ) {
+        if (mode !== 'on' && mode !== 'off') {
             reject({
                 err: {
                     description: 'The mode parameter is invalid: ' + mode
@@ -198,7 +212,7 @@ app.REST.execute = (type, command, DATA = {}, okCallback, errCallback) => {
 app.REST.parseError = err => {
     let message = 'The following error occurred while fetching the data: ';
 
-    if (err.status === 500) {
+    if (err.status !== undefined && err.status === 500) {
         if (typeof err.responseJSON === 'object') {
             const error = err.responseJSON.error.errors[0];
 
@@ -214,6 +228,8 @@ app.REST.parseError = err => {
                 message += 'Internal error ' + err.responseText
             }
         }
+    } else if (err.error !== undefined) {
+        message += err.error.description
     } else {
         message += 'REST status: ' + err.status
     }

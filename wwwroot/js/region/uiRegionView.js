@@ -34,6 +34,7 @@ app.ui.regionView.init = () => {
 };
 
 app.ui.regionView.isFresh = false;
+
 app.ui.regionView.currentRegion = '';
 
 app.ui.regionView.show = regionName => {
@@ -177,9 +178,9 @@ app.ui.regionView.refresh = () => {
             .addClass(rangeStyle.class);
 
         // and related popup
-        const devicePopup = '<strong>Total blocks:</strong> ' + region.dbFile.usage.totalBlocks + ' ( ' + app.ui.formatBytes(region.dbFile.usage.totalBlocks * blockSize) + ' )<br>' +
-            '<strong>Free blocks: </strong>' + region.dbFile.usage.freeBlocks + ' ( ' + app.ui.formatBytes(region.dbFile.usage.freeBlocks * blockSize) + ' )<br>' +
-            '<strong>Used blocks: </strong>' + region.dbFile.usage.usedBlocks + ' ( ' + app.ui.formatBytes(region.dbFile.usage.usedBlocks * blockSize) + ' )';
+        const devicePopup = '<strong>Total blocks:</strong> ' + app.ui.formatThousands(region.dbFile.usage.totalBlocks) + ' ( ' + app.ui.formatBytes(region.dbFile.usage.totalBlocks * blockSize) + ' )<br>' +
+            '<strong>Free blocks: </strong>' + app.ui.formatThousands(region.dbFile.usage.freeBlocks) + ' ( ' + app.ui.formatBytes(region.dbFile.usage.freeBlocks * blockSize) + ' )<br>' +
+            '<strong>Used blocks: </strong>' + app.ui.formatThousands(region.dbFile.usage.usedBlocks) + ' ( ' + app.ui.formatBytes(region.dbFile.usage.usedBlocks * blockSize) + ' )';
 
         $('#puRegionViewDbUsage')
             .attr('data-content', devicePopup)

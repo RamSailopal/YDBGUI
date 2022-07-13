@@ -134,7 +134,15 @@ app.ui.regionAdd.init = () => {
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (event) {
         $('#divRegionAddAdvancedParameters').css('display', event.target.toString().indexOf('Names') > -1 ? 'none' : 'block');
-    })
+    });
+
+    $('#modalRegionAdd').on('hide.bs.modal', () => {
+        // Clear all tables
+        $('#tblRegionAddBg > tbody').empty();
+        $('#tblRegionAddMm > tbody').empty();
+        $('#tblRegionAddAc > tbody').empty();
+        $('#tblRegionAddJo > tbody').empty();
+    });
 };
 
 app.ui.regionAdd.show = async () => {
@@ -256,7 +264,7 @@ app.ui.regionAdd.nameAdd = () => {
 };
 
 app.ui.regionAdd.nameDelete = () => {
-    app.ui.regionNames.delete.show();
+    app.ui.regionNames.delete.show('tblRegionAddNames');
 };
 
 app.ui.regionAdd.okPressed = async () => {
@@ -289,21 +297,6 @@ app.ui.regionAdd.okPressed = async () => {
     if (dbFileModeBg === false && journalEnabled === true && getEl(journalArray, 'beforeImage').value === 1) {
         app.ui.msgbox.show('A region with MM segment can not have a "beforeImage" journaling', 'WARNING');
         return
-    }
-
-    // Collation
-    const collation = getEl(dbAccessArray, 'collation').value;
-    if (collation > 0) {
-        // search for related env var
-        const found = app.system.systemInfo.envVars.find(envVar => {
-            return envVar.name === 'ydb_collate_' + collation
-        });
-
-        if (found === undefined) {
-            app.ui.msgbox.show('You have chosen a different collation, but the related environment variable was not found...', 'WARNING')
-
-            return
-        }
     }
 
     // BG asyncIO sector size
@@ -359,6 +352,7 @@ app.ui.regionAdd.okPressed = async () => {
                 journal: []
             };
 
+            // segment
             segmentArray.forEach(el => {
                 if (el.dirty === true) {
                     if (el.id === 'autoDb') {
@@ -376,6 +370,7 @@ app.ui.regionAdd.okPressed = async () => {
                 }
             });
 
+            // region
             dbAccessArray.forEach(el => {
                 if (el.dirty === true) {
                     payload.dbAccess.region.push({
@@ -385,6 +380,7 @@ app.ui.regionAdd.okPressed = async () => {
                 }
             });
 
+            // journal
             journalArray.forEach(el => {
                 if (el.id === 'epoChTaper') {
                     payload.epochTaper = el.value;
@@ -448,7 +444,7 @@ app.ui.regionAdd.okPressed = async () => {
                             });
                         }
 
-                        app.ui.msgbox.show('Some warnings are returned from the REST call:' + errorList, 'WARNING');
+                        app.ui.msgbox.show('Some warnings are returned from the REST call:<br>' + errorList, 'WARNING');
 
                         app.ui.dashboard.refresh();
 
@@ -509,19 +505,7 @@ app.ui.regionAdd.populateManifest = templates => {
     basePath = basePath.slice(0, basePath.length - 1).join('/') + '/';
 
     // Journal path
-    defaultRegion = false;
-    secondaryRegion = false;
-
-    Object.keys(app.system.regions).forEach((regionName) => {
-        const region = app.system.regions[regionName];
-
-        if (secondaryRegion === false && region.journal.flags.file !== '') secondaryRegion = region;
-        if (regionName === 'DEFAULT') defaultRegion = region;
-    });
-    if (defaultRegion !== false) secondaryRegion = defaultRegion;
-
-    journalBasePath = secondaryRegion.journal.flags.file.split('/');
-    journalBasePath = journalBasePath.slice(0, journalBasePath.length - 1).join('/') + '/';
+    journalBasePath = app.ui.regionShared.computeJournalBasePath();
 
     // BG
     el = getEl(bg, 'filename');
@@ -590,18 +574,6 @@ app.ui.regionAdd.populateManifest = templates => {
     el.min = templates.data.region.AUTODB.min;
     el.max = templates.data.region.AUTODB.max;
 
-    el = getEl(bg, 'reservedBytes');
-    el.oldValue = templates.data.segment.BG.RESERVED_BYTES.value;
-    el.value = templates.data.segment.BG.RESERVED_BYTES.value;
-    el.min = templates.data.segment.BG.RESERVED_BYTES.min;
-    el.max = templates.data.segment.BG.RESERVED_BYTES.max;
-
-    el = getEl(bg, 'encryptionFlag');
-    el.oldValue = templates.data.segment.BG.ENCRYPTION_FLAG.value;
-    el.value = templates.data.segment.BG.ENCRYPTION_FLAG.value;
-    el.min = templates.data.segment.BG.ENCRYPTION_FLAG.min;
-    el.max = templates.data.segment.BG.ENCRYPTION_FLAG.max;
-
     // MM
     el = getEl(mm, 'filename');
     el.oldValue = basePath + app.ui.regionAdd.name.region.toLowerCase() + '.dat';
@@ -651,18 +623,6 @@ app.ui.regionAdd.populateManifest = templates => {
     el.min = templates.data.region.AUTODB.min;
     el.max = templates.data.region.AUTODB.max;
 
-    el = getEl(mm, 'reservedBytes');
-    el.oldValue = templates.data.segment.MM.RESERVED_BYTES.value;
-    el.value = templates.data.segment.MM.RESERVED_BYTES.value;
-    el.min = templates.data.segment.MM.RESERVED_BYTES.min;
-    el.max = templates.data.segment.MM.RESERVED_BYTES.max;
-
-    el = getEl(mm, 'encryptionFlag');
-    el.oldValue = templates.data.segment.MM.ENCRYPTION_FLAG.value;
-    el.value = templates.data.segment.MM.ENCRYPTION_FLAG.value;
-    el.min = templates.data.segment.MM.ENCRYPTION_FLAG.min;
-    el.max = templates.data.segment.MM.ENCRYPTION_FLAG.max;
-
     // dbAccess
     el = getEl(dbAccess, 'recordSize');
     el.oldValue = templates.data.region.RECORD_SIZE.value;
@@ -681,12 +641,6 @@ app.ui.regionAdd.populateManifest = templates => {
     el.value = templates.data.region.NULL_SUBSCRIPTS.value;
     el.min = templates.data.region.NULL_SUBSCRIPTS.min;
     el.max = templates.data.region.NULL_SUBSCRIPTS.max;
-
-    el = getEl(dbAccess, 'collation');
-    el.oldValue = templates.data.region.COLLATION_DEFAULT.value;
-    el.value = templates.data.region.COLLATION_DEFAULT.value;
-    el.min = templates.data.region.COLLATION_DEFAULT.min;
-    el.max = templates.data.region.COLLATION_DEFAULT.max;
 
     el = getEl(dbAccess, 'lockCriticalSeparate');
     el.oldValue = templates.data.region.LOCK_CRIT_SEPARATE.value;

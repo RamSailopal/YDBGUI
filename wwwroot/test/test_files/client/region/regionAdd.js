@@ -14,6 +14,7 @@
 
 const libs = require('../../../libs');
 const {expect} = require("chai");
+
 describe("CLIENT: Add Region: Region tab", async () => {
     it("Test # 490: Default display should be BG table", async () => {
         await page.goto(`http://localhost:${MDevPort}//index.html?test=490`, {
@@ -276,7 +277,7 @@ describe("CLIENT: Add Region: Journal tab", async () => {
         // make sure right table has data
         const cell = await page.$('#tblRegionAddJo >tbody >tr:nth-child(4) >td:nth-child(1)');
         const text = await page.evaluate(el => el.textContent, cell);
-        expect(text).to.have.string('Allocation');
+        expect(text).to.have.string('Initial allocation');
     });
 });
 
@@ -371,7 +372,7 @@ describe("CLIENT: Add Region: Names tab", async () => {
 
         // select it
         const elem = await page.$("#row1");
-        await clickOnElement(elem);
+        await libs.clickOnElement(elem);
         await libs.delay(1000);
 
         // click on delete
@@ -415,13 +416,3 @@ describe("CLIENT: Add Region: Names tab", async () => {
     });
 });
 
-async function clickOnElement(elem, x = null, y = null) {
-    const rect = await page.evaluate(el => {
-        const {top, left, width, height} = el.getBoundingClientRect();
-        return {top, left, width, height};
-    }, elem);
-    const _x = x !== null ? x : rect.width / 2;
-    const _y = y !== null ? y : rect.height / 2;
-
-    await page.mouse.click(rect.left + _x, rect.top + _y);
-}

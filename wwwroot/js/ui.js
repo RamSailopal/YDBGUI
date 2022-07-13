@@ -42,10 +42,13 @@ app.ui.addHandlers = () => {
     app.ui.regionAdd.name.init();
     app.ui.regionFilename.init();
 
+    //region edit
+    app.ui.regionEdit.init();
+    app.ui.regionEdit.Overview.init();
 
     // region names
     app.ui.regionNames.add.init();
-    app.ui.regionNames.delete.init();
+
     // region select
     app.ui.regionSelect.init();
 

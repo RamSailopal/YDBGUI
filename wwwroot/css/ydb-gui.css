@@ -160,6 +160,15 @@ a:hover {
     background: var(--ydb-purple) !important;
 }
 
+.ydb-fore-green {
+    color: var(--ydb-status-green) !important;
+
+}
+
+.ydb-fore-red {
+    color: var(--ydb-status-red) !important;
+}
+
 .modal-header{
     background: var(--ydb-lightgray);
 }
@@ -646,4 +655,35 @@ input[type=range]::-ms-thumb {
 .font-inconsolata {
     font-family: 'Inconsolata', sans-serif;
     text-align: right;
+}
+
+.font-strike {
+    text-decoration: line-through;
+}
+
+.region-edit-switch-type {
+    display: inline;
+    padding: 9px 1px 8px 5px;
+    border-radius: 15px;
+}
+
+.custom-control-label {
+    padding-top: 4px;
+}
+
+.v-align-middle {
+    vertical-align: middle !important;
+}
+
+.edit-overview-header {
+    font-weight: bold;
+    font-size: 12px;
+    background: var(--ydb-lightgray);
+    text-align: left;
+}
+
+.edit-overview-cell {
+    font-size: 12px;
+    text-align: right;
+
 }

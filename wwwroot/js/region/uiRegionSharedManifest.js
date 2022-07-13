@@ -13,6 +13,22 @@
 // ****************************
 // Manifest
 // ****************************
+const MSG_EXCL_ACCESS = {
+    onEdit: true,
+    onAdd: false,
+    icon: 'bi-info-circle',
+    color: 'var(--ydb-status-red)',
+    message: 'Single-user mode is required to alter this value in the current database.'
+};
+
+const MSG_GDE_ONLY = {
+    onEdit: true,
+    onAdd: false,
+    icon: 'bi-info-circle',
+    color: 'var(--ydb-purple)',
+    message: 'This setting has no effect on the current database and will take effect when you create a new database.'
+};
+
 app.ui.regionShared.manifest = {
     dbAccess: [
         {
@@ -26,7 +42,9 @@ app.ui.regionShared.manifest = {
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#r-ecord-size-size-in-bytes',
             value: null,
             oldValue: null,
-            dirty: false
+            dirty: false,
+            readOnly: false,
+            captionMessage: MSG_EXCL_ACCESS,
         },
         {
             id: 'keySize',
@@ -39,7 +57,9 @@ app.ui.regionShared.manifest = {
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#k-ey-size-size-in-bytes',
             value: null,
             oldValue: null,
-            dirty: false
+            dirty: false,
+            readOnly: false,
+            captionMessage: MSG_EXCL_ACCESS,
         },
         {
             id: 'nullSubscripts',
@@ -52,20 +72,8 @@ app.ui.regionShared.manifest = {
             oldValue: null,
             dirty: false,
             advancedMode: true,
-        },
-        {
-            id: 'collation',
-            caption: 'Collation',
-            type: 'number',
-            min: 0,
-            max: 0,
-            step: 1,
-            unit: '',
-            helpLink: 'https://docs.yottadb.com/ProgrammersGuide/internatn.html',
-            value: null,
-            oldValue: null,
-            dirty: false,
-            advancedMode: true,
+            readOnly: false,
+            captionMessage: MSG_EXCL_ACCESS,
         },
         {
             id: 'lockCriticalSeparate',
@@ -78,10 +86,12 @@ app.ui.regionShared.manifest = {
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false,
+            captionMessage: MSG_EXCL_ACCESS,
         },
         {
             id: 'qbRundown',
-            caption: 'QDB RUNDOWN',
+            caption: 'QDB Rundown',
             type: 'boolean',
             display: 'comboYesNo',
             unit: '',
@@ -90,6 +100,8 @@ app.ui.regionShared.manifest = {
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false,
+            captionMessage: MSG_EXCL_ACCESS,
         },
         {
             id: 'stats',
@@ -102,10 +114,29 @@ app.ui.regionShared.manifest = {
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false,
+            captionMessage: MSG_EXCL_ACCESS,
         },
 
     ],
     dbFile: {
+        accessType:
+            {
+                id: 'accessType',
+                caption: 'Access Type',
+                type: 'external',
+                min: 0,
+                max: 0,
+                step: 1,
+                unit: '',
+                helpLink: '',
+                value: null,
+                oldValue: null,
+                dirty: false,
+                readOnly: false,
+                hidden: true,
+                captionMessage: MSG_EXCL_ACCESS,
+            },
         bg: [
             {
                 id: 'filename',
@@ -115,7 +146,9 @@ app.ui.regionShared.manifest = {
                 value: null,
                 unit: '',
                 oldValue: null,
-                dirty: false
+                dirty: false,
+                readOnly: false,
+                captionMessage: MSG_EXCL_ACCESS,
             },
             {
                 id: 'createFile',
@@ -126,7 +159,8 @@ app.ui.regionShared.manifest = {
                 value: null,
                 unit: '',
                 oldValue: null,
-                dirty: false
+                dirty: false,
+                readOnly: false
             },
             {
                 id: 'globalBufferCount',
@@ -136,10 +170,12 @@ app.ui.regionShared.manifest = {
                 max: 0,
                 step: 1,
                 unit: 'blocks',
-                helpLink: '',
+                helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#g-lobal-buffer-count-size',
                 value: 67,
                 oldValue: null,
-                dirty: false
+                dirty: false,
+                readOnly: false,
+                captionMessage: MSG_EXCL_ACCESS,
             },
             {
                 id: 'lockSpace',
@@ -152,7 +188,9 @@ app.ui.regionShared.manifest = {
                 helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#l-ock-space-integer',
                 value: null,
                 oldValue: null,
-                dirty: false
+                dirty: false,
+                readOnly: false,
+                captionMessage: MSG_EXCL_ACCESS,
             },
             {
                 id: 'autoDb',
@@ -163,7 +201,12 @@ app.ui.regionShared.manifest = {
                 helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-au-todb',
                 value: null,
                 oldValue: null,
-                dirty: false
+                dirty: false,
+                readOnly: false,
+                advancedMode: true,
+                canUpdateGde: true,
+                canUpdateMupip: false,
+                captionMessage: MSG_GDE_ONLY,
             },
             {
                 id: 'asyncIo',
@@ -171,11 +214,13 @@ app.ui.regionShared.manifest = {
                 type: 'boolean',
                 display: 'comboOnOff',
                 unit: '',
-                helpLink: '',
+                helpLink: 'https://docs.yottadb.com/AdminOpsGuide/dbmgmt.html#asyncio',
                 value: null,
                 oldValue: null,
                 dirty: false,
                 advancedMode: true,
+                readOnly: false,
+                captionMessage: MSG_EXCL_ACCESS,
             },
             {
                 id: 'deferAllocate',
@@ -188,6 +233,7 @@ app.ui.regionShared.manifest = {
                 oldValue: null,
                 dirty: false,
                 advancedMode: true,
+                readOnly: false
             },
             {
                 id: 'extensionCount',
@@ -202,6 +248,7 @@ app.ui.regionShared.manifest = {
                 oldValue: null,
                 dirty: false,
                 advancedMode: true,
+                readOnly: false
             },
             {
                 id: 'initialAllocation',
@@ -216,6 +263,10 @@ app.ui.regionShared.manifest = {
                 oldValue: null,
                 dirty: false,
                 advancedMode: true,
+                readOnly: false,
+                canUpdateGde: true,
+                canUpdateMupip: false,
+                captionMessage: MSG_GDE_ONLY,
             },
             {
                 id: 'blockSize',
@@ -225,11 +276,15 @@ app.ui.regionShared.manifest = {
                 min: 0,
                 max: 0,
                 step: 512,
-                helpLink: '',
+                helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#bl-ock-size-size',
                 value: null,
                 oldValue: null,
                 dirty: false,
                 advancedMode: true,
+                readOnly: false,
+                canUpdateGde: true,
+                canUpdateMupip: false,
+                captionMessage: MSG_GDE_ONLY,
             },
             {
                 id: 'mutexSlots',
@@ -239,40 +294,13 @@ app.ui.regionShared.manifest = {
                 min: 0,
                 max: 0,
                 step: 1,
-                helpLink: '',
+                helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#m-utex-slots-integer',
                 value: null,
                 oldValue: null,
                 dirty: false,
                 advancedMode: true,
-            },
-            {
-                id: 'reservedBytes',
-                caption: 'Reserved bytes',
-                type: 'number',
-                unit: 'bytes',
-                min: 0,
-                max: 0,
-                step: 1,
-                helpLink: '',
-                value: null,
-                oldValue: null,
-                dirty: false,
-                advancedMode: true,
-            },
-            {
-                id: 'encryptionFlag',
-                caption: 'Encryption',
-                type: 'boolean',
-                display: 'comboYesNo',
-                unit: '',
-                min: 0,
-                max: 0,
-                step: 1,
-                helpLink: '',
-                value: null,
-                oldValue: null,
-                dirty: false,
-                advancedMode: true,
+                readOnly: false,
+                captionMessage: MSG_EXCL_ACCESS,
             },
         ],
         mm: [
@@ -284,7 +312,10 @@ app.ui.regionShared.manifest = {
                 value: null,
                 unit: '',
                 oldValue: null,
-                dirty: false
+                dirty: false,
+                readOnly: false,
+                canUpdateGde: true,
+                captionMessage: MSG_EXCL_ACCESS,
             },
             {
                 id: 'createFile',
@@ -295,7 +326,8 @@ app.ui.regionShared.manifest = {
                 value: null,
                 unit: '',
                 oldValue: null,
-                dirty: false
+                dirty: false,
+                readOnly: false
             },
             {
                 id: 'lockSpace',
@@ -308,7 +340,9 @@ app.ui.regionShared.manifest = {
                 helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#l-ock-space-integer',
                 value: null,
                 oldValue: null,
-                dirty: false
+                dirty: false,
+                readOnly: false,
+                captionMessage: MSG_EXCL_ACCESS,
             },
             {
                 id: 'deferAllocate',
@@ -321,6 +355,7 @@ app.ui.regionShared.manifest = {
                 oldValue: null,
                 dirty: false,
                 advancedMode: true,
+                readOnly: false
             },
             {
                 id: 'autoDb',
@@ -331,7 +366,12 @@ app.ui.regionShared.manifest = {
                 helpLink: 'https://docs.yottadb.com/AdminOpsGuide/gde.html#no-au-todb',
                 value: null,
                 oldValue: null,
-                dirty: false
+                dirty: false,
+                readOnly: false,
+                advancedMode: true,
+                canUpdateGde: true,
+                canUpdateMupip: false,
+                captionMessage: MSG_GDE_ONLY,
             },
             {
                 id: 'extensionCount',
@@ -346,6 +386,7 @@ app.ui.regionShared.manifest = {
                 oldValue: null,
                 dirty: false,
                 advancedMode: true,
+                readOnly: false
             },
             {
                 id: 'initialAllocation',
@@ -360,6 +401,10 @@ app.ui.regionShared.manifest = {
                 oldValue: null,
                 dirty: false,
                 advancedMode: true,
+                readOnly: false,
+                canUpdateGde: true,
+                canUpdateMupip: false,
+                captionMessage: MSG_GDE_ONLY,
             },
             {
                 id: 'blockSize',
@@ -374,48 +419,26 @@ app.ui.regionShared.manifest = {
                 oldValue: null,
                 dirty: false,
                 advancedMode: true,
-            },
-            {
-                id: 'reservedBytes',
-                caption: 'Reserved bytes',
-                type: 'number',
-                unit: 'bytes',
-                min: 0,
-                max: 0,
-                step: 1,
-                helpLink: '',
-                value: null,
-                oldValue: null,
-                dirty: false,
-                advancedMode: true,
-            },
-            {
-                id: 'encryptionFlag',
-                caption: 'Encryption',
-                type: 'boolean',
-                display: 'comboYesNo',
-                unit: '',
-                min: 0,
-                max: 0,
-                step: 1,
-                helpLink: '',
-                value: null,
-                oldValue: null,
-                dirty: false,
-                advancedMode: true,
+                readOnly: false,
+                canUpdateGde: true,
+                canUpdateMupip: false,
+                captionMessage: MSG_GDE_ONLY,
             },
         ]
     },
     journal: [
         {
             id: 'journalEnabled',
-            caption: '',
+            caption: 'Enabled',
             type: 'external',
             helpLink: '',
             value: null,
             unit: '',
             oldValue: null,
-            dirty: false
+            dirty: false,
+            readOnly: false,
+            displayInTable: false,
+            captionMessage: MSG_EXCL_ACCESS,
         },
         {
             id: 'jfilename',
@@ -425,7 +448,8 @@ app.ui.regionShared.manifest = {
             value: null,
             unit: '',
             oldValue: null,
-            dirty: false
+            dirty: false,
+            readOnly: false
         },
         {
             id: 'switchOn',
@@ -436,7 +460,8 @@ app.ui.regionShared.manifest = {
             value: null,
             unit: '',
             oldValue: null,
-            dirty: false
+            dirty: false,
+            readOnly: false
         },
         {
             id: 'beforeImage',
@@ -447,21 +472,23 @@ app.ui.regionShared.manifest = {
             helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#before-image-journaling',
             value: null,
             oldValue: null,
-            dirty: false
+            dirty: false,
+            readOnly: false
         },
         {
             id: 'allocation',
-            caption: 'Allocation',
+            caption: 'Initial allocation',
             type: 'number',
             min: 0,
             max: 0,
             step: 1,
             unit: 'journal blocks',
-            helpLink: '',
+            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#all-ocation-blocks',
             value: null,
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false
         },
         {
             id: 'autoSwitchLimit',
@@ -476,6 +503,7 @@ app.ui.regionShared.manifest = {
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false
         },
         {
             id: 'bufferSize',
@@ -490,6 +518,8 @@ app.ui.regionShared.manifest = {
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false,
+            captionMessage: MSG_EXCL_ACCESS,
         },
         {
             id: 'epochTaper',
@@ -502,6 +532,7 @@ app.ui.regionShared.manifest = {
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false
         },
         {
             id: 'epochInterval',
@@ -516,6 +547,7 @@ app.ui.regionShared.manifest = {
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false
         },
         {
             id: 'extension',
@@ -525,11 +557,12 @@ app.ui.regionShared.manifest = {
             max: 0,
             step: 1,
             unit: 'journal blocks',
-            helpLink: '',
+            helpLink: 'https://docs.yottadb.com/AdminOpsGuide/ydbjournal.html#ex-tension-blocks',
             value: null,
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false
         },
         {
             id: 'syncIo',
@@ -542,6 +575,7 @@ app.ui.regionShared.manifest = {
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false
         },
         {
             id: 'yieldLimit',
@@ -553,6 +587,7 @@ app.ui.regionShared.manifest = {
             oldValue: null,
             dirty: false,
             advancedMode: true,
+            readOnly: false
         },
     ],
     names: []

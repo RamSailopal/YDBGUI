@@ -27,676 +27,708 @@ const getSystemData = (state = true) => {
 };
 
 const testLoadData = () => {
-        let mockData = testMock;
+    let mockData = testMock;
 
-        let testNumber = parseInt(window.location.search.split('=')[1]);
+    let testNumber = parseInt(window.location.search.split('=')[1]);
 
-        console.log('Test: ' + testNumber);
-        switch (testNumber) {
+    console.log('Test: ' + testNumber);
+    switch (testNumber) {
 
-            // gld file
-            case 30: {
-                mockData.data.gld.exist = false;
-                break;
-            }
-            case 31: {
-                mockData.data.gld.exist = true;
-                mockData.data.gld.valid = false;
-                break;
-            }
-
-            // REGION LIST: Db file
-            case 35: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                break;
-            }
-            case 36: {
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": "/data/r1.34_x86_64/g/yottadb.dat"};
-                break;
-            }
-            case 37: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
-                break;
-            }
-            case 38: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
-                break;
-            }
-            case 39: {
-                mockData.data.regions.DEFAULT.dbFile.flags.shmenHealthy = false;
-                break;
-            }
-            case 40: {
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 10000 14% /';
-                // 80K 8   45K 5  15K  2
-                break;
-            }
-            case 41: {
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 45000 14% /';
-                break;
-            }
-            case 42: {
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 320000 14% /';
-                break;
-            }
-            case 43: {
-                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 1000 14% /';
-                break;
-            }
-            case 44: {
-                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 2000 14% /';
-                break;
-            }
-            case 45: {
-                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 12000 14% /';
-                break;
-            }
-            case 46: {
-                mockData.data.regions.DEFAULT.dbFile.flags.freeze = 1;
-                break;
-            }
-
-            // REGION LIST: Journal file
-            case 50: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 0;
-                break;
-            }
-            case 51: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                break;
-            }
-            case 52: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: true};
-                break;
-            }
-            case 53: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
-                break;
-            }
-            case 54: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: true};
-                mockData.data.regions.DEFAULT.replication.flags.status = 2;
-                break;
-            }
-            case 55: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: true};
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                break;
-            }
-            case 56: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: true};
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                break;
-            }
-            case 57: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                break;
-            }
-            case 58: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 0;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
-                mockData.data.regions.DEFAULT.dbFile.flags.status = 1;
-                break;
-            }
-            case 59: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 0;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 1;
-                break;
-            }
-
-            case 60: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 1;
-                break;
-            }
-            case 61: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: true};
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 1;
-                break;
-            }
-            case 62: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 1;
-                break;
-            }
-            case 63: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.flags.fileExist = false;
-                break;
-            }
-
-            // Devices
-            case 70: {
-                mockData.data.devices[0].percentUsed = 50;
-                break;
-            }
-            case 71: {
-                mockData.data.devices[0].percentUsed = 75;
-                break;
-            }
-            case 72: {
-                mockData.data.devices[0].percentUsed = 92;
-                break;
-            }
-            case 73: {
-                mockData.data.devices[0].percentUsed = 98;
-                break;
-            }
-
-            // Global status
-            case 100: {
-                break;
-            }
-            case 101: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
-                break;
-            }
-            case 102: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
-
-                mockData.data.regions.YDBAIM.dbFile.flags.fileExist = false;
-                mockData.data.regions.YDBAIM.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.YDBAIM.dbFile.data[2] = {"AUTO_DB": false};
-
-                mockData.data.regions.YDBOCTO.dbFile.flags.fileExist = false;
-                mockData.data.regions.YDBOCTO.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.YDBOCTO.dbFile.data[2] = {"AUTO_DB": false};
-                break;
-            }
-            case 103: {
-                break;
-            }
-            case 104: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                break;
-            }
-            case 105: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                mockData.data.regions.YDBAIM.journal.flags.state = 1;
-                mockData.data.regions.YDBOCTO.journal.flags.state = 1;
-                break;
-            }
-            case 106: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 2;
-                break;
-            }
-            case 107: {
-                break;
-            }
-            case 108: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                break;
-            }
-            case 109: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 2;
-                break;
-            }
-            case 110: {
-                mockData.data.regions.DEFAULT.dbFile.flags.freeze = 1;
-                break;
-            }
-            case 111: {
-                mockData.data.regions.DEFAULT.dbFile.flags.freeze = 1;
-                break;
-            }
-
-            // system info
-            case 151: {
-                mockData.data.systemInfo.plugins = [];
-                mockData.data.systemInfo.plugins.push({name: 'Plugin-name', description: 'Plugin-description', vendor: 'Plugin-vendor', version: 'Plugin-version'});
-                break;
-            }
-
-            // device info
-            case 192: {
-                mockData.data.devices[0].percentUsed = 75;
-                break
-            }
-            case 193: {
-                mockData.data.devices[0].percentUsed = 92;
-                break
-            }
-            case 194: {
-                mockData.data.devices[0].percentUsed = 98;
-                break
-            }
-            case 200: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": true};
-                break
-            }
-            case 201: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 0;
-                mockData.data.regions.YDBAIM.journal.flags.state = 0;
-                mockData.data.regions.YDBOCTO.journal.flags.state = 0;
-                break
-            }
-            case 202: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.YDBAIM.dbFile.flags.fileExist = false;
-                mockData.data.regions.YDBOCTO.dbFile.flags.fileExist = false;
-                break
-            }
-
-            // Region view: db
-            case 250: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
-                break
-            }
-            case 251: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
-                break
-            }
-            case 252: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.flags.fileValid = false;
-                break
-            }
-            case 253: {
-                mockData.data.regions.DEFAULT.dbFile.flags.shmenHealthy = false;
-                break
-            }
-            case 254: {
-                mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 10;
-                break
-            }
-            case 255: {
-                mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 80;
-                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
-                break
-            }
-            case 256: {
-                mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 95;
-                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
-                break
-            }
-            case 257: {
-                mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 99;
-                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
-                break
-            }
-            case 259: {
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
-                break
-            }
-            case 260: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
-                break
-            }
-            case 261: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
-                break
-            }
-            case 262: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = true;
-                mockData.data.regions.DEFAULT.dbFile.flags.fileBad = true;
-                break
-            }
-            case 263: {
-                mockData.data.regions.DEFAULT.dbFile.flags.shmenHealthy = false;
-                break
-            }
-            case 280: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data = [];
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
-                mockData.data.regions.DEFAULT.dbFile.data[1] = {"ALLOCATION": 5000};
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"BLOCK_SIZE": 4096};
-                mockData.data.regions.DEFAULT.dbFile.data[3] = {"AUTO_DB": true};
-                delete mockData.data.regions.DEFAULT.dbAccess;
-                break
-            }
-            case 281: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data = [];
-                mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": "/data/temp.dat"};
-                mockData.data.regions.DEFAULT.dbFile.data[1] = {"ALLOCATION": 5000};
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"BLOCK_SIZE": 4096};
-                mockData.data.regions.DEFAULT.dbFile.data[3] = {"AUTO_DB": true};
-                delete mockData.data.regions.DEFAULT.dbAccess;
-                break
-            }
-            case 284: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                break
-            }
-            case 285: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileBad = true;
-                break
-            }
-            case 287: {
-                mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 95;
-                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 1000};
-                break
-            }
-            case 288: {
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 25000 14% /';
-                // 80K 8   45K 5  15K  2
-                break;
-            }
-            case 289: {
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 180000 14% /';
-                break;
-            }
-            case 290: {
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 320000 14% /';
-                break;
-            }
-            case 291: {
-                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 1000 14% /';
-                break;
-            }
-            case 292: {
-                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 2000 14% /';
-                break;
-            }
-            case 293: {
-                mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
-                mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 12000 14% /';
-                break;
-            }
-
-            // Region view: journal
-            case 300: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 0;
-                break
-            }
-            case 301: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                break
-            }
-            case 303: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 2;
-                break
-            }
-            case 304: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                break
-            }
-            case 305: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                break
-            }
-            case 306: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
-                break
-            }
-            case 307: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                mockData.data.regions.DEFAULT.journal.flags.state = 0;
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
-                break
-            }
-            case 308: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
-                break
-            }
-            case 309: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
-                break
-            }
-            case 310: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                break
-            }
-            case 311: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 0;
-                break
-            }
-            case 314: {
-                mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
-                break
-            }
-            case 315: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 0;
-                break
-            }
-            case 317: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 0;
-                break
-            }
-            case 318: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 2;
-                break
-            }
-            case 319: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 0;
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
-                break
-            }
-            case 320: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                mockData.data.regions.DEFAULT.replication.flags.status = 1;
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
-                break
-            }
-            case 321: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 1;
-                mockData.data.regions.DEFAULT.replication.flags.status = 0;
-                mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
-                break
-            }
-            case 322: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.flags.fileExist = false;
-                break
-            }
-            case 323: {
-                mockData.data.regions.DEFAULT.journal.flags.state = 2;
-                mockData.data.regions.DEFAULT.journal.flags.fileExist = false;
-                break
-            }
-            case 375: {
-                mockData.data.regions.DEFAULT.locks.locks = [
-                    {
-                        node: '^testGlobal("subscript1")',
-                        pid: 1234
-                    }
-                ];
-                break
-            }
-            case 376: {
-                mockData.data.regions.DEFAULT.locks.locks = [
-                    {
-                        node: '^testGlobal("subscript1")',
-                        pid: 1234,
-                        waiters: [
-                            {pid: 4321}
-                        ]
-                    }
-                ];
-                break
-            }
-            case 377: {
-                mockData.data.regions.DEFAULT.locks.locks = [
-                    {
-                        node: '^testGlobal("subscript1")',
-                        pid: 1234,
-                        waiters: [
-                            {pid: 4321},
-                            {pid: 7890}
-                        ]
-                    }
-                ];
-                break
-            }
-            case 378: {
-                mockData.data.regions.DEFAULT.locks.locks = [
-                    {
-                        node: '^testGlobal("subscript1")',
-                        pid: 1234
-                    },
-                    {
-                        node: '^testGlobal("subscript2")',
-                        pid: 1234321
-                    }
-                ];
-                break
-            }
-            case 379: {
-                mockData.data.regions.DEFAULT.locks.locks = [
-                    {
-                        node: '^testGlobal("subscript1")',
-                        pid: 1234,
-                        waiters: [
-                            {pid: 4321}
-                        ]
-                    },
-                    {
-                        node: '^testGlobal("subscript2")',
-                        pid: 1234321
-                    }
-                ];
-                break
-            }
-            case 380: {
-                mockData.data.regions.DEFAULT.locks.locks = [
-                    {
-                        node: '^testGlobal("subscript1")',
-                        pid: 1234,
-                        waiters: [
-                            {pid: 4321},
-                            {pid: 7890}
-                        ]
-                    },
-                    {
-                        node: '^testGlobal("subscript2")',
-                        pid: 1234321
-                    }
-                ];
-                break
-            }
-            case 490:
-            case 491:
-            case 492:
-            case 493:
-            case 494:
-            case 520:
-            case 522:
-            case 523:
-            case 524: {
-                app.ui.regionAdd.name.region = 'test';
-                setTimeout(() => app.ui.regionAdd.show(), 150);
-                break
-            }
-            case 540:
-            case 541: {
-                app.ui.regionAdd.name.region = 'test';
-                setTimeout(() => {
-                    app.ui.regionAdd.show();
-
-                    setTimeout(() => {
-                        app.ui.regionNames.add.show()
-
-                    }, 150)
-
-                }, 150);
-                break;
-            }
-            case 542: {
-                app.ui.regionAdd.name.region = 'test';
-                setTimeout(() => {
-                    app.ui.regionAdd.show();
-
-                    setTimeout(() => {
-                        $('#navRegionEditorNames').tab('show');
-                        app.ui.regionNames.add.show()
-
-                    }, 150)
-
-                }, 150);
-                break;
-            }
-            case 543: {
-                app.ui.regionAdd.name.region = 'test';
-                setTimeout(() => {
-                    app.ui.regionAdd.show();
-                    setTimeout(() => {
-                        app.ui.regionShared.manifest.names.push({value: 'zzz'});
-                        app.ui.regionShared.manifest.names.push({value: 'aaa'});
-                        $('#navRegionEditorNames').tab('show');
-                        app.ui.regionNames.add.show()
-                    }, 250)
-
-                }, 250);
-            }
-            case 390: {
-                mockData.data.regions.DEFAULT.replication.flags.status = 2;
-                break
-            }
-            case 400:
-            case 401:
-            case 402:
-            case 403: {
-                app.ui.regionDelete.show('DEFAULT');
-                break
-            }
-            case 404: {
-                app.ui.regionDelete.show('YDBOCTO');
-                break
-            }
-            case 440:
-            case 441:
-            case 442:
-            case 443:
-            case 444: {
-                mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
-                mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
-                break
-            }
-            case 450:
-            case 451:
-            case 452: {
-                setTimeout(() => app.ui.regionJournalSwitch.show('DEFAULT'), 50);
-                break
-            }
+        // gld file
+        case 30: {
+            mockData.data.gld.exist = false;
+            break;
+        }
+        case 31: {
+            mockData.data.gld.exist = true;
+            mockData.data.gld.valid = false;
+            break;
         }
 
-        return mockData
+        // REGION LIST: Db file
+        case 35: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            break;
+        }
+        case 36: {
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": "/data/r1.34_x86_64/g/yottadb.dat"};
+            break;
+        }
+        case 37: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
+            break;
+        }
+        case 38: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
+            break;
+        }
+        case 39: {
+            mockData.data.regions.DEFAULT.dbFile.flags.shmenHealthy = false;
+            break;
+        }
+        case 40: {
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 10000 14% /';
+            // 80K 8   45K 5  15K  2
+            break;
+        }
+        case 41: {
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 45000 14% /';
+            break;
+        }
+        case 42: {
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 320000 14% /';
+            break;
+        }
+        case 43: {
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 1000 14% /';
+            break;
+        }
+        case 44: {
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 2000 14% /';
+            break;
+        }
+        case 45: {
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 12000 14% /';
+            break;
+        }
+        case 46: {
+            mockData.data.regions.DEFAULT.dbFile.flags.freeze = 1;
+            break;
+        }
+
+        // REGION LIST: Journal file
+        case 50: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 0;
+            break;
+        }
+        case 51: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            break;
+        }
+        case 52: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: true};
+            break;
+        }
+        case 53: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
+            break;
+        }
+        case 54: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: true};
+            mockData.data.regions.DEFAULT.replication.flags.status = 2;
+            break;
+        }
+        case 55: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: true};
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            break;
+        }
+        case 56: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: true};
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            break;
+        }
+        case 57: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            break;
+        }
+        case 58: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 0;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
+            mockData.data.regions.DEFAULT.dbFile.flags.status = 1;
+            break;
+        }
+        case 59: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 0;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 1;
+            break;
+        }
+
+        case 60: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 1;
+            break;
+        }
+        case 61: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: true};
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 1;
+            break;
+        }
+        case 62: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 1;
+            break;
+        }
+        case 63: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.flags.fileExist = false;
+            break;
+        }
+
+        // Devices
+        case 70: {
+            mockData.data.devices[0].percentUsed = 50;
+            break;
+        }
+        case 71: {
+            mockData.data.devices[0].percentUsed = 75;
+            break;
+        }
+        case 72: {
+            mockData.data.devices[0].percentUsed = 92;
+            break;
+        }
+        case 73: {
+            mockData.data.devices[0].percentUsed = 98;
+            break;
+        }
+
+        // Global status
+        case 100: {
+            break;
+        }
+        case 101: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
+            break;
+        }
+        case 102: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
+
+            mockData.data.regions.YDBAIM.dbFile.flags.fileExist = false;
+            mockData.data.regions.YDBAIM.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.YDBAIM.dbFile.data[2] = {"AUTO_DB": false};
+
+            mockData.data.regions.YDBOCTO.dbFile.flags.fileExist = false;
+            mockData.data.regions.YDBOCTO.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.YDBOCTO.dbFile.data[2] = {"AUTO_DB": false};
+            break;
+        }
+        case 103: {
+            break;
+        }
+        case 104: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            break;
+        }
+        case 105: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            mockData.data.regions.YDBAIM.journal.flags.state = 1;
+            mockData.data.regions.YDBOCTO.journal.flags.state = 1;
+            break;
+        }
+        case 106: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 2;
+            break;
+        }
+        case 107: {
+            break;
+        }
+        case 108: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            break;
+        }
+        case 109: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 2;
+            break;
+        }
+        case 110: {
+            mockData.data.regions.DEFAULT.dbFile.flags.freeze = 1;
+            break;
+        }
+        case 111: {
+            mockData.data.regions.DEFAULT.dbFile.flags.freeze = 1;
+            break;
+        }
+
+        // system info
+        case 151: {
+            mockData.data.systemInfo.plugins = [];
+            mockData.data.systemInfo.plugins.push({name: 'Plugin-name', description: 'Plugin-description', vendor: 'Plugin-vendor', version: 'Plugin-version'});
+            break;
+        }
+
+        // device info
+        case 192: {
+            mockData.data.devices[0].percentUsed = 75;
+            break
+        }
+        case 193: {
+            mockData.data.devices[0].percentUsed = 92;
+            break
+        }
+        case 194: {
+            mockData.data.devices[0].percentUsed = 98;
+            break
+        }
+        case 200: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbAccess.data[2] = {"AUTO_DB": true};
+            break
+        }
+        case 201: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 0;
+            mockData.data.regions.YDBAIM.journal.flags.state = 0;
+            mockData.data.regions.YDBOCTO.journal.flags.state = 0;
+            break
+        }
+        case 202: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.YDBAIM.dbFile.flags.fileExist = false;
+            mockData.data.regions.YDBOCTO.dbFile.flags.fileExist = false;
+            break
+        }
+
+        // Region view: db
+        case 250: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
+            break
+        }
+        case 251: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
+            break
+        }
+        case 252: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.flags.fileValid = false;
+            break
+        }
+        case 253: {
+            mockData.data.regions.DEFAULT.dbFile.flags.shmenHealthy = false;
+            break
+        }
+        case 254: {
+            mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 10;
+            break
+        }
+        case 255: {
+            mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 80;
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+            break
+        }
+        case 256: {
+            mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 95;
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+            break
+        }
+        case 257: {
+            mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 99;
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+            break
+        }
+        case 259: {
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
+            break
+        }
+        case 260: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
+            break
+        }
+        case 261: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": false};
+            break
+        }
+        case 262: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = true;
+            mockData.data.regions.DEFAULT.dbFile.flags.fileBad = true;
+            break
+        }
+        case 263: {
+            mockData.data.regions.DEFAULT.dbFile.flags.shmenHealthy = false;
+            break
+        }
+        case 280: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data = [];
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": ""};
+            mockData.data.regions.DEFAULT.dbFile.data[1] = {"ALLOCATION": 5000};
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"BLOCK_SIZE": 4096};
+            mockData.data.regions.DEFAULT.dbFile.data[3] = {"AUTO_DB": true};
+            delete mockData.data.regions.DEFAULT.dbAccess;
+            break
+        }
+        case 281: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data = [];
+            mockData.data.regions.DEFAULT.dbFile.data[0] = {"FILE_NAME": "/data/temp.dat"};
+            mockData.data.regions.DEFAULT.dbFile.data[1] = {"ALLOCATION": 5000};
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"BLOCK_SIZE": 4096};
+            mockData.data.regions.DEFAULT.dbFile.data[3] = {"AUTO_DB": true};
+            delete mockData.data.regions.DEFAULT.dbAccess;
+            break
+        }
+        case 284: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            break
+        }
+        case 285: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileBad = true;
+            break
+        }
+        case 287: {
+            mockData.data.regions.DEFAULT.dbFile.usage.usedPercent = 95;
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 1000};
+            break
+        }
+        case 288: {
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 25000 14% /';
+            // 80K 8   45K 5  15K  2
+            break;
+        }
+        case 289: {
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 180000 14% /';
+            break;
+        }
+        case 290: {
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 320000 14% /';
+            break;
+        }
+        case 291: {
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 1000 14% /';
+            break;
+        }
+        case 292: {
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 2000 14% /';
+            break;
+        }
+        case 293: {
+            mockData.data.regions.DEFAULT.dbFile.data[7] = {'EXTENSION_COUNT': 0};
+            mockData.data.regions.DEFAULT.dbFile.flags.device = 'overlay 263174212 32597508 12000 14% /';
+            break;
+        }
+
+        // Region view: journal
+        case 300: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 0;
+            break
+        }
+        case 301: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            break
+        }
+        case 303: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 2;
+            break
+        }
+        case 304: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            break
+        }
+        case 305: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            break
+        }
+        case 306: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
+            break
+        }
+        case 307: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            mockData.data.regions.DEFAULT.journal.flags.state = 0;
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
+            break
+        }
+        case 308: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
+            break
+        }
+        case 309: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
+            break
+        }
+        case 310: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            break
+        }
+        case 311: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 0;
+            break
+        }
+        case 314: {
+            mockData.data.regions.DEFAULT.journal.data[1] = {BEFORE: false};
+            break
+        }
+        case 315: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 0;
+            break
+        }
+        case 317: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 0;
+            break
+        }
+        case 318: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 2;
+            break
+        }
+        case 319: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 0;
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
+            break
+        }
+        case 320: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            mockData.data.regions.DEFAULT.replication.flags.status = 1;
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
+            break
+        }
+        case 321: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 1;
+            mockData.data.regions.DEFAULT.replication.flags.status = 0;
+            mockData.data.regions.DEFAULT.dbFile.flags.sessions = 27;
+            break
+        }
+        case 322: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.flags.fileExist = false;
+            break
+        }
+        case 323: {
+            mockData.data.regions.DEFAULT.journal.flags.state = 2;
+            mockData.data.regions.DEFAULT.journal.flags.fileExist = false;
+            break
+        }
+        case 375: {
+            mockData.data.regions.DEFAULT.locks.locks = [
+                {
+                    node: '^testGlobal("subscript1")',
+                    pid: 1234
+                }
+            ];
+            break
+        }
+        case 376: {
+            mockData.data.regions.DEFAULT.locks.locks = [
+                {
+                    node: '^testGlobal("subscript1")',
+                    pid: 1234,
+                    waiters: [
+                        {pid: 4321}
+                    ]
+                }
+            ];
+            break
+        }
+        case 377: {
+            mockData.data.regions.DEFAULT.locks.locks = [
+                {
+                    node: '^testGlobal("subscript1")',
+                    pid: 1234,
+                    waiters: [
+                        {pid: 4321},
+                        {pid: 7890}
+                    ]
+                }
+            ];
+            break
+        }
+        case 378: {
+            mockData.data.regions.DEFAULT.locks.locks = [
+                {
+                    node: '^testGlobal("subscript1")',
+                    pid: 1234
+                },
+                {
+                    node: '^testGlobal("subscript2")',
+                    pid: 1234321
+                }
+            ];
+            break
+        }
+        case 379: {
+            mockData.data.regions.DEFAULT.locks.locks = [
+                {
+                    node: '^testGlobal("subscript1")',
+                    pid: 1234,
+                    waiters: [
+                        {pid: 4321}
+                    ]
+                },
+                {
+                    node: '^testGlobal("subscript2")',
+                    pid: 1234321
+                }
+            ];
+            break
+        }
+        case 380: {
+            mockData.data.regions.DEFAULT.locks.locks = [
+                {
+                    node: '^testGlobal("subscript1")',
+                    pid: 1234,
+                    waiters: [
+                        {pid: 4321},
+                        {pid: 7890}
+                    ]
+                },
+                {
+                    node: '^testGlobal("subscript2")',
+                    pid: 1234321
+                }
+            ];
+            break
+        }
+        case 490:
+        case 491:
+        case 492:
+        case 493:
+        case 494:
+        case 520:
+        case 522:
+        case 523:
+        case 524: {
+            app.ui.regionAdd.name.region = 'test';
+            setTimeout(() => app.ui.regionAdd.show(), 150);
+            break
+        }
+        case 540:
+        case 541: {
+            app.ui.regionAdd.name.region = 'test';
+            setTimeout(() => {
+                app.ui.regionAdd.show();
+
+                setTimeout(() => {
+                    app.ui.regionNames.add.show()
+
+                }, 150)
+
+            }, 150);
+            break;
+        }
+        case 542: {
+            app.ui.regionAdd.name.region = 'test';
+            setTimeout(() => {
+                app.ui.regionAdd.show();
+
+                setTimeout(() => {
+                    $('#navRegionEditorNames').tab('show');
+                    app.ui.regionNames.add.show()
+
+                }, 150)
+
+            }, 150);
+            break;
+        }
+        case 543: {
+            app.ui.regionAdd.name.region = 'test';
+            setTimeout(() => {
+                app.ui.regionAdd.show();
+                setTimeout(() => {
+                    app.ui.regionShared.manifest.names.push({value: 'zzz'});
+                    app.ui.regionShared.manifest.names.push({value: 'aaa'});
+                    $('#navRegionEditorNames').tab('show');
+                    app.ui.regionNames.add.show()
+                }, 250)
+
+            }, 250);
+        }
+        case 390: {
+            mockData.data.regions.DEFAULT.replication.flags.status = 2;
+            break
+        }
+        case 400:
+        case 401:
+        case 402:
+        case 403: {
+            app.ui.regionDelete.show('DEFAULT');
+            break
+        }
+        case 404: {
+            app.ui.regionDelete.show('YDBOCTO');
+            break
+        }
+        case 440:
+        case 441:
+        case 442:
+        case 443:
+        case 444: {
+            mockData.data.regions.DEFAULT.dbFile.flags.fileExist = false;
+            mockData.data.regions.DEFAULT.dbFile.data[2] = {"AUTO_DB": true};
+            break
+        }
+        case 450:
+        case 451:
+        case 452: {
+            setTimeout(() => app.ui.regionJournalSwitch.show('DEFAULT'), 50);
+            break
+        }
+        case 555:
+        case 556:
+        case 559:
+        case 560:
+        case 561:
+        case 570:
+        case 571:
+        case 572:
+        case 573:
+        case 585: {
+            setTimeout(() => {
+                app.ui.regionEdit.show('DEFAULT');
+            }, 250);
+            break
+        }
+        case 557:
+        case 558:
+        case 562: {
+            setTimeout(() => {
+                app.ui.regionEdit.show('YDBAIM');
+            }, 250)
+            break
+        }
+        case 586:
+        case 587:
+        case 588:
+        case 589:
+        case 590: {
+            setTimeout(() => {
+                app.ui.regionEdit.show('YDBOCTO');
+            }, 250)
+        }
+    }
+
+    return mockData
 };
 
 let testMock = {

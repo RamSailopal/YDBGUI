@@ -841,7 +841,7 @@ describe("CLIENT: Region View: Journal tab", async () => {
         let btnClick = await page.$("#btnDashRegionView0");
         await btnClick.click();
 
-        // wait for dialog to be set by the async call
+        // wait for dialog to be set by the async  call
         await libs.delay(500);
 
         // make sure dialog is visible

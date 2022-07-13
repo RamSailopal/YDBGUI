@@ -26,7 +26,10 @@ app.ui.regionNames.add.init = () => {
     });
 };
 
-app.ui.regionNames.add.show = () => {
+app.ui.regionNames.add.editMode = false;
+app.ui.regionNames.add.show = (editMode = false) => {
+    app.ui.regionNames.add.editMode = editMode;
+
     const txtNameAddName = $('#txtNameAddName');
     txtNameAddName.val('');
 
@@ -83,13 +86,18 @@ app.ui.regionNames.okManyPressed = async () => {
     if (isValid === false) return;
 
     app.ui.regionShared.manifest.names.push({
-        value: txtNameAddName.val()
+        value: txtNameAddName.val(),
+        new: true
     });
-    app.ui.regionShared.redrawNames($('#tblRegionAddNames > tbody'));
+    const $namesTable = app.ui.regionNames.add.editMode === true ? $('#tblRegionEditNames > tbody') : $('#tblRegionAddNames > tbody');
+    app.ui.regionShared.redrawNames($namesTable);
 
     txtNameAddName
         .val('')
-        .focus()
+        .focus();
+
+    if (app.ui.regionNames.add.editMode === true) app.ui.regionEdit.validateOk();
+
 
     app.ui.regionNames.validateOkButton()
 };
@@ -103,12 +111,17 @@ app.ui.regionNames.okPressed = async () => {
 
     // update array
     app.ui.regionShared.manifest.names.push({
-        value: txtNameAddName.val()
+        value: txtNameAddName.val(),
+        new: true
     });
 
     // and update screen
     $('#modalRegionNameAdd').modal('hide');
-    app.ui.regionShared.redrawNames($('#tblRegionAddNames > tbody'));
+
+    if (app.ui.regionNames.add.editMode === true) app.ui.regionEdit.validateOk();
+
+    const $namesTable = app.ui.regionNames.add.editMode === true ? $('#tblRegionEditNames > tbody') : $('#tblRegionAddNames > tbody');
+    app.ui.regionShared.redrawNames($namesTable);
 
     app.ui.regionNames.validateOkButton()
 };
@@ -150,18 +163,24 @@ app.ui.regionNames.validateName = async namespace => {
 // ***************************************
 // region name delete
 // ***************************************
-app.ui.regionNames.delete.init = (type = 'add') => {
-    $('#btnRegionAddNamesDelete').on('click', () => app.ui.regionNames.delete.show(type === 'add' ? 'tblRegionAddNames' : ''));
-};
-
 app.ui.regionNames.delete.show = (namesTableId) => {
+    const isEditMode = namesTableId.indexOf('Edit') > -1;
+
     $('#' + namesTableId + ' > tbody > tr').each((ix, tr) => {
         if (tr.getAttribute('row-selected') === 'true') {
             const nameEl = tr.childNodes[0].innerHTML;
+            const name = app.ui.regionShared.manifest.names.find(name => name.value === nameEl);
 
-            app.ui.regionShared.manifest.names = app.ui.regionShared.manifest.names.filter(function (item) {
-                return item.value !== nameEl
-            });
+            if (name.deleted === true) {
+                name.deleted = false;
+            } else if (isEditMode === true && name.existing === true && name.deleted === false) {
+                name.deleted = true;
+
+            } else {
+                app.ui.regionShared.manifest.names = app.ui.regionShared.manifest.names.filter(function (item) {
+                    return item.value !== nameEl
+                });
+            }
         }
 
         // redraw table
@@ -175,5 +194,10 @@ app.ui.regionNames.delete.show = (namesTableId) => {
         }
     });
 
-    app.ui.regionAdd.validateForm()
+    if (isEditMode === true) {
+        // force the button to "delete..."
+        $('#btnRegionEditNamesDelete').text('Delete...');
+
+        app.ui.regionEdit.validateOk();
+    }
 };
