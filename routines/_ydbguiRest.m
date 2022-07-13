@@ -47,7 +47,7 @@ getDashboard(resJson,params)
 	;
 	set cnt="" for  set cnt=$order(envVars(cnt)) quit:cnt=""  do
 	. set res("data","systemInfo","envVars",cnt,"name")=$piece(envVars(cnt),"=")
-	. set res("data","systemInfo","envVars",cnt,"value")=$piece(envVars(cnt),"=",2)
+	. set res("data","systemInfo","envVars",cnt,"value")=$piece(envVars(cnt),"=",2,99)
 	;
 	; get plugins information
 	set res=$zsearch(-1)
@@ -504,7 +504,7 @@ validatePath(arguments,bodyJson,resJson)
 	;
 	set dir=$zparse(body("path"),"directory")
 	; check permissions
-	set ret=$$tryCreateFile(dir)
+	set ret=$$tryCreateFile^%ydbguiUtils(dir)
 	if ret=0 do  goto validatePathQuit
 	. ; error
 	. set res("result")="ERROR"
@@ -604,7 +604,7 @@ error(resJson,arguments)
 	;
 	;
 ; ****************************************************************
-; errorPost(resJson,arguments)
+; errorPost(arguments,bodyJson,resJson)
 ;
 ; Related URL: POST api/test/error
 ;
@@ -619,29 +619,91 @@ errorPost(arguments,bodyJson,resJson)
 	;
 	;
 ; ****************************************************************
-; tryCreateFile(filename)
+; getAllLocks(resJson,arguments)
 ;
-; Related URL: POST api/regions/add
+; Related URL: 	GET api/regions/locks/getAll
 ;
 ; PARAMS:
-; filename		string
-; RETURNS:
-; >0				OK
-; 0					Could NOT create the file
+; resJson			array byRef
+; arguments			array byRef
 ; ****************************************************************
-tryCreateFile:(dir)
-	new ret,io,file
-	new $ztrap,$etrap
+getAllLocks(resJson,arguments)
+	new res,jsonErr
 	;
-	set ret=0
-	set $ztrap="goto tryCreateFileQuit"
+	set *res=$$getAll^%ydbguiLocks()
 	;
-	; Create the file
-	set file=dir_"/~tmp"
-	open file:NEWVERSION
-	close file:DELETE
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
 	;
-	set ret=1
+	quit
 	;
-tryCreateFileQuit
-	quit ret
+	;
+; ****************************************************************
+; clearLock(arguments,bodyJson,resJson)
+;
+; Related URL: POST api/regions/locks/clear
+;
+; PARAMS:
+; resJson			array byRef
+; arguments			array byRef
+; ****************************************************************
+clearLock(arguments,bodyJson,resJson)
+	new res,jsonErr,namespace
+	;
+	if $get(arguments("namespace"))="" do  goto clearLockQuit
+	. set res("result")="ERROR"
+	. set res("error","description")="No parameter: namespace was passed"
+	;
+	set *res=$$clear^%ydbguiLocks(arguments("namespace"))
+	;
+clearLockQuit
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""
+	;
+	;
+; ****************************************************************
+; terminateProcess(arguments,bodyJson,resJson)
+;
+; Related URL: POST api/os/processes/{pid}/terminate
+;
+; PARAMS:
+; resJson			array byRef
+; arguments			array byRef
+; ****************************************************************
+terminateProcess(arguments,bodyJson,resJson)
+	new res,jsonErr,pid,ret,shellResult
+	;
+	; Validate pid at first
+	set pid=+$get(arguments("pid"),0)
+	if pid=0 do  goto terminateProcessQuit
+	. set res("reuslt")="ERROR"
+	. set res("error","description")="Process: 0 is not a valid process id."
+	;
+	; Check if process exists
+	if $zgetjpi(pid,"ISPROCALIVE")=0 do  goto terminateProcessQuit
+	. set res("result")="ERROR"
+	. set res("error","description")="Process "_pid_" doesn't exist"
+	;
+	set ret=$$terminateProcess^%ydbguiUtils(pid)
+	if ret'=0 do  goto terminateProcessQuit
+	. set res("result")="ERROR"
+	. if ret=99997 set res("error","description")="The process: "_pid_" could not be terminated" quit
+	. if ret=99998 set res("error","description")="The process: "_pid_" is not a YottaDB process" quit
+	. if ret=99999 set res("error","description")="The process: "_pid_" is not running anymore"
+	. else  set res("error","description")="Error: "_ret
+	;
+	set res("result")="OK"
+	;
+terminateProcessQuit
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""

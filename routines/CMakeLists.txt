@@ -31,6 +31,7 @@ set(source_files
 	_ydbguiRegions.m
 	_ydbguiRest.m
 	_ydbguiUtils.m
+	_ydbguiLocks.m
 )
 
 # .so file for plugin

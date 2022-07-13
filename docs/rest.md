@@ -17,7 +17,7 @@
 ## Overview
 
 | Method | Endpoint | Params | Description |
-| --- | --- | ---  | --- |
+|--- |--- | ---  | --- |
 | GET | [api/dashbboard/getAll](#get-apidashbboardgetall) | | Retrieves full info on all regions, devices and system|
 | GET | [api/regions/{region}](#get-apiregionsregion) | | Retieves info about a specific region 
 | DELETE | [api/regions/{region}](#get-apiregionsregion)| deleteFiles=true | Deletes a specific region
@@ -32,15 +32,15 @@
 | GET | [api/test/error](#get-apitesterror) |  | Triggers an M error and returns the error description in the status 500 response
 | POST | [api/test/error](#post-apitesterror) |  | Triggers an M error and returns the error description in the status 500 response
 | DELETE | [api/test/error](#delete-apitesterror) |  | Triggers an M error and returns the error description in the status 500 response
+| GET | [api/regions/locks/getAll](#get-apiregionslocksgetall) |  | Returns all the locks and waiters across the all regions
+| POST | [api/regions/locks/clear](#post-apiregionslocksclear) | namespace= | Clear the lock specified in the "namespace" parameter
+| POST | [api/os/processes/{pid}/terminate](#post-apiosprocessespidterminate) | {pid} | Terminate the process specified in the "pid" parameter using the SIGINT signal
 
 ### `GET` api/dashboard/getAll
 
 Retrieves information about all regions, all used disk devices, system information and soft3are version
 
 Parameters: 
-`none`
-
-Body: 
 `none`
 
 Returns:
@@ -116,10 +116,6 @@ res = {
 Retrieves information about a specific region
 
 Parameters: 
-
-`none`
-
-Body: 
 
 `none`
 
@@ -305,10 +301,6 @@ res = {
 Retrieves all the GDE templates and their associated min/max values (when applicable)
 
 Parameters: 
-
-`none`
-
-Body: 
 
 `none`
 
@@ -613,6 +605,10 @@ Parameters:
 
 `none`
 
+Body: 
+
+`none`
+
 Returns:
 
 ERROR
@@ -647,6 +643,10 @@ Parameters:
 
 `none`
 
+Body: 
+
+`none`
+
 Returns:
 
 ERROR
@@ -672,4 +672,245 @@ res = {
 ````
 
 ---
+
+### `GET` api/regions/locks/getAll
+
+Returns all the locks, waiters and related processes information
+
+Parameters: 
+
+`none`
+
+Returns:
+
+SUCCESS
+
+````js
+res = {
+    result: 'OK',
+    locks: [
+        {
+            namespace: 'TEST1',
+            region: 'YDBOCTO',
+            pid: 1,
+            waiters: [
+                11,
+                12,
+                13,
+            ]
+        },
+        {
+            namespace: 'TEST2',
+            region: 'DEFAULT',
+            pid: 2,
+            waiters: [
+                21,
+                22
+            ]
+        },
+        {
+            namespace: 'TEST3',
+            region: 'YDBAIM',
+            pid: 3,
+            waiters: [
+                31,
+                32,
+                33
+            ]
+        },
+    ],
+    pids: [
+        {
+            pid: 1,
+            userId: 'pid1',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 2,
+            userId: 'pid2',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 3,
+            userId: 'pid3',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 11,
+            userId: 'pid11',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 12,
+            userId: 'pid12',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 13,
+            userId: 'pid13',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 21,
+            userId: 'pid21',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 22,
+            userId: 'pid22',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 23,
+            userId: 'pid23',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 31,
+            userId: 'pid31',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 32,
+            userId: 'pid32',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 33,
+            userId: 'pid33',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+    ],
+    regions: [
+        {
+            name: 'DEFAULT',
+            estimatedFreeLockSpace: '100% of 220 pages',
+            processesOnQueue: '0/880',
+            slotsInUse: '0/597',
+            slotsBytesInUse: '0/28080'
+        },
+        {
+            name: 'YDBOCTO',
+            estimatedFreeLockSpace: '100% of 220 pages',
+            processesOnQueue: '0/880',
+            slotsInUse: '0/597',
+            slotsBytesInUse: '0/28080'
+        },
+        {
+            name: 'YDBAIM',
+            estimatedFreeLockSpace: '100% of 220 pages',
+            processesOnQueue: '0/880',
+            slotsInUse: '0/597',
+            slotsBytesInUse: '0/28080'
+        }
+    ]
+}
+````
+
+ERROR
+
+````js
+res = {
+    result: 'ERR',
+    error : {description: '',   // The error description
+    dump: []                    // Eventual dump of shell response
+} 
+}
+````
+
+---
+
+### `POST` api/regions/locks/clear
+
+Clears the lock identified in the namepsace parameter.
+
+Parameters: 
+
+`namespace=`
+
+Specify the namespace to clear.
+
+Body: 
+
+`none`
+
+Returns:
+
+SUCCESS
+
+````js
+res = {
+    result: 'OK'
+}
+````
+
+ERROR 
+
+````js
+res = {
+    result: 'ERROR',
+    error : {description: ''} // The error description
+}
+````
+
+
+---
+
+### `POST` api/os/processes/{pid}/terminate
+
+Terminates the process identified by the `pid` parameter. 
+
+Note: the process must be a yottadb process or it won't be terminated and an error will be returned.
+
+Parameters: 
+
+`none`
+
+Body: 
+
+`none`
+
+Returns:
+
+SUCCESS
+
+````js
+res = {
+    result: 'OK',
+}
+````
+
+
+ERROR
+
+````js
+res = {
+    result: 'ERROR',
+    error : {description: ''} // The error description
+}
+````
 

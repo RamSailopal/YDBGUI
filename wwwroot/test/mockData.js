@@ -714,7 +714,7 @@ const testLoadData = () => {
         case 562: {
             setTimeout(() => {
                 app.ui.regionEdit.show('YDBAIM');
-            }, 250)
+            }, 250);
             break
         }
         case 586:
@@ -724,7 +724,123 @@ const testLoadData = () => {
         case 590: {
             setTimeout(() => {
                 app.ui.regionEdit.show('YDBOCTO');
-            }, 250)
+            }, 250);
+            break
+        }
+        case 600:
+        case 601:
+        case 602:
+        case 603:
+        case 604:
+        case 605:
+        case 606:
+        case 607:
+        case 608:
+        case 615:
+        case 616:
+        case 617:
+        case 618:
+        case 619:
+        case 620:
+        case 621:
+        case 622:
+        case 623:
+        case 624:
+        case 625:
+        case 626:
+        case 627:
+        case 628:
+        case 629:
+        case 630:
+        case 631:
+        case 632:
+        case 633:
+        case 634:
+        case 635:
+        case 636:
+        case 637:
+        case 638: {
+            setTimeout(() => {
+                app.ui.locksManager.show();
+            }, 250);
+            break
+        }
+        case 609: {
+            app.ui.locksManager.locksData.locks.push({
+                namespace: 'ATEST1',
+                region: 'YDBOCTO',
+                pid: 1,
+                waiters: [
+                    11,
+                    12,
+                    13,
+                ]
+            });
+            setTimeout(() => {
+                app.ui.locksManager.show();
+            }, 250);
+            break
+        }
+        case 610: {
+            app.ui.locksManager.locksData.locks.push({
+                namespace: 'TEST4',
+                region: 'AAA',
+                pid: 1,
+                waiters: [
+                    11,
+                    12,
+                    13,
+                ]
+            });
+            app.ui.locksManager.locksData.regions.push(
+                {
+                    name: 'AAA',
+                    estimatedFreeLockSpace: '100% of 220 pages',
+                    processesOnQueue: '0/880',
+                    slotsInUse: '0/597',
+                    slotsBytesInUse: '0/28080'
+                }
+            );
+            setTimeout(() => {
+                app.ui.locksManager.show();
+            }, 250);
+            break
+        }
+        case 611: {
+            app.ui.locksManager.locksData.locks.push({
+                namespace: 'ATEST1',
+                region: 'YDBOCTO',
+                pid: 0,
+                waiters: [
+                    11,
+                    12,
+                    13,
+                ]
+            });
+            app.ui.locksManager.locksData.pids.push(
+                {
+                    pid: 0,
+                    userId: 'pid1',
+                    processName: 'yottadb',
+                    PPID: 0,
+                    time: '00:00:00'
+                },
+            );
+            setTimeout(() => {
+                app.ui.locksManager.show();
+            }, 250);
+            break
+        }
+        case 612:
+        case 613:
+        case 614: {
+            app.ui.locksManager.locksData.locks = [];
+            app.ui.locksManager.locksData.pids = [];
+            app.ui.locksManager.locksData.regions = [];
+            setTimeout(() => {
+                app.ui.locksManager.show();
+            }, 250);
+            break
         }
     }
 
@@ -1908,5 +2024,152 @@ let testMock = {
     ,
     "result":
         "OK"
+};
+
+app.ui.locksManager.mockData = () => {
+    return app.ui.locksManager.locksData;
+};
+
+app.ui.locksManager.locksData = {
+    locks: [
+        {
+            namespace: 'TEST1',
+            region: 'YDBOCTO',
+            pid: 1,
+            waiters: [
+                11,
+                12,
+                13,
+            ]
+        },
+        {
+            namespace: 'TEST2',
+            region: 'DEFAULT',
+            pid: 2,
+            waiters: [
+                21,
+                22
+            ]
+        },
+        {
+            namespace: 'TEST3',
+            region: 'YDBAIM',
+            pid: 3,
+            waiters: [
+                31,
+                32,
+                33
+            ]
+        },
+    ],
+    pids: [
+        {
+            pid: 1,
+            userId: 'pid1',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 2,
+            userId: 'pid2',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 3,
+            userId: 'pid3',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 11,
+            userId: 'pid11',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 12,
+            userId: 'pid12',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 13,
+            userId: 'pid13',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 21,
+            userId: 'pid21',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 22,
+            userId: 'pid22',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 23,
+            userId: 'pid23',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 31,
+            userId: 'pid31',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 32,
+            userId: 'pid32',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+        {
+            pid: 33,
+            userId: 'pid33',
+            processName: 'yottadb',
+            PPID: 0,
+            time: '00:00:00'
+        },
+    ],
+    regions: [
+        {
+            name: 'DEFAULT',
+            estimatedFreeLockSpace: '100% of 220 pages',
+            processesOnQueue: '0/880',
+            slotsInUse: '0/597',
+            slotsBytesInUse: '0/28080'
+        },
+        {
+            name: 'YDBOCTO',
+            estimatedFreeLockSpace: '100% of 220 pages',
+            processesOnQueue: '0/880',
+            slotsInUse: '0/597',
+            slotsBytesInUse: '0/28080'
+        },
+        {
+            name: 'YDBAIM',
+            estimatedFreeLockSpace: '100% of 220 pages',
+            processesOnQueue: '0/880',
+            slotsInUse: '0/597',
+            slotsBytesInUse: '0/28080'
+        }
+    ]
 };
 

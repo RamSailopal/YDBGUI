@@ -1,0 +1,86 @@
+<!-- Locks Manager dialog -->
+<div aria-hidden="true" aria-labelledby="modalLabel" class="modal fade" id="modalLocksManager" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-width-800" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="modal-title" id="modalLabel">Locks Manager</label>
+                <button aria-label="Close" class="close" data-dismiss="modal" tabindex="-1" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row-12" style="display: flex;">
+                    <!-- Trees -->
+                    <div class="col-9">
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <a aria-selected="true" class="nav-link active ydb-purple-fore" data-toggle="tab"
+                                   href="#tabLocksManagerByNamespace"
+                                   id="navLocksManagerByNamespace" role="tab">By Namespace</a>
+                                <a aria-selected="false" class="nav-link ydb-purple-fore" data-toggle="tab"
+                                   href="#tabLocksManagerByRegion"
+                                   id="navLocksManagerByRegion" role="tab">By Region</a>
+                                <a aria-selected="false" class="nav-link ydb-purple-fore" data-toggle="tab"
+                                   href="#tabLocksManagerByPid"
+                                   id="navLocksManagerByPid" role="tab">By Process</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent" style="padding-top: 13px;">
+                            <!-- by Namespace -->
+                            <div aria-labelledby="nav-home-tab" class="tab-pane fade show active" id="tabLocksManagerByNamespace" role="tabpanel">
+                                <div style="overflow-y: scroll; height: 334px">
+                                    <div class="tree" id="treeLocksManagerByNamespace"></div>
+                                </div>
+                            </div>
+
+                            <!-- by Region -->
+                            <div aria-labelledby="nav-home-tab" class="tab-pane fade show " id="tabLocksManagerByRegion" role="tabpanel">
+                                <div style="overflow-y: scroll; height: 334px">
+                                    <div class="tree" id="treeLocksManagerByRegion"></div>
+                                </div>
+                            </div>
+
+                            <!-- by Process -->
+                            <div aria-labelledby="nav-home-tab" class="tab-pane fade show " id="tabLocksManagerByPid" role="tabpanel">
+                                <div style="overflow-y: scroll; height: 334px">
+                                    <div class="tree" id="treeLocksManagerByProcess"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="col-3">
+                        <br><br>
+                        <div>
+                            <button class="btn btn-outline-info btn-block btn-sm"
+                                    id="btnLocksManagerRefresh"
+                                    type="button">Refresh
+                            </button>
+                        </div>
+                        <div style="height: 211px"></div>
+                        <div style="padding-top: 10px">
+                            <button class="btn btn-outline-info  btn-block btn-sm disabled"
+                                    disabled
+                                    id="btnLocksManagerTerminateProcess"
+                                    type="button">Terminate process...
+                            </button>
+                        </div>
+                        <br>
+                        <div>
+                            <button class="btn btn-outline-info btn-block btn-sm disabled"
+                                    disabled
+                                    id="btnLocksManagerClear"
+                                    type="button">Clear lock...
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer center">
+                <button class="btn btn-outline-secondary" data-dismiss="modal" tabindex="-1" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

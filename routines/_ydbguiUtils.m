@@ -51,6 +51,65 @@ runIntShell(command,sendCmd,return)
 	quit $zclose
 	;
 	;
+; ****************************************************************
+; tryCreateFile(filename)
+;
+; PARAMS:
+; filename		string
+; RETURNS:
+; >0				OK
+; 0					Could NOT create the file
+; ****************************************************************
+tryCreateFile(dir)
+	new ret,io,file
+	new $ztrap,$etrap
+	;
+	set ret=0
+	set $ztrap="goto tryCreateFileQuit"
+	;
+	; Create the file
+	set file=dir_"/~tmp"
+	open file:NEWVERSION
+	close file:DELETE
+	;
+	set ret=1
+	;
+tryCreateFileQuit
+	quit ret
+	;
+	;
+; ****************************************************************
+; terminateProcess(pid)
+;
+; PARAMS:
+; pid		number
+; RETURNS:
+; <0 				Shell error
+; >0 <99996			Shell error
+; 99997				Not enough rights
+; 99998				Not a YDB process
+; 99999				No such process
+; 0					Ok
+; ****************************************************************
+terminateProcess(pid)
+	new ret,shellResult
+	;
+	; And it is a yottadb process
+	kill shellResult
+	set ret=$$runShell^%ydbguiUtils("grep libyottadb.so /proc/"_pid_"/maps",.shellResult)
+	; Not a YDB process
+	if $data(shellResult)=0 set ret=99998 goto terminateProcessQuit
+	; Process not running
+	if $find($get(shellResult(1)),"No such") set ret=99999 goto terminateProcessQuit
+	;
+	; Terminate it
+	set ret=$$runShell^%ydbguiUtils("$ydb_dist/mupip stop "_pid,.shellResult)
+	if $find($get(shellResult(1)),"not permitted") set ret=99997
+	;
+terminateProcessQuit
+	quit ret
+	;
+	;
 ; --------------------------------------------
 ; --------------------------------------------
 ; STRINGS

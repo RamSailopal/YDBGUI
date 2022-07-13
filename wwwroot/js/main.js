@@ -125,6 +125,8 @@ let app = {
         regionJournalSwitch: {},
         regionFilename: {},
 
+        locksManager: {},
+
         help: {},
         tabs: {},
 

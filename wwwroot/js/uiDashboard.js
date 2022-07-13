@@ -416,8 +416,10 @@ app.ui.dashboard.refresh = async () => {
             // Journal
             if (reg.replication !== undefined && reg.replication.flags.status === REPL_STATUS_WASON) {
                 status.journaling = STATUS_CRITICAL;
+
             } else if (reg.journal.flags.state === 1 && status.journaling === null) {
                 status.journaling = STATUS_ISSUES
+
             } else if (reg.popup.journaling.popup.visible) {
                 status.popup.journaling += '<strong>' + region + ':&nbsp;</strong>' + reg.popup.journaling.popup.caption + '<br>'
                 status.journaling = STATUS_ISSUES

@@ -158,7 +158,7 @@ app.ui.regionShared.renderTable = ($tableTbody, editMode = false) => {
 
         const buttonId = 'reset-' + currentId.split('-')[1] + '-' + currentId.split('-')[2] + '-' + currentId.split('-')[0];
         currentId = 'reset-' + currentId.split('-')[1] + '-' + currentId.split('-')[2];
-        cell12 += '<i id="' + currentId + '" style="font-size: 11px; display: none;" class="bi-x-circle  hand" onmousedown="app.ui.regionShared.resetClicked(\'' + buttonId + '\')" title="Reset to original value"></i></button></td>';
+        cell12 += '<i id="' + currentId + '" style="font-size: 11px; display: ' + (el.dirty === true ? 'block' : 'none') + ';" class="bi-x-circle  hand" onmousedown="app.ui.regionShared.resetClicked(\'' + buttonId + '\')" title="Reset to original value"></i></button></td>';
 
         // FOURTH CELL
 

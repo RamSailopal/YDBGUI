@@ -687,3 +687,30 @@ input[type=range]::-ms-thumb {
     text-align: right;
 
 }
+
+.locks-manager-font-inconsolata {
+    font-family: 'Inconsolata', sans-serif;
+    font-size: 22px;
+    color: var(--ydb-status-green)
+}
+
+.font-strike {
+    text-decoration: line-through;
+}
+
+.jstree-default li > a {
+    color: var(--ydb-purple) !important;
+}
+
+.jstree-default li > a > i {
+    color: var(--ydb-orange) !important;
+}
+
+.jstree-hovered {
+    background: #ddd !important;
+}
+
+.jstree-clicked {
+    background: #eee !important;
+    font-weight: bold;
+}

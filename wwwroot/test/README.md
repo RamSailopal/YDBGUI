@@ -346,6 +346,72 @@ The Server testing is not using the interface at all and is fully focused on the
 | 589 | Edit YDBOCTO, select the first entry and delete it. Verify that delete button caption is: Undelete...
 | 590 | Edit YDBOCTO, select the first entry and delete it. Click the Undelete... button and verify that text is in Purple color
 
+## Locks Manager
+
+#### Tree integrity
+
+| Number | Description |
+| :---:| ---      |
+| 600 | One lock per region with different PIDs, 1, 2 and 3 waiters per lock. Test By Namespace tree, lock 1
+| 601 | One lock per region with different PIDs, 1, 2 and 3 waiters per lock. Test By Namespace tree, lock 2
+| 602 | One lock per region with different PIDs, 1, 2 and 3 waiters per lock. Test By Namespace tree, lock 3
+| 603 | One lock per region with different PIDs, 1, 2 and 3 waiters per lock. Test By Region tree, lock 1
+| 604 | One lock per region with different PIDs, 1, 2 and 3 waiters per lock. Test By Region tree, lock 2
+| 605 | One lock per region with different PIDs, 1, 2 and 3 waiters per lock. Test By Region tree, lock 3
+| 606 | One lock per region with different PIDs, 1, 2 and 3 waiters per lock. Test By PIDs tree, lock 1
+| 607 | One lock per region with different PIDs, 1, 2 and 3 waiters per lock. Test By PIDs tree, lock 2
+| 608 | One lock per region with different PIDs, 1, 2 and 3 waiters per lock. Test By PIDs tree, lock 3
+| 609 | Test sort on namespace
+| 610 | Test sort on region
+| 611 | Test sort on PIDs
+| 612 | No locks at all. Test By Namespace tree
+| 613 | No locks at all. Test By Regions tree
+| 614 | No locks at all. Test By PIDs tree
+
+#### Buttons status
+
+##### Submit messages => Clear lock
+
+| Number | Description |
+| :---:| ---      |
+| 615 | Test By Namespace tree, select namespace, click on Clear Lock
+| 616 | Test By Namespace tree, select region, click on Clear Lock
+| 617 | Test By Namespace tree, select PID, click on Clear Lock
+| 618 | Test By Namespace tree, select first waiter, click on Clear Lock
+| 619 | Test By Region tree, select region, click on Clear Lock
+| 620 | Test By Region tree, select namespace, click on Clear Lock
+| 621 | Test By Region tree, select pid, click on Clear Lock
+| 622 | Test By Region tree, select first waiter, click on Clear Lock
+| 623 | Test By Pids tree, select pid, click on Clear Lock
+| 624 | Test By Pids tree, select namespace, click on Clear Lock
+| 625 | Test By Pids tree, select region, click on Clear Lock
+| 626 | Test By Pids tree, select first waiter, click on Clear Lock
+
+##### Submit messages => Terminate process
+
+| Number | Description |
+| :---:| ---      |
+| 627 | Test By Namespace tree, select namespace, click on Terminate process
+| 628 | Test By Namespace tree, select region, click on Terminate process
+| 629 | Test By Namespace tree, select PID, click on Terminate process
+| 630 | Test By Namespace tree, select first waiter, click on Terminate process
+| 631 | Test By Region tree, select region, click on Terminate process
+| 632 | Test By Region tree, select namespace, click on Terminate process
+| 633 | Test By Region tree, select pid, click on Terminate process
+| 634 | Test By Region tree, select first waiter, click on Terminate process
+| 635 | Test By Pids tree, select pid, click on Terminate process
+| 636 | Test By Pids tree, select namespace, click on Terminate process
+| 637 | Test By Pids tree, select region, click on Terminate process
+| 638 | Test By Pids tree, select first waiter, click on Terminate process
+
+
+
+
+
+
+
+
+
 # **SERVER**
 
 #### ENDPOINTS VERIFICATION 
@@ -503,7 +569,42 @@ The Server testing is not using the interface at all and is fully focused on the
 
 #### Delete Region
 
-| 1370 | Delete using a bad region name
-| 1371 | Delete using a null region name
-| 1372 | Delete an existing region
-| 1373 | Delete an existing region and delete the files
+| Number | Description |
+| :---:| ---      |
+| 1400 | Delete using a bad region name
+| 1401 | Delete using a null region name
+| 1402 | Delete an existing region
+| 1403 | Delete an existing region and delete the files
+
+#### get All Locks
+
+
+| Number | Description |
+| :---:| ---      |
+| 1420 | Set Lock: ^%ydbocto, no waiters, verify
+| 1421 | Set Lock  ^%ydbaim, 1 waiter, verify
+| 1422 | Set Lock  ^%ydbaim, 2 waiters, verify
+| 1423 | Set Lock: test, no waiters, verify
+| 1424 | Set Lock  test, 1 waiter, verify
+| 1425 | Set Lock  test, 2 waiters, verify
+| 1426 | Set Lock  test, test2, ^test3, no waiters, verify
+| 1427 | Set Lock  test, test2, ^test3, 2 waiters, verify
+| 1428 | No locks, verify
+| 1429 | Set lock ^test("test with spaces"), verify
+
+#### clear lock
+
+| Number | Description |
+| :---:| ---      |
+| 1430 | No namespace, verify correct error
+| 1431 | Not existing namespace, verify correct error
+| 1432 | Correct namespace, verify correct response and lock is gone
+
+#### terminate process
+
+| Number | Description |
+| :---:| ---      |
+| 1435 | Not existing process Id, verify correct error
+| 1436 | process Id 0, verify correct error
+| 1436 | process Id is not YDB, verify correct error
+| 1437 | process Id is correct, verify correct response and terminated process

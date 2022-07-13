@@ -10,6 +10,48 @@
  *                                                              *
  ****************************************************************/
 
+// ********************************
+// terminates a process
+// ********************************
+app.REST._terminateProcess = (PID) => {
+    return new Promise(function (resolve, reject) {
+        app.REST.execute('post', 'os/processes/' + PID + '/terminate', {}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
+// clears a lock
+// ********************************
+app.REST._clearLock = (lockNamespace) => {
+    return new Promise(function (resolve, reject) {
+        app.REST.execute('post', 'regions/locks/clear?namespace=' + lockNamespace, {}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
+// Get locks info
+// ********************************
+app.REST._getAllLocks = () => {
+    return new Promise(function (resolve, reject) {
+
+        app.REST.execute('get', 'regions/locks/getAll', {}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
 
 // ********************************
 // Add region
@@ -212,6 +254,7 @@ app.REST.execute = (type, command, DATA = {}, okCallback, errCallback) => {
 app.REST.parseError = err => {
     let message = 'The following error occurred while fetching the data: ';
 
+    console.log(err)
     if (err.status !== undefined && err.status === 500) {
         if (typeof err.responseJSON === 'object') {
             const error = err.responseJSON.error.errors[0];
@@ -230,6 +273,7 @@ app.REST.parseError = err => {
         }
     } else if (err.error !== undefined) {
         message += err.error.description
+
     } else {
         message += 'REST status: ' + err.status
     }

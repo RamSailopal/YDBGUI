@@ -292,7 +292,7 @@ getRegionStruct(regionName,regionData,warnings)
 	merge regionData("names")=regionMap
 	;
 	; locks
-	set *lockBuffer=$$getLocksData(regionName)
+	set *lockBuffer=$$getLocksData^%ydbguiLocks(regionName)
 	if $data(lockBuffer) merge regionData("locks")=lockBuffer
 	else  do
 	. set warnings($increment(warnings))="Error occurred while fetching the locks for region: "_regionName_" error is: "_ret
@@ -703,7 +703,7 @@ buildSegmentCommand:(body,mupipFlag) ; Builds a command to update the segment in
 	;
 	;
 buildRegionCommand:(body,autoDbFlag) ; Builds a command to update the region in add mode
-	new ix,field,cmd,appendString
+	new ix,field,cmd,cmdRegion
 		;
 	set cmd=""
 	;
@@ -718,7 +718,7 @@ buildRegionCommand:(body,autoDbFlag) ; Builds a command to update the region in 
 	. . set:field="lockCriticalSeparate" cmd=cmd_" -"_$select(body("dbAccess","region",ix,"value")=0:"NO",1:"")_"LOCK_CRIT_SEPARATE"
 	. . set:field="qbRundown" cmd=cmd_" -"_$select(body("dbAccess","region",ix,"value")=0:"NO",1:"")_"QDBRUNDOWN"
 	. . set:field="stats" cmd=cmd_" -"_$select(body("dbAccess","region",ix,"value")=0:"NO",1:"")_"STATS"
-	;
+	set cmdRegion=cmd,cmd=""
 	;
 	do:$data(body("dbAccess","journal"))&(body("journalEnabled")="true")
 	. set cmd=cmd_" -JOURNAL=("
@@ -737,7 +737,7 @@ buildRegionCommand:(body,autoDbFlag) ; Builds a command to update the region in 
 	;
 	set:body("journalEnabled")="false" cmd=cmd_" -NOJOURNAL"
 	;
-	quit cmd
+	quit cmdRegion_cmd
 	;
 	;
 buildRegionCommandEdit:(body,mupipFlag) ; Builds a command to update the region in edit mode
@@ -822,86 +822,6 @@ dbnopen:(dbfile)	; Report number of processes accessing a YottaDB database file
 	;
 	;
 ; ****************************************************************
-; getLocksData(regionName,lockData)	; returns a JDOM (JSON global structure) with the lock structure
-; ;
-; PARAMS:
-; regionName		string
-; lockData			array byRef
-; RETURNS:
-; 0					OK
-; negative number	Error executing shell
-; positive number 	Error returned from shell
-; ****************************************************************
-getLocksData:(regionName)
-	new lockBuffer,ret,cnt,lockCnt,waiterCnt,lockData
-	;
-	kill lockData,lockBuffer
-	;
-	set ret=$$runShell^%ydbguiUtils("lke show -all -wait -region="_regionName,.lockBuffer)
-	quit:ret'=0 ret
-	;
-	if $find($get(lockBuffer(1)),"%YDB-I-LOCKSPACEINFO") do  goto getLocksDataQuit
-	. ;no locks found,
-	. do parseLockSpaceInfo(lockBuffer(1))
-	. do parseLockSpaceUse(lockBuffer(3))
-	;
-	set (lockCnt,waiterCnt)=0
-	for cnt=3:1 quit:$find($get(lockBuffer(cnt)),"%YDB-I-LOCKSPACEINFO")  do
-	. if $extract(lockBuffer(cnt),1)=" " do  quit
-	. . ;Waiter found
-	. . set waiterCnt=waiterCnt+1
-	. . set lockData("locks",lockCnt,"waiters",waiterCnt,"pid")=$piece($piece(lockBuffer(cnt),"=",2)," ",2)
-	. if $extract(lockBuffer(cnt),1)="^" do
-	. . ;Lock found
-	. . set lockCnt=lockCnt+1,waiter=0
-	. . set lockData("locks",lockCnt,"node")=$piece(lockBuffer(cnt)," ")
-	. . set lockData("locks",lockCnt,"pid")=$piece(lockBuffer(cnt)," ",5)
-	;
-	do parseLockSpaceInfo(lockBuffer(cnt))
-	set cnt=cnt+$select($find(lockBuffer(cnt+1),"%YDB-I-NOLOCKMATCH"):2,1:1)
-	do parseLockSpaceUse(lockBuffer(cnt))
-	;
-getLocksDataQuit
-	quit *lockData
-	;
-	;
-parseLockSpaceInfo:(string)
-	set lockData("processesOnQueue")=$extract($piece($piece(string,":",4),";"),2,999)
-	set lockData("slotsInUse")=$extract($piece($piece(string,":",5),";"),2,999)
-	set lockData("slotsBytesInUse")=$extract($piece($piece(string,":",6),";"),2,999)
-	;
-	quit
-	;
-	;
-parseLockSpaceUse:(string)
-	set lockData("estimatedFreeLockSpace")=$extract($piece(string,":",2),2,999)
-	;
-	quit
-	;
-	;
-; ****************************************************************
-; tryOpenRegion(regionName)
-; ;
-; PARAMS:
-; regionName		string
-; RETURNS:
-; >0				OK
-; 0					Could NOT open the region
-; ****************************************************************
-tryOpenRegion(regionName)
-	new ret
-	new $ztrap,$etrap
-	;
-	set $ztrap="goto tryOpenRegionQuit"
-	set ret=0
-	;
-	set ret=$$^%PEEKBYNAME("sgmnt_data.blk_size",regionName)
-	;
-tryOpenRegionQuit
-	quit ret
-	;
-	;
-; ****************************************************************
 ; getNames(regionName)
 ; ;
 ; PARAMS:
@@ -936,9 +856,9 @@ getNames:(regionName)
 ; ****************************************************************
 ; backupGld
 ; creates a backup of the .gld file
-; 
+;
 ; PARAMS:
-; 
+;
 ; RETURNS:
 ; array with 1 or error subscripts
 ; ****************************************************************
@@ -960,3 +880,24 @@ backupGld()
 	;
 	quit *res
 	;
+	;
+; ****************************************************************
+; tryOpenRegion(regionName)
+; ;
+; PARAMS:
+; regionName		string
+; RETURNS:
+; >0				OK
+; 0					Could NOT open the region
+; ****************************************************************
+tryOpenRegion(regionName)
+	new ret
+	new $ztrap,$etrap
+	;
+	set $ztrap="goto tryOpenRegionQuit"
+	set ret=0
+	;
+	set ret=$$^%PEEKBYNAME("sgmnt_data.blk_size",regionName)
+	;
+tryOpenRegionQuit
+	quit ret

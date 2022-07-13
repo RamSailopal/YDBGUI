@@ -51,6 +51,17 @@ async function clickOnElement(elem, x = null, y = null) {
     await page.mouse.click(rect.left + _x, rect.top + _y);
 }
 
+async function dblClickOnElement(elem, x = null, y = null) {
+    const rect = await page.evaluate(el => {
+        const {top, left, width, height} = el.getBoundingClientRect();
+        return {top, left, width, height};
+    }, elem);
+    const _x = x !== null ? x : rect.width / 2;
+    const _y = y !== null ? y : rect.height / 2;
+
+    await page.mouse.click(rect.left + _x, rect.top + _y, {clickCount: 2});
+}
+
 const randomRegionName = () => {
     return 'R' + randomBytes(6).toString('hex').toUpperCase()
 };
@@ -108,3 +119,4 @@ module.exports._REST = _REST;
 module.exports._RESTpost = _RESTpost;
 module.exports._RESTdelete = _RESTdelete;
 module.exports.clickOnElement = clickOnElement;
+module.exports.dblClickOnElement = dblClickOnElement;

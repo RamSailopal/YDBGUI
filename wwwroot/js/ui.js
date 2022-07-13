@@ -58,6 +58,9 @@ app.ui.addHandlers = () => {
     // regionCreateDbFile
     app.ui.regionCreateDbFile.init();
 
+    // locksManager
+    app.ui.locksManager.init();
+
     // menu handlers
     app.ui.menu.init();
 };

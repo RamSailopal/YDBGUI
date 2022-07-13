@@ -1141,7 +1141,7 @@ describe("SERVER: Create Region", async () => {
 });
 
 describe("SERVER: Delete Region", async () => {
-    it("Test # 1370: Delete using a bad region name", async () => {
+    it("Test # 1400: Delete using a bad region name", async () => {
 
         // execute the call
         let res = await libs._RESTdelete('regions/idontexist', {}).catch(() => {});
@@ -1150,7 +1150,7 @@ describe("SERVER: Delete Region", async () => {
         expect(error).to.have.string('doesn\'t exist')
     });
 
-    it("Test # 1371: Delete using a null region name", async () => {
+    it("Test # 1401: Delete using a null region name", async () => {
 
         // execute the call
         let res = await libs._RESTdelete('regions/', {}).catch(() => {});
@@ -1159,7 +1159,7 @@ describe("SERVER: Delete Region", async () => {
         expect(error).to.have.string('The parameter "region" is missing or empty')
     });
 
-    it("Test # 1372: Delete an existing region", async () => {
+    it("Test # 1402: Delete an existing region", async () => {
         // WARNING: This test is related to 1325 and it uses the region name for deleting
 
         // execute the call
@@ -1169,7 +1169,7 @@ describe("SERVER: Delete Region", async () => {
         expect(res.result === 'OK').to.be.true;
     });
 
-    it("Test # 1373: Delete an existing region and delete the files", async () => {
+    it("Test # 1403: Delete an existing region and delete the files", async () => {
 
         // get the YDBOCTO region to extract the filenames
         let res = await libs._REST('regions/YDBOCTO');

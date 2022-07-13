@@ -50,6 +50,9 @@ skiplist="COPYING
     wwwroot/css/bootstrap-icons.css
     wwwroot/libs/jquery.3.5.1/jquery.3.5.1.min.js
     wwwroot/libs/popper.1.16.1/popper.min.js
+    wwwroot/libs/jstree-3.3.12/jstree.min.js
+    wwwroot/libs/jstree-3.3.12/themes/default/style.min.css
+    package.json"
     package.json
     ydbcmake/CMakeDetermineMCompiler.cmake
     ydbcmake/CMakeMCompiler.cmake.in

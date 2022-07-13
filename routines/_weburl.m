@@ -32,4 +32,7 @@ URLMAP ;
 	;;POST api/regions/validatePath validatePath^%ydbguiRest
 	;;POST api/regions/add addRegion^%ydbguiRest
 	;;POST api/regions/{region}/edit editRegion^%ydbguiRest
+	;;GET api/regions/locks/getAll getAllLocks^%ydbguiRest
+	;;POST api/regions/locks/clear clearLock^%ydbguiRest
+	;;POST api/os/processes/{pid}/terminate terminateProcess^%ydbguiRest
 	;;zzzzz
