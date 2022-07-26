@@ -50,7 +50,12 @@ skiplist="COPYING
     wwwroot/css/bootstrap-icons.css
     wwwroot/libs/jquery.3.5.1/jquery.3.5.1.min.js
     wwwroot/libs/popper.1.16.1/popper.min.js
-    package.json"
+    package.json
+    ydbcmake/CMakeDetermineMCompiler.cmake
+    ydbcmake/CMakeMCompiler.cmake.in
+    ydbcmake/CMakeMInformation.cmake
+    ydbcmake/CMakeTestMCompiler.cmake
+    ydbcmake/FindYOTTADB.cmake"
     for skipfile in $skiplist; do
 	if [ "$file" = "$skipfile" ]; then
 		exit 1

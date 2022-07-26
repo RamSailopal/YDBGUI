@@ -497,7 +497,7 @@ delete(regionName,deleteFiles)
 	. merge res("error","dump")=verifyStatus
 	;
 	; need to delete files ?
-	if deleteFiles do  go:$get(res("result"))="ERROR" deleteQuit
+	if deleteFiles do  goto:$get(res("result"))="ERROR" deleteQuit
 	. set dbFilename=$get(regionData("dbFile","flags","file"))
 	. set journalFilename=$get(regionData("journal","flags","file"))
 	. ;
@@ -670,7 +670,7 @@ executeGdeQuit
 	;
 	;
 buildSegmentCommand:(body,mupipFlag) ; Builds a command to update the segment in add and edit mode
-	. . . . . . . . . . . . . . . . . . ; Only the edit mode uses the mupipFlag set
+	; Only the edit mode uses the mupipFlag set
 	new ix,field,cmd
 	;
 	set cmd=""

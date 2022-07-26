@@ -44,5 +44,5 @@ ydb-gui-test:
   image: docker:latest
   stage: test
   script:
-    - docker build --pull -t yottadb/yottadbgui:latest -f Dockerfile_test .
-    - docker run yottadb/yottadbgui:latest
+    - docker build --pull -t yottadb/yottadbgui .
+    - docker run --rm -v $PWD/wwwroot:/YDBGUI/wwwroot:rw yottadb/yottadbgui test
