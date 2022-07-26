@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y unzip wget
 # Get the M Web Server code and copy routines from it.
 RUN mkdir /tmp/mws && \
 	cd /tmp/mws && \
-	wget -q https://github.com/shabiel/M-Web-Server/archive/refs/tags/1.1.3.zip -O mws.zip && \
+	wget -q https://github.com/shabiel/M-Web-Server/archive/refs/tags/1.1.4.zip -O mws.zip && \
 	mkdir -p /YDBGUI/routines/ && \
 	unzip -q mws.zip && find . -name '_*.m' -exec cp {} /YDBGUI/routines/ \; && \
 	rm -r /tmp/mws
