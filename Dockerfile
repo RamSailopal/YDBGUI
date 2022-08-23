@@ -30,7 +30,6 @@ RUN npm install
 COPY CMakeLists.txt /build/CMakeLists.txt
 COPY routines /build/routines/
 COPY wwwroot  /build/wwwroot/
-COPY ydbcmake /build/ydbcmake/
 RUN cd /build/ && mkdir build && cd build && cmake .. && make && make install
 
 COPY docker-configuration/docker-startup.sh /YDBGUI/docker-startup.sh

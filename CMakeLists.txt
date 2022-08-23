@@ -9,39 +9,41 @@
 #	the license, please stop and do not read further.	#
 #                                                               #
 #################################################################
-project(YDBGUI C)
-cmake_minimum_required(VERSION 3.2)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/ydbcmake/")
+# Prelim
+cmake_minimum_required(VERSION 3.14)
 include(FetchContent)
-find_package(YOTTADB REQUIRED)
-
 FetchContent_Declare(mwebserver
 	GIT_REPOSITORY https://github.com/shabiel/M-Web-Server.git
-	GIT_TAG        45f50be210d82f7516c501a69067f046d5750eab
+	GIT_TAG        a10f9c3acabd328d115aee12035b395379560188
 	)
-FetchContent_MakeAvailable(mwebserver)
+FetchContent_Declare(YDBCMake
+	GIT_REPOSITORY	https://gitlab.com/YottaDB/Tools/YDBCMake.git
+	GIT_TAG		ec3ed1781a8a9ebeee67cd524029da5176183e8b
+)
+# The following sets ydbcmake_SOURCE_DIR
+FetchContent_MakeAvailable(mwebserver YDBCMake)
+message(STATUS "YDBCMake Source Directory: ${ydbcmake_SOURCE_DIR}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ydbcmake_SOURCE_DIR}/ydbcmake/")
 
-include(ExternalProject)
-ExternalProject_Add(gui-m
-	PREFIX		gui-m
-	BUILD_ALWAYS	1  # Always rescan source directory for changes
-	SOURCE_DIR	${CMAKE_SOURCE_DIR}/routines/
-	CMAKE_ARGS	-DM_UTF8_MODE=0 -DM_EMBED_SOURCE=ON
-	INSTALL_COMMAND	"" # Disable Install in the External Project portion
-	)
-ExternalProject_Get_Property(gui-m binary_dir)
-install(FILES ${binary_dir}/_ydbgui.so DESTINATION "${YOTTADB_PLUGIN_PREFIX}/o")
+project(YDBGUI M)
+find_package(YOTTADB REQUIRED)
 
-if(EXISTS ${YOTTADB_INCLUDE_DIRS}/utf8)
-	ExternalProject_Add(gui-utf8
-		PREFIX		gui-utf8
-		BUILD_ALWAYS	1  # Always rescan source directory for changes
-		SOURCE_DIR	${CMAKE_SOURCE_DIR}/routines/
-		CMAKE_ARGS	-DM_UTF8_MODE=1 -DM_EMBED_SOURCE=ON
-		INSTALL_COMMAND	"" # Disable Install in the External Project portion
-		)
-	ExternalProject_Get_Property(gui-utf8 binary_dir)
-	install(FILES ${binary_dir}/_ydbgui.so DESTINATION "${YOTTADB_PLUGIN_PREFIX}/o/utf8")
-endif()
+message(STATUS "Install Location: ${YOTTADB_M_PLUGIN_DIR}")
 
-install(DIRECTORY wwwroot/ DESTINATION ${YOTTADB_C_PLUGIN_DIR}/etc/ydbgui)
+set(source_files
+	routines/_weburl.m
+	routines/_ydbgui.m
+	routines/_ydbguiGde.m
+	routines/_ydbguiRegions.m
+	routines/_ydbguiRest.m
+	routines/_ydbguiUtils.m
+	routines/_ydbguiLocks.m
+)
+
+# .so file for plugin
+add_ydb_library(_ydbgui SOURCES ${source_files})
+
+# Install shared library
+install_ydb_library(_ydbgui)
+
+install(DIRECTORY wwwroot/ DESTINATION ${YOTTADB_PLUGIN_PREFIX}/etc/ydbgui)

@@ -52,12 +52,6 @@ skiplist="COPYING
     wwwroot/libs/jstree-3.3.12/jstree.min.js
     wwwroot/libs/jstree-3.3.12/themes/default/style.min.css
     package.json"
-    package.json
-    ydbcmake/CMakeDetermineMCompiler.cmake
-    ydbcmake/CMakeMCompiler.cmake.in
-    ydbcmake/CMakeMInformation.cmake
-    ydbcmake/CMakeTestMCompiler.cmake
-    ydbcmake/FindYOTTADB.cmake"
     for skipfile in $skiplist; do
 	if [ "$file" = "$skipfile" ]; then
 		exit 1
