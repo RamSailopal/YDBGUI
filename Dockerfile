@@ -26,7 +26,7 @@ WORKDIR /YDBGUI
 COPY package.json /YDBGUI/package.json
 RUN npm install
 
-# Install GUI 
+# Install GUI
 COPY CMakeLists.txt /build/CMakeLists.txt
 COPY routines /build/routines/
 COPY wwwroot  /build/wwwroot/
@@ -37,7 +37,7 @@ COPY docker-configuration/dev /YDBGUI/dev
 # Default environment
 RUN echo ". /YDBGUI/dev" >> $HOME/.bashrc
 # Mount point directories. Empty by default.
-RUN mkdir /YDBGUI/routines /YDBGUI/mwebserver /YDBGUI/objects /YDBGUI/wwwroot 
+RUN mkdir /YDBGUI/routines /YDBGUI/mwebserver /YDBGUI/objects /YDBGUI/wwwroot
 
 EXPOSE 8089
 ENTRYPOINT ["/YDBGUI/docker-startup.sh"]

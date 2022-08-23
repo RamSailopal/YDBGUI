@@ -1,6 +1,6 @@
 {
   "name": "ydb-gui",
-  "version": "0.7.0",
+  "version": "0.7.1",
 
   "description": "YottaDB Administration GUI",
   "productName": "YottaDB",

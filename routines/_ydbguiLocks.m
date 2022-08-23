@@ -48,7 +48,7 @@ getLocksData(regionName)
 	. if $find(lockBuffer(cnt),"Owned")'=0 do
 	. . ;Lock found
 	. . set lockCnt=lockCnt+1,waiter=0
-	. . set lockData("locks",lockCnt,"node")=$piece(lockBuffer(cnt)," Owned")
+	. . set lockData("locks",lockCnt,"node")=$select($translate($piece(lockBuffer(cnt)," Owned")," ")="":lockBuffer(cnt-1),1:$piece(lockBuffer(cnt)," Owned"))
 	. . set lockData("locks",lockCnt,"pid")=$piece($piece(lockBuffer(cnt),"PID= ",2)," ")
 	;
 	if $get(lockBuffer(cnt))'="" do
@@ -136,9 +136,13 @@ getAll()
 	. if $data(shellResult(1)) do
 	. . set *pidData=$$SPLIT^%MPIECE(shellResult(1))
 	. . set res("pids",pidCnt,"PPID")=$get(pidData(3))
-	. . set res("pids",pidCnt,"userId")=$get(pidData(1))
 	. . set res("pids",pidCnt,"processName")=$get(pidData(11))
 	. . set res("pids",pidCnt,"time")=$get(pidData(10))
+	. ; get full pid
+	. kill shellResult
+	. set ret=$$runShell^%ydbguiUtils("stat -c ""%u"" /proc/"_pid_"/ | id -nu",.shellResult)
+	. if ret'=0 set res("pids",pidCnt,"userId")="n/a"
+	. else  set res("pids",pidCnt,"userId")=shellResult(1)
 	;
 	kill res("tmp")
 	set res("result")="OK"
@@ -180,3 +184,6 @@ clear(namespace)
 	;
 clearQuit
 	quit *res
+	;
+	;
+	;

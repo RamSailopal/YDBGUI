@@ -617,19 +617,30 @@ app.ui.regionShared.computeJournalBasePath = () => {
     let defaultRegion = false;
     let secondaryRegion = false;
     let journalBasePath;
+    let firstRegion = null;
 
     Object.keys(app.system.regions).forEach((regionName) => {
         const region = app.system.regions[regionName];
+
+        if (firstRegion === null) firstRegion = region
 
         if (region.journal !== undefined) {
             if (secondaryRegion === false && region.journal.flags.file !== undefined && region.journal.flags.file !== '') secondaryRegion = region;
             if (regionName === 'DEFAULT' && region.journal.flags.file !== undefined && region.journal.flags.file !== '') defaultRegion = region;
         }
     });
+
     if (defaultRegion !== false) secondaryRegion = defaultRegion;
 
-    journalBasePath = secondaryRegion.journal.flags.file.split('/');
-    journalBasePath = journalBasePath.slice(0, journalBasePath.length - 1).join('/') + '/';
+    if (secondaryRegion.journal !== undefined) {
+        journalBasePath = secondaryRegion.journal.flags.file.split('/');
+        journalBasePath = journalBasePath.slice(0, journalBasePath.length - 1).join('/') + '/';
+
+    } else {
+        journalBasePath = firstRegion.dbFile.flags.file.split('/');
+        journalBasePath = journalBasePath.slice(0, journalBasePath.length - 1).join('/') + '/';
+
+    }
 
     return journalBasePath
 };

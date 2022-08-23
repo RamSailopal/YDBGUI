@@ -474,11 +474,13 @@ app.ui.locksManager.processClick = id => {
         btnLocksManagerTerminateProcess
             .addClass('disabled')
             .attr('disabled', true)
+            .text('Terminate process...')
 
     } else {
         btnLocksManagerTerminateProcess
             .removeClass('disabled')
             .attr('disabled', false)
+            .text(buttonEnabled.terminateProcess.indexOf('W') > -1 ? 'Terminate waiter...' : 'Terminate lock owner...')
     }
 
     app.ui.locksManager.currentMask = buttonEnabled;
