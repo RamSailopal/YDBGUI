@@ -25,7 +25,7 @@
 getLocksData(regionName)
 	new lockBuffer,ret,cnt,lockCnt,waiterCnt,lockData,cnt,noRegion
 	;
-	set ret=$$runShell^%ydbguiUtils("lke show -all -wait -region="_regionName,.lockBuffer)
+	set ret=$$runShell^%ydbguiUtils("$ydb_dist/lke show -all -wait -region="_regionName,.lockBuffer)
 	quit:ret'=0 ret
 	;
 	if $find($get(lockBuffer(3)),"%YDB-E-NOREGION") goto getLocksDataQuit

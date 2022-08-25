@@ -66,7 +66,7 @@ getRegionStruct(regionName,regionData,warnings)
 	. . set regionData("dbFile","flags","fileExist")=$select(segmentFilename="":"false",1:"true")
 	. . ;
 	. . ;execute FHEAD and try to read the header
-	. . set ret=$$runShell^%ydbguiUtils("mupip dumpfhead -r "_regionName,.fhead)
+	. . set ret=$$runShell^%ydbguiUtils("$ydb_dist/mupip dumpfhead -r "_regionName,.fhead)
 	. . if ret'=0 do
 	. . . ; error while executing dumpfhead
 	. . . set warnings($increment(warnings))="Error occurred while fetching the FHEAD for region: "_regionName_" error is: "_ret

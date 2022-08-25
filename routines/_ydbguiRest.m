@@ -247,7 +247,7 @@ extendRegion(arguments,body,resJson)
 	. set res("result")="ERR"
 	. set res("error","description")="The parameter ""blocks"" is missing or not valid"
 	;
-	set mupipCmd="mupip EXTEND "_region_" -BLOCKS="_blocks
+	set mupipCmd="$ydb_dist/mupip EXTEND "_region_" -BLOCKS="_blocks
 	set ret=$$runShell^%ydbguiUtils(mupipCmd,.shellData)
 	;
 	if ret'=0 do  goto extendRegionQuit
@@ -298,7 +298,7 @@ journalSwitch(arguments,body,resJson)
 	. set res("result")="ERR"
 	. set res("error","description")="The parameter ""turn"" must be either ""on"" or ""off"""
 	;
-	set mupipCmd="mupip SET -JOURNAL="_turn_" -region "_region
+	set mupipCmd="$ydb_dist/mupip SET -JOURNAL="_turn_" -region "_region
 	set ret=$$runShell^%ydbguiUtils(mupipCmd,.shellData)
 	;
 	if ret'=0 do  goto journalSwitchQuit
@@ -338,7 +338,7 @@ createDb(arguments,body,resJson)
 	. set res("result")="ERR"
 	. set res("error","description")="The parameter ""region"" is missing or empty"
 	;
-	set mupipCmd="mupip CREATE -REGION="_region
+	set mupipCmd="$ydb_dist/mupip CREATE -REGION="_region
 	set ret=$$runShell^%ydbguiUtils(mupipCmd,.shellData)
 	;
 	if ret=84 do  goto createDbQuit
