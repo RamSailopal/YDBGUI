@@ -28,8 +28,8 @@ YottaDB GUI
 * The Linux utilities `df`, `stat`, `rm`, `cp`, `fuser`, `grep`
 
 ## Installation
-Install is done using cmake in a build directory on the top directory, and then
-running make and make install (using sudo if needed). Here's an example of how
+Installation is done using cmake in the build directory, created in the source directory,
+and then running make and make install (using sudo if needed). Here's an example of how
 to do it:
 
 ```
