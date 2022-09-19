@@ -26,12 +26,14 @@ services:
 
 sast:
   stage: test
+  interruptible: true
 include:
   - template: Security/SAST.gitlab-ci.yml
 
 commit-verify:
   image: ubuntu:20.04
   stage: build
+  interruptible: true
   script:
     - apt-get update
     - apt-get install -yq git wget gnupg
@@ -43,6 +45,7 @@ commit-verify:
 ydb-gui-test:
   image: docker:latest
   stage: test
+  interruptible: true
   script:
     - docker build --pull -t yottadb/yottadbgui .
     - docker run --rm -v $PWD/wwwroot:/YDBGUI/wwwroot:rw yottadb/yottadbgui test
