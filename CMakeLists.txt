@@ -16,9 +16,12 @@ FetchContent_Declare(mwebserver
 	GIT_REPOSITORY https://github.com/shabiel/M-Web-Server.git
 	GIT_TAG        a10f9c3acabd328d115aee12035b395379560188
 	)
+# The GIT_TAG below is, at the time of this writing, the latest commit in YDBCMake.
+# It is fixed at that point to ensure reproducible builds.
+# Keep this periodically up to date with future YDBCMake commits.
 FetchContent_Declare(YDBCMake
 	GIT_REPOSITORY	https://gitlab.com/YottaDB/Tools/YDBCMake.git
-	GIT_TAG		ec3ed1781a8a9ebeee67cd524029da5176183e8b
+	GIT_TAG		9ce1b476013e753b5c92ce510258a4ef8d04f0c5
 )
 # The following sets ydbcmake_SOURCE_DIR
 FetchContent_MakeAvailable(mwebserver YDBCMake)
