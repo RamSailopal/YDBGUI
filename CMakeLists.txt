@@ -21,7 +21,7 @@ FetchContent_Declare(mwebserver
 # Keep this periodically up to date with future YDBCMake commits.
 FetchContent_Declare(YDBCMake
 	GIT_REPOSITORY	https://gitlab.com/YottaDB/Tools/YDBCMake.git
-	GIT_TAG		c0458d5bd2b672b12c4b73cc47e2221146a40502
+	GIT_TAG		f26f194fb30c57c8d3667fbc35f01582242cdaec
 )
 # The following sets ydbcmake_SOURCE_DIR
 FetchContent_MakeAvailable(mwebserver YDBCMake)
