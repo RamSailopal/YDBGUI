@@ -7,7 +7,7 @@
   "author": "YottaDB Developers <info@yottadb.com>",
   "license": "AGPL-3.0-only",
   "scripts": {
-    "test": "mocha wwwroot/test/bootstrap.js --recursive --timeout=300000 --bail wwwroot/test/test_files",
+    "test": "mocha wwwroot/test/bootstrap.js --recursive --timeout=300000 --bail",
     "maketestdocs": "node wwwroot/test/buildDocs.js"
   },
   "dependencies": {

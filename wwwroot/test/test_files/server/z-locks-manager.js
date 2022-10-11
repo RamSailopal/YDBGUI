@@ -249,7 +249,6 @@ describe("SERVER: Get All Locks", async () => {
 
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
-        console.dir(res, {depth: 20})
 
         expect(res.locks[0].namespace === '^test("test with spaces")').to.be.true;
 
@@ -362,6 +361,7 @@ describe("SERVER: Terminate process", async () => {
 
         isObject = typeof res === 'object';
         expect(isObject).to.be.true;
+        await libs.delay(100);
 
         try {
             const shellRes = execSync('ps -p ' + pid).toString();

@@ -10,6 +10,8 @@
 #	the license, please stop and do not read further.	#
 #                                                               #
 #################################################################
+# $1 = test or shell/bash or server/[none]
+# $2 = test file (optional); otherwise, entire test suite is run
 source /YDBGUI/dev
 
 if [ "$1" = "test" ]; then 
@@ -21,7 +23,11 @@ if [ "$1" = "test" ]; then
 	yottadb -run job^%ydbgui
 	echo "Running tests..."
 	echo "Ctrl-C twice to stop..."
-	exec npm test
+	if [ -n "$2" ]; then
+		exec npm test -- $2
+	else
+		exec npm test -- wwwroot/test/test_files
+	fi
 elif [ "$1" = "shell" ] || [ "$1" = "bash" ]; then
 	echo "Starting shell..."
 	exec /bin/bash
