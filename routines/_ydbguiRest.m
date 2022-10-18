@@ -668,7 +668,7 @@ clearLockQuit
 ; resJson			array byRef
 ; arguments			array byRef
 ; ****************************************************************
-restart
+restart(resJson,arguments)
 	;
 	set res("result")="OK"
 	quit ""
