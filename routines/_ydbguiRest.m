@@ -671,7 +671,6 @@ clearLockQuit
 restart
 	;
 	S action=$G(^SYS("restart"))
-	; I action'="" D @action
 	H 10
 	set res("result")="Restarted"
 	;
