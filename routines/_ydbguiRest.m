@@ -670,6 +670,8 @@ clearLockQuit
 ; ****************************************************************
 restart(resJson,arguments)
 	;
+	Set action=$G(^SYS("restart"))
+	If action'="" D @action
 	set res("status")="Restarted"
 	set res("result")="OK"
 	;
