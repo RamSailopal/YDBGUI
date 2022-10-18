@@ -670,9 +670,8 @@ clearLockQuit
 ; ****************************************************************
 restart
 	;
-	S action=$G(^SYS("restart"))
-	H 10
 	set res("result")="OK"
+	quit ""
 	;
 terminateProcess(arguments,bodyJson,resJson)
 	new res,jsonErr,pid,ret,shellResult
