@@ -670,9 +670,16 @@ clearLockQuit
 ; ****************************************************************
 restart(resJson,arguments)
 	;
+	set res("status")="Restarted"
 	set res("result")="OK"
-	quit ""
 	;
+restartQuit
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""
 terminateProcess(arguments,bodyJson,resJson)
 	new res,jsonErr,pid,ret,shellResult
 	;
