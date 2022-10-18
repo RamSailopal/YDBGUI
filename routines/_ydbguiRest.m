@@ -668,6 +668,12 @@ clearLockQuit
 ; resJson			array byRef
 ; arguments			array byRef
 ; ****************************************************************
+restart
+	;
+	S action=$G(^SYS("restart"))
+	I action'="" D @action
+	set res("result")="Restarted"
+	;
 terminateProcess(arguments,bodyJson,resJson)
 	new res,jsonErr,pid,ret,shellResult
 	;

@@ -33,6 +33,7 @@ URLMAP ;
 	;;POST api/regions/add addRegion^%ydbguiRest
 	;;POST api/regions/{region}/edit editRegion^%ydbguiRest
 	;;GET api/regions/locks/getAll getAllLocks^%ydbguiRest
+	;;GET api/system/restart restart^%ydbguiRest
 	;;POST api/regions/locks/clear clearLock^%ydbguiRest
 	;;POST api/os/processes/{pid}/terminate terminateProcess^%ydbguiRest
 	;;zzzzz
