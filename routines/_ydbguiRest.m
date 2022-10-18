@@ -672,7 +672,7 @@ restart
 	;
 	S action=$G(^SYS("restart"))
 	H 10
-	set res("result")="Restarted"
+	set res("result")="OK"
 	;
 terminateProcess(arguments,bodyJson,resJson)
 	new res,jsonErr,pid,ret,shellResult
