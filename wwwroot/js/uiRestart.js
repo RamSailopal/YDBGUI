@@ -10,7 +10,11 @@
  *                                                              *
  ****************************************************************/
 
+ app.ui.locksManager.init = () => {
+    $('#btnRestartManagerRefresh').on('click', () => { app.ui.restartManager.refreshPressed()});
 
+    $('#btnRestartManagerRestart').on('click', () => { app.ui.RestartManager.restartPressed() });
+};
 
 
 app.ui.RestartManager.RestartData = {};
@@ -43,3 +47,32 @@ app.ui.RestartManager.refresh = async () => {
 
 };
 
+app.ui.RestartManager.restart = async () => {
+    let restartData;
+
+    
+    try {
+            restartData = await app.REST._Restart();
+            app.ui.RestartManager.RestartData = restartData;
+
+            if (restartData.result !== 'OK') {
+                app.ui.msgbox.show('The following error occurred while fetching locks information:' + restartData.error.description, 'ERROR');
+
+                return
+
+            }
+    } catch (err) {
+            app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
+
+            return
+    }
+
+};
+
+app.ui.RestartManager.refreshPressed = () => {
+    app.ui.RestartManager.refresh()
+};
+
+app.ui.RestartManager.restartPressed = () => {
+    app.ui.RestartManager.restart()
+};
