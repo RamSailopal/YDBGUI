@@ -90,7 +90,7 @@ app.ui.restartManager.populateStatus = restartData => {
     const statusData = [];            
     statusData.push({
                 id: '',
-                text: '<strong class="locks-manager-font-inconsolata">' + status + '</strong>',
+                text: '<strong class="locks-manager-font-inconsolata">Status - ' + status + '</strong>',
                 icon: '',
                 children: [
                 ]
