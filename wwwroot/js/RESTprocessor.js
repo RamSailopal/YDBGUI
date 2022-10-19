@@ -54,6 +54,40 @@ app.REST._getAllLocks = () => {
 };
 
 // ********************************
+// restart system - status
+// ********************************
+
+app.REST._restartStatus = () => {
+    return new Promise(function (resolve, reject) {
+
+        app.REST.execute('get', '/system/restartStatus', {}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+// ********************************
+// restart system
+// ********************************
+
+app.REST._restart = () => {
+    return new Promise(function (resolve, reject) {
+
+        app.REST.execute('get', '/system/restart', {}, data => {
+            resolve(data)
+
+        }, err => {
+            reject(err)
+        })
+    })
+};
+
+
+
+// ********************************
 // Add region
 // ********************************
 app.REST._addRegion = (payload) => {
