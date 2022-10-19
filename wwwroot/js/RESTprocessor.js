@@ -57,7 +57,7 @@ app.REST._getAllLocks = () => {
 // restart system - status
 // ********************************
 
-app.REST._restartStatus = () => {
+app.REST._RestartStatus = () => {
     return new Promise(function (resolve, reject) {
 
         app.REST.execute('get', 'system/restartStatus', {}, data => {
@@ -73,7 +73,7 @@ app.REST._restartStatus = () => {
 // restart system
 // ********************************
 
-app.REST._restart = () => {
+app.REST._Restart = () => {
     return new Promise(function (resolve, reject) {
 
         app.REST.execute('get', 'system/restart', {}, data => {
