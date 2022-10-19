@@ -126,6 +126,7 @@ let app = {
         regionFilename: {},
 
         locksManager: {},
+        restartManager: {},
 
         help: {},
         tabs: {},
