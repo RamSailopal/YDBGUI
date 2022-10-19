@@ -77,3 +77,36 @@ app.ui.restartManager.refreshPressed = () => {
 app.ui.restartManager.restartPressed = () => {
     app.ui.restartManager.restart()
 };
+
+app.ui.restartManager.populateStatus = restartData => {
+
+    let status = locksData.status;
+    const statusData = [];            
+    statusData.push({
+                id: '',
+                text: '<strong class="locks-manager-font-inconsolata">' + status + '</strong>',
+                icon: 'bi-lock-fill',
+                children: [
+                ]
+            })
+
+    app.ui.restartManager.initTree($("#treeRestartManagerByStatus"), statusData);
+};
+
+app.ui.restartManager.initTree = ($tree, treeData) => {
+    $tree
+        .jstree("destroy")
+        .jstree({
+            'core': {
+                'check_callback': true,
+                //'dblclick_toggle': false,
+                'multiple': false,
+                'data': treeData,
+                'themes': {
+                    'name': 'proton',
+                }
+            },
+        });
+};
+
+app.ui.restartManager.populateStatus(restartData);
