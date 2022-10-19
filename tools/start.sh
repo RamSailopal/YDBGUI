@@ -13,6 +13,7 @@ make install
 cp /usr/local/YDBGUI/build/_ydbgui.so /opt/yottadb/master_x86_64/plugin/o/utf8/
 cp /usr/local/YDBGUI/build/_ydbgui.so /opt/yottadb/master_x86_64/plugin/o/
 cp /usr/local/YDBGUI/routines/TESTROUT.m /home/vehu/r/
+source /home/vehu/etc/env
 ydb <<< 'ZL "TESTROUT.m"'
 ydb <<< 'S ^SYS("restart")="RESTART^TESTROUT"'
 echo "Starting vista processes"
