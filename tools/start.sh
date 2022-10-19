@@ -13,8 +13,11 @@ make install
 cp /usr/local/YDBGUI/build/_ydbgui.so /opt/yottadb/master_x86_64/plugin/o/utf8/
 cp /usr/local/YDBGUI/build/_ydbgui.so /opt/yottadb/master_x86_64/plugin/o/
 cp /usr/local/YDBGUI/routines/TESTROUT.m /home/vehu/r/
+cp -f /usr/local/YDBGUI/wwwroot/html/* /opt/yottadb/master_x86_64/plugin/etc/ydbgui/html/
+cp -f /usr/local/YDBGUI/wwwroot/js/* /opt/yottadb/master_x86_64/plugin/etc/ydbgui/js/
 source /home/vehu/etc/env
 ydb <<< 'ZL "TESTROUT.m"'
+sleep 1
 ydb <<< 'S ^SYS("restart")="RESTART^TESTROUT"'
 echo "Starting vista processes"
 /etc/init.d/vehuvista start
