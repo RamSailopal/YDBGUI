@@ -10,7 +10,7 @@
  *                                                              *
  ****************************************************************/
 
- app.ui.locksManager.init = () => {
+ app.ui.RestartManager.init = () => {
     $('#btnRestartManagerRefresh').on('click', () => { app.ui.restartManager.refreshPressed()});
 
     $('#btnRestartManagerRestart').on('click', () => { app.ui.RestartManager.restartPressed() });
