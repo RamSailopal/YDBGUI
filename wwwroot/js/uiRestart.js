@@ -46,6 +46,8 @@ app.ui.restartManager.refresh = async () => {
             return
     }
 
+    app.ui.restartManager.populateStatus(restartData);
+
 };
 
 app.ui.restartManager.restart = async () => {
@@ -68,7 +70,11 @@ app.ui.restartManager.restart = async () => {
             return
     }
 
+    app.ui.restartManager.populateStatus(restartData);
+
 };
+
+
 
 app.ui.restartManager.refreshPressed = () => {
     app.ui.restartManager.refresh()
@@ -108,5 +114,3 @@ app.ui.restartManager.initTree = ($tree, treeData) => {
             },
         });
 };
-
-app.ui.restartManager.populateStatus(restartData);
