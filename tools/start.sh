@@ -7,6 +7,7 @@ echo "Starting sshd"
 test -d /usr/local/YDBGUI || (cd /usr/local && git clone https://github.com/RamSailopal/YDBGUI.git)
 cd /usr/local/YDBGUI
 git pull
+test -d /usr/local/YDBGUI/build || mkdir /usr/local/YDBGUI/build
 cd /usr/local/YDBGUI/build
 cmake ..
 make
