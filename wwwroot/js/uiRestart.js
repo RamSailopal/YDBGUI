@@ -14,7 +14,7 @@
 app.ui.restartManager.init = () => {
     $('#btnRestartManagerRefresh').on('click', () => { app.ui.restartManager.refreshPressed()});
 
-    $('#btnRestartManagerRestart').on('click', () => { app.ui.RestartManager.restartPressed() });
+    $('#btnRestartManagerRestart').on('click', () => { app.ui.restartManager.restartPressed() });
 };
 
 
@@ -91,7 +91,7 @@ app.ui.restartManager.populateStatus = restartData => {
     statusData.push({
                 id: '',
                 text: '<strong class="locks-manager-font-inconsolata">' + status + '</strong>',
-                icon: 'bi-lock-fill',
+                icon: '',
                 children: [
                 ]
             })
