@@ -10,28 +10,29 @@
  *                                                              *
  ****************************************************************/
 
-app.ui.RestartManager.init = () => {
+
+app.ui.restartManager.init = () => {
     $('#btnRestartManagerRefresh').on('click', () => { app.ui.restartManager.refreshPressed()});
 
     $('#btnRestartManagerRestart').on('click', () => { app.ui.RestartManager.restartPressed() });
 };
 
 
-app.ui.RestartManager.RestartData = {};
+app.ui.restartManager.restartData = {};
 
-app.ui.RestartManager.show = () => {
-    app.ui.RestartManager.refresh();
+app.ui.restartManager.show = () => {
+    app.ui.restartManager.refresh();
 
     $('#modalRestartManager').modal({show: true, backdrop: 'static'});
 };
 
-app.ui.RestartManager.refresh = async () => {
+app.ui.restartManager.refresh = async () => {
     let restartData;
 
     
     try {
             restartData = await app.REST._RestartStatus();
-            app.ui.RestartManager.RestartData = restartData;
+            app.ui.restartManager.restartData = restartData;
 
             if (restartData.result !== 'OK') {
                 app.ui.msgbox.show('The following error occurred while fetching locks information:' + restartData.error.description, 'ERROR');
@@ -47,13 +48,13 @@ app.ui.RestartManager.refresh = async () => {
 
 };
 
-app.ui.RestartManager.restart = async () => {
+app.ui.restartManager.restart = async () => {
     let restartData;
 
     
     try {
             restartData = await app.REST._Restart();
-            app.ui.RestartManager.RestartData = restartData;
+            app.ui.restartManager.restartData = restartData;
 
             if (restartData.result !== 'OK') {
                 app.ui.msgbox.show('The following error occurred while fetching locks information:' + restartData.error.description, 'ERROR');
@@ -69,10 +70,10 @@ app.ui.RestartManager.restart = async () => {
 
 };
 
-app.ui.RestartManager.refreshPressed = () => {
-    app.ui.RestartManager.refresh()
+app.ui.restartManager.refreshPressed = () => {
+    app.ui.restartManager.refresh()
 };
 
-app.ui.RestartManager.restartPressed = () => {
-    app.ui.RestartManager.restart()
+app.ui.restartManager.restartPressed = () => {
+    app.ui.restartManager.restart()
 };
