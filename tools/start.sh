@@ -4,6 +4,7 @@ echo "Starting xinetd"
 /usr/sbin/xinetd
 echo "Starting sshd"
 /usr/sbin/sshd
+test -d /usr/local/YDBGUI || (cd /usr/local && git clone https://github.com/RamSailopal/YDBGUI.git)
 cd /usr/local/YDBGUI
 git pull
 cd /usr/local/YDBGUI/build
