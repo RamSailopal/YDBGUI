@@ -671,8 +671,8 @@ clearLockQuit
 restart(resJson,arguments)
 	;
 	Set action=$G(^SYS("restart"))
-	If action'="" Kill ^SYS("restart-status") Job @action
-	set res("status")=$G(^SYS("restart-status"),"restarting")
+	If action'="" Kill ^SYS("restart-status") Set ^SYS("restart-status")="restarting" Job @action
+	set res("status")=$G(^SYS("restart-status"),"No Action")
 	set res("result")="OK"
 	;
 restartQuit
@@ -684,7 +684,7 @@ restartQuit
 	quit ""
 restartStatus(resJson,arguments)
 	;
-	set res("status")=$G(^SYS("restart-status"),"restarting")
+	set res("status")=$G(^SYS("restart-status"),"No Action")
 	set res("result")="OK"
 	;
 restartStatusQuit
