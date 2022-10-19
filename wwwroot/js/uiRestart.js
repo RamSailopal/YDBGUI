@@ -80,7 +80,7 @@ app.ui.restartManager.restartPressed = () => {
 
 app.ui.restartManager.populateStatus = restartData => {
 
-    let status = locksData.status;
+    let status = restartData.status;
     const statusData = [];            
     statusData.push({
                 id: '',
