@@ -63,6 +63,10 @@ app.ui.addHandlers = () => {
     // locksManager
     app.ui.locksManager.init();
 
+    // restartManager
+
+    app.ui.restartManager.init();
+
     // menu handlers
     app.ui.menu.init();
 };
