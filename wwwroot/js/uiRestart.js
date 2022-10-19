@@ -35,7 +35,7 @@ app.ui.restartManager.refresh = async () => {
             app.ui.restartManager.restartData = restartData;
 
             if (restartData.result !== 'OK') {
-                app.ui.msgbox.show('The following error occurred while fetching locks information:' + restartData.error.description, 'ERROR');
+                app.ui.msgbox.show('The following error occurred while fetching restart Status information:' + restartData.error.description, 'ERROR');
 
                 return
 
@@ -57,7 +57,7 @@ app.ui.restartManager.restart = async () => {
             app.ui.restartManager.restartData = restartData;
 
             if (restartData.result !== 'OK') {
-                app.ui.msgbox.show('The following error occurred while fetching locks information:' + restartData.error.description, 'ERROR');
+                app.ui.msgbox.show('The following error occurred while fetching restart information:' + restartData.error.description, 'ERROR');
 
                 return
 
