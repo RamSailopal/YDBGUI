@@ -34,6 +34,7 @@ URLMAP ;
 	;;POST api/regions/{region}/edit editRegion^%ydbguiRest
 	;;GET api/regions/locks/getAll getAllLocks^%ydbguiRest
 	;;GET api/system/restart restart^%ydbguiRest
+	;;GET api/system/restartStatus restartStatus^%ydbguiRest
 	;;POST api/regions/locks/clear clearLock^%ydbguiRest
 	;;POST api/os/processes/{pid}/terminate terminateProcess^%ydbguiRest
 	;;zzzzz

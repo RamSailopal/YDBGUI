@@ -671,11 +671,23 @@ clearLockQuit
 restart(resJson,arguments)
 	;
 	Set action=$G(^SYS("restart"))
-	If action'="" D @action
-	set res("status")="Restarted"
+	If action'="" Kill ^SYS("restart-status") Job @action
+	set res("status")=$G(^SYS("restart-status"),"restarting")
 	set res("result")="OK"
 	;
 restartQuit
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""
+restartStatus(resJson,arguments)
+	;
+	set res("status")=$G(^SYS("restart-status"),"restarting")
+	set res("result")="OK"
+	;
+restartStatusQuit
 	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
 	if $data(jsonErr) do  quit
 	. ; FATAL, can not convert json
