@@ -1,0 +1,51 @@
+<!-- Locks Manager dialog -->
+<div aria-hidden="true" aria-labelledby="modalLabel" class="modal fade" id="modalRestartManager" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-width-900" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <label class="modal-title" id="modalLabel">System Restart</label>
+                <button aria-label="Close" class="close" data-dismiss="modal" tabindex="-1" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row-12" style="display: flex;">
+                    <!-- Trees -->
+                    <div class="col-9">
+                        <div class="tab-content" id="nav-tabContent" style="padding-top: 13px;">
+                            <!-- by Namespace -->
+                            <div aria-labelledby="nav-home-tab" class="tab-pane fade show active" id="tabRestartManagerByStatus" role="tabpanel">
+                                <div style="overflow-y: scroll; height: 334px">
+                                    <div class="tree" id="treeRestartManagerByStatus"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="col-3">
+                        <br><br>
+                        <div>
+                            <button class="btn btn-outline-info btn-block btn-sm"
+                                    id="btnLocksManagerRefresh"
+                                    type="button">Refresh
+                            </button>
+                        </div>
+                        
+                        <br>
+                        <div>
+                            <button class="btn btn-outline-info btn-block btn-sm"
+                                    id="btnLocksManagerRestart"
+                                    type="button">Restart Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer center">
+                <button class="btn btn-outline-secondary" data-dismiss="modal" tabindex="-1" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

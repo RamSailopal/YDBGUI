@@ -22,6 +22,7 @@ app.ui.menu.init = () => {
     $('#menuSystemAdministrationRegionAddLi').on('click', () => app.ui.regionAdd.name.show());
     $('#menuSystemAdministrationRegionAdd').on('click', () => app.ui.regionAdd.name.show());
     $('#menuSystemAdministrationLocksManagerLi').on('click', () => app.ui.locksManager.show());
+    $('#menuRestartManagerLi').on('click', () => app.ui.locksManager.show());
 
     // documentation
     $('#menuDocumentationAdministration').on('click', () => window.open('https://docs.yottadb.com/AdminOpsGuide/index.html', '_blank'));
