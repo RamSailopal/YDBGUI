@@ -701,7 +701,7 @@ restartQuit
 	quit ""
 restartStatus(resJson,arguments)
 	;
-	If $G(^GUISYS("restart-process"))'="" D
+	If $G(^GUISYS("restart-status"))'="" D
 	. Set cmd="ps -ef | awk -v pid='"_^GUISYS("restart-process")_"' '$2==pid { found=1 } END { if (found==1)  { print 1 } else { print 0 } }'"
     . open "Files":(command=cmd:readonly:stderr="Errors")::"PIPE"
     . use "Files" read RESP
