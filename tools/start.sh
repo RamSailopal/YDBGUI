@@ -20,7 +20,7 @@ cp -f /usr/local/YDBGUI/wwwroot/js/* /opt/yottadb/master_x86_64/plugin/etc/ydbgu
 source /home/vehu/etc/env
 ydb <<< 'ZL "TESTROUT.m"'
 sleep 1
-ydb <<< 'S ^SYS("restart")="RESTART^TESTROUT"'
+ydb <<< 'S ^GUISYS("restart")="JOB^TESTROUT"'
 echo "Starting vista processes"
 /etc/init.d/vehuvista start
 if [ -f /etc/init.d/vehuvista-qewd ] ; then
