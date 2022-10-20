@@ -670,9 +670,23 @@ clearLockQuit
 ; ****************************************************************
 restart(resJson,arguments)
 	;
-	Set action=$G(^SYS("restart"))
-	If action'="" Kill ^SYS("restart-status") Set ^SYS("restart-status")="restarting" Job @action
-	set res("status")=$G(^SYS("restart-status"),"No Action")
+	Set action=$G(^GUISYS("restart"))
+	If ^GUISYS("restart-status")="restarting" D
+	. set res("status")="Already started" 
+	. set res("date")=^GUISYS("restart-date")
+    . set res("time")=^GUISYS("restart-time")
+	E  D
+	. If action'="" Kill ^GUISYS("restart-status") D
+	. Set ^GUISYS("restart-status")="restarting"
+	. Set DateTime=$zdate($h,"MON DD YYYY/12:60:SS")
+    . Set Date=$Piece(DateTime,"/",1)
+	. Set Time=$Piece(DateTime,"/",2)
+    . Set ^GUISYS("restart-date")=Date
+	. Set ^GUISYS("restart-time")=Time
+	. Do @action
+	. set res("status")=$G(^GUISYS("restart-status"),"No Action")
+	. set res("date")=$G(^GUISYS("restart-date"),"No date")
+    . set res("time")=$G(^GUISYS("restart-time"),"No time")
 	set res("result")="OK"
 	;
 restartQuit
@@ -684,7 +698,9 @@ restartQuit
 	quit ""
 restartStatus(resJson,arguments)
 	;
-	set res("status")=$G(^SYS("restart-status"),"No Action")
+	set res("status")=$G(^GUISYS("restart-status"),"No Action")
+	set res("date")=$G(^GUISYS("restart-date"),"No date")
+    set res("time")=$G(^GUISYS("restart-time"),"No time")
 	set res("result")="OK"
 	;
 restartStatusQuit
