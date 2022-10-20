@@ -701,6 +701,14 @@ restartQuit
 	quit ""
 restartStatus(resJson,arguments)
 	;
+	If $G(^GUISYS("restart-process"))'="" D
+	. Set cmd="ps -ef | awk -v pid='"_^GUISYS("restart-process")_"' '$2==pid { found=1 } END { if (found==1)  { print 1 } else { print 0 } }'"
+    . open "Files":(command=cmd:readonly:stderr="Errors")::"PIPE"
+    . use "Files" read RESP
+	. close "Files"
+    . I resp'="1"&&(^GUISYS("restart-status")="restarting") D
+	.. set res(process)="crashed"
+	.. set ^GUISYS("restart-status")="crashed"
 	set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	set res("date")=$G(^GUISYS("restart-date"),"No date")
     set res("time")=$G(^GUISYS("restart-time"),"No time")
