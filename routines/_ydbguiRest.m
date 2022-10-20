@@ -683,7 +683,17 @@ restart(resJson,arguments)
 	. Set Time=$Piece(DateTime,"/",2)
     . Set ^GUISYS("restart-date")=Date
 	. Set ^GUISYS("restart-time")=Time
+	. Set ^GUISYS("restart-process")=$J
+	. Quit:$G(^GUISYS("restart-status"))="restarting"
+    . Set ^GUISYS("restart-status")="restarting"
 	. do @action
+    . Set DateTime=$zdate($h,"MON DD YYYY/12:60:SS")
+    . Set Date=$Piece(DateTime,"/",1)
+	. Set Time=$Piece(DateTime,"/",2)
+    . Set ^GUISYS("restart-date")=Date
+	. Set ^GUISYS("restart-time")=Time
+    . Set ^GUISYS("restart-process")="Finished"
+	. Set ^GUISYS("restart-status")="restarted"
 	. Set ^GUISYS("restart-status")="restarting"
 	. set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	. set res("date")=$G(^GUISYS("restart-date"),"No date")
