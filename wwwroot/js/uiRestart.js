@@ -87,12 +87,32 @@ app.ui.restartManager.restartPressed = () => {
 app.ui.restartManager.populateStatus = restartData => {
 
     let status = restartData.status;
+    let date = restartData.date;
+    let time = restartData.time;
     const statusData = [];            
     statusData.push({
                 id: '',
                 text: '<strong class="locks-manager-font-inconsolata">Status - ' + status + '</strong>',
                 icon: '',
                 children: [
+                    {
+                        id: '',
+                        text: 'Date: ' + date,
+                        icon: '',
+                        children: ''
+                    },
+                    {
+                        id: 'ns-' + lock.namespace + '-pid-' + lock.pid,
+                        text: 'PID: ' + lock.pid,
+                        icon: 'bi-disc',
+                        children: ''
+                    },
+                    {
+                        id: 'ns-' + lock.namespace + '-waiters',
+                        text: 'Waiters',
+                        icon: 'bi-disc-fill',
+                        children: ''
+                    },
                 ]
             })
 
