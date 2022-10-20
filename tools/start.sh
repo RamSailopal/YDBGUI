@@ -21,7 +21,7 @@ source /home/vehu/etc/env
 ydb <<< 'ZL "TESTROUT.m"'
 sleep 1
 ydb <<< 'S ^GUISYS("restart")="JOB^TESTROUT"'
-cd /home/vehu
+chown -R vehu.vehu /opt/yottadb/master_x86_64/plugin/etc/ydbgui
 echo "Starting vista processes"
 /etc/init.d/vehuvista start
 if [ -f /etc/init.d/vehuvista-qewd ] ; then
