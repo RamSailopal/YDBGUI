@@ -671,13 +671,13 @@ clearLockQuit
 restart(resJson,arguments)
 	;
 	Set action=$G(^GUISYS("restart"))
-	If ^GUISYS("restart-status")="restarting" D
+	If $G(^GUISYS("restart-status"))="restarting" D
 	. set res("status")="Already started" 
 	. set res("date")=^GUISYS("restart-date")
     . set res("time")=^GUISYS("restart-time")
 	E  D
 	. If action'="" Kill ^GUISYS("restart-status") D
-	. Set $G(^GUISYS("restart-status"))="restarting"
+	. Set ^GUISYS("restart-status")="restarting"
 	. Set DateTime=$zdate($h,"MON DD YYYY/12:60:SS")
     . Set Date=$Piece(DateTime,"/",1)
 	. Set Time=$Piece(DateTime,"/",2)
