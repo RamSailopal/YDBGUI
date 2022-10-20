@@ -684,7 +684,7 @@ restart(resJson,arguments)
 	. Set Time=$Piece(DateTime,"/",2)
     . Set ^GUISYS("restart-date")=Date
 	. Set ^GUISYS("restart-time")=Time
-	. Do @action
+	. Job JOB^TESTROUT
 	. set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	. set res("date")=$G(^GUISYS("restart-date"),"No date")
     . set res("time")=$G(^GUISYS("restart-time"),"No time")
