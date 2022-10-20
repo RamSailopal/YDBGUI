@@ -81,7 +81,8 @@ app.ui.restartManager.refreshPressed = () => {
 };
 
 app.ui.restartManager.restartPressed = () => {
-    app.ui.restartManager.restart()
+    app.ui.restartManager.restart();
+    app.ui.restartManager.refresh()
 };
 
 app.ui.restartManager.populateStatus = restartData => {
