@@ -18,7 +18,7 @@ YottaDB GUI
 
 This particular fork contains additional code to integrate a bespoke application restart into the GUI
 
-![main_screen](docs/main-screen.png)
+![main_screen](YDBGUI.JPG)
 
 <hr>
 
