@@ -1,6 +1,7 @@
 TESTROUT ;Test routine for system startup
 JOB ;
 	Job RESTART
+    Quit
 RESTART ;
     Q:$G(^GUISYS("restart-status"))="restarting"
     Hang 120
