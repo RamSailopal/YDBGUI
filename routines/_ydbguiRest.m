@@ -706,7 +706,7 @@ restartStatus(resJson,arguments)
     . open "Files":(command=cmd:readonly:stderr="Errors")::"PIPE"
     . use "Files" read RESP
 	. close "Files"
-    . I resp'="1"&&(^GUISYS("restart-status")="restarting") D
+    . I (resp'="1")&(^GUISYS("restart-status")="restarting") D
 	.. set res(process)="crashed"
 	.. set ^GUISYS("restart-status")="crashed"
 	set res("status")=$G(^GUISYS("restart-status"),"No Action")
