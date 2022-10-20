@@ -677,7 +677,7 @@ restart(resJson,arguments)
     . set res("time")=^GUISYS("restart-time")
 	E  D
 	. If action'="" Kill ^GUISYS("restart-status") D
-	. Set ^GUISYS("restart-status")="restarting"
+	. Set $G(^GUISYS("restart-status"))="restarting"
 	. Set DateTime=$zdate($h,"MON DD YYYY/12:60:SS")
     . Set Date=$Piece(DateTime,"/",1)
 	. Set Time=$Piece(DateTime,"/",2)
@@ -687,6 +687,7 @@ restart(resJson,arguments)
 	. set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	. set res("date")=$G(^GUISYS("restart-date"),"No date")
     . set res("time")=$G(^GUISYS("restart-time"),"No time")
+	set res("routine")=$G(^GUISYS("restart"),"No routine set")
 	set res("result")="OK"
 	;
 restartQuit
@@ -701,6 +702,7 @@ restartStatus(resJson,arguments)
 	set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	set res("date")=$G(^GUISYS("restart-date"),"No date")
     set res("time")=$G(^GUISYS("restart-time"),"No time")
+	set res("routine")=$G(^GUISYS("restart"),"No routine set")
 	set res("result")="OK"
 	;
 restartStatusQuit

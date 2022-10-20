@@ -89,6 +89,7 @@ app.ui.restartManager.populateStatus = restartData => {
     let status = restartData.status;
     let date = restartData.date;
     let time = restartData.time;
+    let routine = restartData.routine;
     const statusData = [];            
     statusData.push({
                 id: '',
@@ -104,6 +105,12 @@ app.ui.restartManager.populateStatus = restartData => {
                     {
                         id: '',
                         text: 'Time: ' + time,
+                        icon: '',
+                        children: ''
+                    },
+                    {
+                        id: '',
+                        text: 'Routine: ' + routine,
                         icon: '',
                         children: ''
                     },
