@@ -1,6 +1,7 @@
 TESTROUT ;Test routine for system startup
 JOB ;
 	Job RESTART
+    Set ^GUISYS("restart-process")=$ZJOB
     Quit
 RESTART ;
     Q:$G(^GUISYS("restart-status"))="restarting"
@@ -11,4 +12,5 @@ RESTART ;
 	Set Time=$Piece(DateTime,"/",2)
     Set ^GUISYS("restart-date")=Date
 	Set ^GUISYS("restart-time")=Time
+    Set ^GUISYS("restart-process")="Finished"
 	Quit

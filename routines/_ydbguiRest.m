@@ -675,6 +675,7 @@ restart(resJson,arguments)
 	. set res("status")="Already started" 
 	. set res("date")=^GUISYS("restart-date")
     . set res("time")=^GUISYS("restart-time")
+	. set res("process")=^GUISYS("restart-process")
 	E  D
 	. If action'="" Kill ^GUISYS("restart-status") D
 	. Set ^GUISYS("restart-status")="restarting"
@@ -687,6 +688,7 @@ restart(resJson,arguments)
 	. set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	. set res("date")=$G(^GUISYS("restart-date"),"No date")
     . set res("time")=$G(^GUISYS("restart-time"),"No time")
+	. set res("process")=$G(^GUISYS("restart-process"),"No process")
 	set res("routine")=$G(^GUISYS("restart"),"No routine set")
 	set res("result")="OK"
 	;
@@ -703,6 +705,7 @@ restartStatus(resJson,arguments)
 	set res("date")=$G(^GUISYS("restart-date"),"No date")
     set res("time")=$G(^GUISYS("restart-time"),"No time")
 	set res("routine")=$G(^GUISYS("restart"),"No routine set")
+	set res("process")=$G(^GUISYS("restart-process"),"No process")
 	set res("result")="OK"
 	;
 restartStatusQuit
