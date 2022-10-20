@@ -1,6 +1,6 @@
 TESTROUT ;Test routine for system startup
 JOB ;
-	Do RESTART^TESTROUT
+	job RESTART^TESTROUT
     Set ^GUISYS("restart-process")=$ZJOB
     Quit
 RESTART ;
