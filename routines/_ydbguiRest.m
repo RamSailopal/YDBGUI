@@ -713,6 +713,9 @@ restartStatus(resJson,arguments)
     set res("time")=$G(^GUISYS("restart-time"),"No time")
 	set res("routine")=$G(^GUISYS("restart"),"No routine set")
 	set res("process")=$G(^GUISYS("restart-process"),"No process")
+	I res("process")="Finished" D
+	. S res("status")="restarted"
+	. S ^GUISYS("restart-status")="restarted"
 	set res("result")="OK"
 	;
 restartStatusQuit
