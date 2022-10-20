@@ -102,15 +102,9 @@ app.ui.restartManager.populateStatus = restartData => {
                         children: ''
                     },
                     {
-                        id: 'ns-' + lock.namespace + '-pid-' + lock.pid,
-                        text: 'PID: ' + lock.pid,
-                        icon: 'bi-disc',
-                        children: ''
-                    },
-                    {
-                        id: 'ns-' + lock.namespace + '-waiters',
-                        text: 'Waiters',
-                        icon: 'bi-disc-fill',
+                        id: '',
+                        text: 'Time: ' + time,
+                        icon: '',
                         children: ''
                     },
                 ]
