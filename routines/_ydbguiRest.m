@@ -708,7 +708,6 @@ restartStatus(resJson,arguments)
 	. close "Files"
     . I (RESP'="1")&(^GUISYS("restart-status")="restarting") D
 	.. set res("process")="crashed"
-	.. set ^GUISYS("restart-status")="crashed"
 	set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	set res("date")=$G(^GUISYS("restart-date"),"No date")
     set res("time")=$G(^GUISYS("restart-time"),"No time")
