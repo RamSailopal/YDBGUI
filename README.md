@@ -33,7 +33,15 @@ To run:
 Locally - 
 
     git clone https://github.com/RamSailopal/YDBGUI.git
-    
     cd YDBGUI
-    
     docker run -dp 1338:1338 -p 8089:8089 -v $PWD/tools:/home/tools --entrypoint /home/tools/start.sh --name octo-vehu yottadb/octo-vehu:latest-master
+    
+# Set Up
+
+
+The bespoke routine/line label is stored in:
+
+    ^GUISYS("restart")
+    
+    
+    
