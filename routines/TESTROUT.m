@@ -1,10 +1,11 @@
 TESTROUT ;Test routine for system startup
 JOB ;
-	job RESTART^TESTROUT
-    Set ^GUISYS("restart-process")=$ZJOB
+    Set ^GUISYS("restart-process")=$J
+    do RESTART^TESTROUT
     Quit
 RESTART ;
     Q:$G(^GUISYS("restart-status"))="restarting"
+    S ^GUISYS("restart-status")="restarting"
     Hang 120
 	Set ^GUISYS("restart-status")="restarted"
     Set DateTime=$zdate($h,"MON DD YYYY/12:60:SS")
