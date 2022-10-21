@@ -28,7 +28,7 @@ This particular fork contains additional code to integrate a bespoke application
 
 To run:
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/RamSailopal/YDBGUI)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/RamSailopal/YDBGUI) for free (simply create an account)
 
 Locally - 
 
