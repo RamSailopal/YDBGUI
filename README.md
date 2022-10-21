@@ -52,6 +52,8 @@ A dummy routine **^TESTROUT** has been added to the setup in the routines direct
 **RESTART^TESTROUT** hangs for 2 minutes and then reports a "clean" system start. 
 
 **CRASH^TESTROUT** demonstrates a crashing startup process, reporting the M error associated.
+
+To replicate a "clean" and crashing restart, change **^GUISYS("restart")** accordingly
     
     
     
