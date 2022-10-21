@@ -81,6 +81,7 @@ app.ui.restartManager.refreshPressed = () => {
 };
 
 app.ui.restartManager.restartPressed = () => {
+    app.ui.msgbox.show('The configurated application restart process is about to proceed, please keep the UI open while this takes place', "INFO")
     app.ui.restartManager.restart();
     app.ui.restartManager.refresh()
 };
