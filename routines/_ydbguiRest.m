@@ -676,6 +676,7 @@ restart(resJson,arguments)
 	. set res("date")=^GUISYS("restart-date")
     . set res("time")=^GUISYS("restart-time")
 	. set res("process")=^GUISYS("restart-process")
+    . set res("errCode")=$G(^GUISYS("error"))
 	E  D
 	. If action'="" Kill ^GUISYS("restart-status") D
 	. Set DateTime=$zdate($h,"MON DD YYYY/12:60:SS")
@@ -688,15 +689,14 @@ restart(resJson,arguments)
 	. Quit:$G(^GUISYS("restart-status"))="restarting"
     . Set ^GUISYS("restart-status")="restarting"
 	. Set $ZTRAP="G restartErrorHandle^%ydbguiRest"
-	. do @action
-    . Set DateTime=$zdate($h,"MON DD YYYY/12:60:SS")
+	. Set DateTime=$zdate($h,"MON DD YYYY/12:60:SS")
     . Set Date=$Piece(DateTime,"/",1)
 	. Set Time=$Piece(DateTime,"/",2)
     . Set ^GUISYS("restart-date")=Date
 	. Set ^GUISYS("restart-time")=Time
+	. do @action
     . Set ^GUISYS("restart-process")="Finished"
 	. Set ^GUISYS("restart-status")="restarted"
-	. Set ^GUISYS("error")=""
 	. set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	. set res("date")=$G(^GUISYS("restart-date"),"No date")
     . set res("time")=$G(^GUISYS("restart-time"),"No time")
@@ -745,7 +745,23 @@ restartStatusQuit
 	quit ""
 restartErrorHandle
     S ^GUISYS("error")=$ZSTATUS
-	Quit
+    Set ^GUISYS("restart-process")=""
+	Set ^GUISYS("restart-status")="crashed"
+	set res("status")=$G(^GUISYS("restart-status"),"No Action")
+	set res("date")=$G(^GUISYS("restart-date"),"No date")
+    set res("time")=$G(^GUISYS("restart-time"),"No time")
+	set res("process")=$G(^GUISYS("restart-process"),"No process")
+	set res("errCode")=$G(^GUISYS("error"),"")
+	set res("routine")=$G(^GUISYS("restart"),"No routine set")
+	set res("result")="OK"
+	;
+restartErrorQuit
+	do encode^%webjson($name(res),$name(resJson),$name(jsonErr))
+	if $data(jsonErr) do  quit
+	. ; FATAL, can not convert json
+	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
+	;
+	quit ""
 terminateProcess(arguments,bodyJson,resJson)
 	new res,jsonErr,pid,ret,shellResult
 	;
