@@ -686,6 +686,7 @@ restart(resJson,arguments)
 	. Set ^GUISYS("restart-process")=$J
 	. Quit:$G(^GUISYS("restart-status"))="restarting"
     . Set ^GUISYS("restart-status")="restarting"
+	. Set $ZTRAP="G restartErrorHandle^%ydbguiRest"
 	. do @action
     . Set DateTime=$zdate($h,"MON DD YYYY/12:60:SS")
     . Set Date=$Piece(DateTime,"/",1)
@@ -737,6 +738,9 @@ restartStatusQuit
 	. do setError^%webutils("500","Can not convert the data to JSON"_$c(13,10)_"Contact YottaDB to report the error") quit:$quit "" quit
 	;
 	quit ""
+restartErrorHandle
+    S ^GUISYS("error")=$ZSTATUS
+	Quit
 terminateProcess(arguments,bodyJson,resJson)
 	new res,jsonErr,pid,ret,shellResult
 	;
