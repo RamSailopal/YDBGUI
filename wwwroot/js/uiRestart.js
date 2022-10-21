@@ -65,11 +65,11 @@ app.ui.restartManager.restart = async () => {
             }
     } catch (err) {
             app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
-            app.ui.restartManager.refresh();
             return
     }
 
     app.ui.restartManager.populateStatus(restartData);
+    app.ui.restartManager.refresh();
 
 };
 
