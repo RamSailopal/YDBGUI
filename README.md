@@ -30,7 +30,7 @@ To run:
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/RamSailopal/YDBGUI) for free (simply create an account)
 
-Locally - 
+Locally with Docker - 
 
     git clone https://github.com/RamSailopal/YDBGUI.git
     cd YDBGUI
