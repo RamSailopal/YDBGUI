@@ -47,7 +47,11 @@ Change this to reference the startup iine/routine for your own application
 
 # Example
 
-A dummy routine **^TESTROUT** has been added to the setup as an example startup routine **RESTART^TESTROUT** hangs for 2 minutes and then reports a "clean" system start. **CRASH^TESTROUT** demonstrates a crashing startup process, reporting the M error associated.
+A dummy routine **^TESTROUT** has been added to the setup in the routines directory as an example startup routine 
+
+**RESTART^TESTROUT** hangs for 2 minutes and then reports a "clean" system start. 
+
+**CRASH^TESTROUT** demonstrates a crashing startup process, reporting the M error associated.
     
     
     
