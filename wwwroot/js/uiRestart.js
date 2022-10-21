@@ -59,6 +59,7 @@ app.ui.restartManager.restart = async () => {
             app.ui.restartManager.restartData = restartData;
 
             if (restartData.result !== 'OK') {
+                app.ui.restartManager.refresh();
                 app.ui.msgbox.show('The following error occurred while fetching restart information:' + restartData.error.description, 'ERROR');
                 return
 
@@ -80,9 +81,13 @@ app.ui.restartManager.refreshPressed = () => {
 };
 
 app.ui.restartManager.restartPressed = () => {
-    app.ui.msgbox.show('The configurated application restart process is about to proceed, please keep the UI open while this takes place', "INFO")
-    app.ui.restartManager.restart();
-    app.ui.restartManager.refresh()
+    app.ui.inputbox.show('You are about to perform t he configured restart process: ' + app.ui.locksManager.currentMask.clear + '<br><br>' +
+        'Do you want to proceed ?', 'WARNING', async ret => {
+        if (ret === 'YES') {
+            app.ui.restartManager.restart();
+            app.ui.restartManager.refresh() 
+        }
+    });
 };
 
 app.ui.restartManager.populateStatus = restartData => {
