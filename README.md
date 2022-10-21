@@ -39,7 +39,7 @@ Locally -
 # Set Up
 
 
-The bespoke routine/line label is stored in:
+The bespoke routine/line label is stored in the global/subscript:
 
     ^GUISYS("restart")
     
