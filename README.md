@@ -39,7 +39,7 @@ Locally with Docker -
 # Set Up
 
 
-The bespoke routine/line label is stored in the global/subscript:
+The bespoke restart routine/line label is stored in the global/subscript:
 
     ^GUISYS("restart")
     
