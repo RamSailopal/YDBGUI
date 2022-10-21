@@ -81,7 +81,7 @@ app.ui.restartManager.refreshPressed = () => {
 };
 
 app.ui.restartManager.restartPressed = () => {
-    app.ui.inputbox.show('You are about to perform t he configured restart process: ' + app.ui.locksManager.currentMask.clear + '<br><br>' +
+    app.ui.inputbox.show('You are about to perform the configured restart process:<br><br>' +
         'Do you want to proceed ?', 'WARNING', async ret => {
         if (ret === 'YES') {
             app.ui.restartManager.restart();
