@@ -684,6 +684,7 @@ restart(resJson,arguments)
     . Set ^GUISYS("restart-date")=Date
 	. Set ^GUISYS("restart-time")=Time
 	. Set ^GUISYS("restart-process")=$J
+	. Set ^GUISYS("error")=""
 	. Quit:$G(^GUISYS("restart-status"))="restarting"
     . Set ^GUISYS("restart-status")="restarting"
 	. Set $ZTRAP="G restartErrorHandle^%ydbguiRest"
@@ -695,11 +696,12 @@ restart(resJson,arguments)
 	. Set ^GUISYS("restart-time")=Time
     . Set ^GUISYS("restart-process")="Finished"
 	. Set ^GUISYS("restart-status")="restarted"
-	. Set ^GUISYS("restart-status")="restarting"
+	. Set ^GUISYS("error")=""
 	. set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	. set res("date")=$G(^GUISYS("restart-date"),"No date")
     . set res("time")=$G(^GUISYS("restart-time"),"No time")
 	. set res("process")=$G(^GUISYS("restart-process"),"No process")
+	. set res("errCode")=$G(^GUISYS("error"),"")
 	set res("routine")=$G(^GUISYS("restart"),"No routine set")
 	set res("result")="OK"
 	;
@@ -721,14 +723,17 @@ restartStatus(resJson,arguments)
 	.. set res("restart-status")="crashed"
 	.. set ^GUISYS("restart-process")=""
 	.. set ^GUISYS("restart-status")="crashed"
+	.. set res("errCode")=^GUISYS("error")
 	set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	set res("date")=$G(^GUISYS("restart-date"),"No date")
     set res("time")=$G(^GUISYS("restart-time"),"No time")
 	set res("routine")=$G(^GUISYS("restart"),"No routine set")
 	set res("process")=$G(^GUISYS("restart-process"),"No process")
+	set res("errCode")=$G(^GUISYS("error"),"")
 	I res("process")="Finished" D
 	. S res("status")="restarted"
 	. S ^GUISYS("restart-status")="restarted"
+	. S ^GUISYS("errCode")=""
 	set res("result")="OK"
 	;
 restartStatusQuit

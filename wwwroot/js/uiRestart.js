@@ -97,6 +97,7 @@ app.ui.restartManager.populateStatus = restartData => {
     let time = restartData.time;
     let routine = restartData.routine;
     let process = restartData.process;
+    let error = restartData.errCode;
     const statusData = [];            
     statusData.push({
                 id: '',
@@ -124,6 +125,12 @@ app.ui.restartManager.populateStatus = restartData => {
                     {
                         id: '',
                         text: 'Process: ' + process,
+                        icon: '',
+                        children: ''
+                    },
+                    {
+                        id: '',
+                        text: 'Error: ' + error,
                         icon: '',
                         children: ''
                     },
