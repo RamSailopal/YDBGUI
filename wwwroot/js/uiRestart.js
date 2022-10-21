@@ -60,13 +60,12 @@ app.ui.restartManager.restart = async () => {
 
             if (restartData.result !== 'OK') {
                 app.ui.msgbox.show('The following error occurred while fetching restart information:' + restartData.error.description, 'ERROR');
-
                 return
 
             }
     } catch (err) {
             app.ui.msgbox.show(app.REST.parseError(err), 'ERROR');
-
+            app.ui.restartManager.refresh();
             return
     }
 
