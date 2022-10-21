@@ -719,11 +719,14 @@ restartStatus(resJson,arguments)
     . open "Files":(command=cmd:readonly:stderr="Errors")::"PIPE"
     . use "Files" read RESP
 	. close "Files"
-    . I (RESP'="1")&(^GUISYS("restart-status")="restarting") D
+    . If (RESP'="1")&(^GUISYS("restart-status")="restarting") D
 	.. set res("restart-status")="crashed"
 	.. set ^GUISYS("restart-process")=""
 	.. set ^GUISYS("restart-status")="crashed"
 	.. set res("errCode")=^GUISYS("error")
+	. If $G(^GUISYS("error"))'="" D
+	.. set ^GUISYS("restart-status")="crashed"
+	.. set ^GUISYS("restart-process")=""
 	set res("status")=$G(^GUISYS("restart-status"),"No Action")
 	set res("date")=$G(^GUISYS("restart-date"),"No date")
     set res("time")=$G(^GUISYS("restart-time"),"No time")
